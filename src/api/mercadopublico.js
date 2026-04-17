@@ -75,6 +75,39 @@ class MercadoPublicoAPI {
     keys.forEach(k => localStorage.removeItem(k));
   }
 
+  // ─── Fetch con paginación automática ───
+  // Obtiene todas las páginas disponibles hasta maxPages y combina los Listado
+  async _fetchAllPages(endpoint, params = {}, cacheTTL = 5, maxPages = 50) {
+    const allCacheKey = `${endpoint}_all?${new URLSearchParams(params).toString()}`;
+    const cached = this._getCache(allCacheKey, cacheTTL);
+    if (cached) return cached;
+
+    const first = await this._fetch(endpoint, params, 0);
+    const total = first?.Cantidad || 0;
+    const list = first?.Listado || [];
+
+    if (list.length === 0 || total <= list.length) {
+      this._setCache(allCacheKey, first);
+      return first;
+    }
+
+    const pageSize = list.length;
+    const pagesNeeded = Math.min(Math.ceil(total / pageSize), maxPages) - 1;
+
+    const rest = await Promise.all(
+      Array.from({ length: pagesNeeded }, (_, i) =>
+        this._fetch(endpoint, { ...params, pagina: i + 2 }, 0).catch(() => null)
+      )
+    );
+
+    const combined = {
+      ...first,
+      Listado: [...list, ...rest.flatMap(p => p?.Listado || [])],
+    };
+    this._setCache(allCacheKey, combined);
+    return combined;
+  }
+
   // ─── Fetch con manejo de errores ───
   async _fetch(endpoint, params = {}, cacheTTL = 5) {
     if (!this.ticket) {
@@ -131,12 +164,12 @@ class MercadoPublicoAPI {
   async getLicitacionesPorFecha(fecha, estado = null) {
     const params = { fecha };
     if (estado) params.estado = estado;
-    return this._fetch('licitaciones.json', params);
+    return this._fetchAllPages('licitaciones.json', params);
   }
 
   /** Obtener licitaciones activas (publicadas) */
   async getLicitacionesActivas() {
-    return this._fetch('licitaciones.json', { estado: 'activas' }, 10);
+    return this._fetchAllPages('licitaciones.json', { estado: 'activas' }, 10);
   }
 
   /** Obtener detalle de una licitación por código */

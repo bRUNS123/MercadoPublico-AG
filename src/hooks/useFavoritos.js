@@ -16,6 +16,14 @@ export default function useFavoritos() {
 
     // Se suscribe a los cambios (Firebase o LocalStorage)
     const unsubscribe = votesDB.subscribeToVotes(sala, (data) => {
+      // Si el almacenamiento principal viene vacío, intentar recuperar del backup
+      if (!data || Object.keys(data).length === 0) {
+        const backup = localStorage.getItem('mp_votes_backup');
+        if (backup) {
+          try { setFavoritos(JSON.parse(backup)); } catch { setFavoritos(data); }
+          return;
+        }
+      }
       setFavoritos(data);
     });
 
@@ -23,17 +31,16 @@ export default function useFavoritos() {
   }, []);
 
   const rateLicitacion = useCallback(async (licitacion, score) => {
+    const previous = { ...favoritos };
     const newFavoritos = { ...favoritos };
 
     if (!score || score <= 0) {
-      // Eliminar llave si el score es 0
       delete newFavoritos[licitacion.CodigoExterno];
     } else {
-      // Guardar con score, timestamp y meta datos esenciales
       newFavoritos[licitacion.CodigoExterno] = {
         rating: parseInt(score, 10),
         savedAt: new Date().toISOString(),
-        licitacion: { // Guardamos info basica para no engordar firebase
+        licitacion: {
            CodigoExterno: licitacion.CodigoExterno,
            Nombre: licitacion.Nombre,
            CodigoEstado: licitacion.CodigoEstado,
@@ -42,13 +49,19 @@ export default function useFavoritos() {
            Estimacion: licitacion.Estimacion,
            Moneda: licitacion.Moneda,
            Tipo: licitacion.Tipo,
-           Items: licitacion.Items
-        } 
+        }
       };
     }
 
-    setFavoritos(newFavoritos); // actualizacion optimista
-    await votesDB.setVotes(roomId, newFavoritos);
+    setFavoritos(newFavoritos);
+    try {
+      await votesDB.setVotes(roomId, newFavoritos);
+      // Guardar siempre en localStorage como respaldo, independiente de Firebase
+      localStorage.setItem('mp_votes_backup', JSON.stringify(newFavoritos));
+    } catch (err) {
+      console.error('Error al guardar puntuación:', err);
+      setFavoritos(previous); // revertir si falló
+    }
   }, [favoritos, roomId]);
 
   const changeRoom = (newRoom) => {
