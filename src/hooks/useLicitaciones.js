@@ -39,13 +39,13 @@ export default function useLicitaciones() {
         );
       }
 
-      // Filtrar por categoría rápida
-      if (params.categoria) {
-        const cat = CATEGORIAS_INTERES.find(c => c.id === params.categoria);
-        if (cat) {
+      // Filtrar por categorías rápidas (multi-selección, lógica OR entre categorías)
+      if (params.categoria && params.categoria.length > 0) {
+        const cats = CATEGORIAS_INTERES.filter(c => params.categoria.includes(c.id));
+        if (cats.length > 0) {
           listado = listado.filter(l => {
             const text = ((l.Nombre || '') + ' ' + (l.Descripcion || '')).toLowerCase();
-            return cat.keywords.some(kw => text.includes(kw));
+            return cats.some(cat => cat.keywords.some(kw => text.includes(kw)));
           });
         }
       }

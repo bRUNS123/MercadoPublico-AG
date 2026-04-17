@@ -1,16 +1,28 @@
 import { useState, useEffect } from 'react';
 import StatusBadge from '../Common/StatusBadge';
-import { formatMonto, formatFecha, diasRestantes, getTipoNombre, getMontoInteligente } from '../../utils/formatters';
-import { MONEDAS, MODALIDADES_PAGO } from '../../utils/constants';
+import { formatMonto, formatFecha, diasRestantes, getTipoNombre, getMontoInteligente, getCategoryMatches } from '../../utils/formatters';
+import { MONEDAS, MODALIDADES_PAGO, CATEGORIAS_INTERES } from '../../utils/constants';
 import api from '../../api/mercadopublico';
 import Loader from '../Common/Loader';
 import useFavoritos from '../../hooks/useFavoritos';
+import useCategoryVotes from '../../hooks/useCategoryVotes';
+import usePatterns from '../../hooks/usePatterns';
+
+const CATEGORIA_COLORS = {
+  construccion: { color: '#f97316', bg: 'rgba(249,115,22,0.15)' },
+  ingenieria:   { color: '#3b82f6', bg: 'rgba(59,130,246,0.2)' },
+  mantencion:   { color: '#14b8a6', bg: 'rgba(20,184,166,0.15)' },
+  consultoria:  { color: '#a855f7', bg: 'rgba(168,85,247,0.15)' },
+  suministros:  { color: '#94a3b8', bg: 'rgba(148,163,184,0.15)' },
+};
 
 export default function LicitacionDetail({ licitacion, onClose }) {
   const [l, setL] = useState(licitacion);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const { favoritos, rateLicitacion } = useFavoritos();
+  const { catVotes, voteCategory, getVotes } = useCategoryVotes();
+  const { getScores } = usePatterns(favoritos, catVotes);
 
   useEffect(() => {
     // Si la licitación ya tiene Items, es probable que ya esté completa
@@ -155,6 +167,73 @@ export default function LicitacionDetail({ licitacion, onClose }) {
               </p>
             </div>
           )}
+
+          {/* Clasificación colaborativa */}
+          {(() => {
+            const autoMatches = getCategoryMatches(l);
+            const communityScores = getScores(l);
+            return (
+              <div className="detail-section">
+                <div className="detail-section-title">🏷️ Clasificación de Categorías</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                  {CATEGORIAS_INTERES.map(cat => {
+                    const autoMatch = autoMatches.find(m => m.id === cat.id);
+                    const cs = communityScores[cat.id];
+                    const votes = getVotes(l.CodigoExterno, cat.id);
+                    const c = CATEGORIA_COLORS[cat.id];
+                    const isIng = cat.id === 'ingenieria';
+                    const isRelevant = autoMatch || votes.total > 0 || cs;
+                    return (
+                      <div key={cat.id} style={{
+                        padding: '10px 14px', borderRadius: 10, minWidth: 148,
+                        background: votes.myVote ? c.bg : 'var(--bg-tertiary)',
+                        border: `1px solid ${votes.myVote ? c.color : isRelevant ? c.color + '55' : 'var(--border-color)'}`,
+                        display: 'flex', flexDirection: 'column', gap: 6,
+                        opacity: isRelevant ? 1 : 0.5,
+                      }}>
+                        <div style={{ fontWeight: isIng ? 700 : 600, fontSize: '0.82rem', color: c.color }}>
+                          {isIng ? '★ ' : ''}{cat.label}
+                        </div>
+                        {cs && (
+                          <div style={{ fontSize: '0.72rem', color: c.color, fontWeight: 600 }}>
+                            ↑ Comunidad: {cs.score}% <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>({cs.sampleSize} ej.)</span>
+                          </div>
+                        )}
+                        {autoMatch && (
+                          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                            Auto: {autoMatch.score}% coincidencia
+                          </div>
+                        )}
+                        {!autoMatch && !cs && (
+                          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                            Sin detección automática
+                          </div>
+                        )}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <button
+                            onClick={() => voteCategory(l.CodigoExterno, cat.id)}
+                            style={{
+                              padding: '3px 10px', borderRadius: 6, cursor: 'pointer',
+                              fontSize: '0.75rem', fontWeight: 700, border: 'none',
+                              background: votes.myVote ? c.color : 'var(--bg-secondary)',
+                              color: votes.myVote ? '#fff' : 'var(--text-secondary)',
+                            }}
+                          >
+                            {votes.myVote ? '✓ Confirmada' : 'Confirmar'}
+                          </button>
+                          {votes.confirmed > 0 && (
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                              {votes.confirmed}/{votes.total} votos
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Comprador */}
           {l.Comprador && (

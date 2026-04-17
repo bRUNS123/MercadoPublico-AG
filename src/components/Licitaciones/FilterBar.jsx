@@ -7,8 +7,11 @@ export default function FilterBar({ filters, onChange }) {
   };
 
   const toggleCategory = (catId) => {
-    const current = filters.categoria || '';
-    handleChange('categoria', current === catId ? '' : catId);
+    const current = filters.categoria || [];
+    const next = current.includes(catId)
+      ? current.filter(id => id !== catId)
+      : [...current, catId];
+    handleChange('categoria', next);
   };
 
   return (
@@ -69,7 +72,7 @@ export default function FilterBar({ filters, onChange }) {
           {CATEGORIAS_INTERES.map(cat => (
             <button
               key={cat.id}
-              className={`category-chip ${filters.categoria === cat.id ? 'active' : ''}`}
+              className={`category-chip ${(filters.categoria || []).includes(cat.id) ? 'active' : ''}`}
               onClick={() => toggleCategory(cat.id)}
             >
               {cat.label}
@@ -82,7 +85,7 @@ export default function FilterBar({ filters, onChange }) {
         <label className="filter-label">&nbsp;</label>
         <button
           className="btn btn-secondary btn-sm"
-          onClick={() => onChange({ estado: '', fecha: todayInputFormat(), busqueda: '', codigo: '', categoria: '' })}
+          onClick={() => onChange({ estado: '', fecha: todayInputFormat(), busqueda: '', codigo: '', categoria: [] })}
         >
           Limpiar
         </button>

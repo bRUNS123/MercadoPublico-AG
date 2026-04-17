@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
 import StatusBadge from '../Common/StatusBadge';
-import { getMontoInteligente, formatFechaCorta, diasRestantes, truncate } from '../../utils/formatters';
+import { getMontoInteligente, formatFechaCorta, diasRestantes, truncate, getCategoryMatches } from '../../utils/formatters';
 import api from '../../api/mercadopublico';
 import useFavoritos from '../../hooks/useFavoritos';
+import useCategoryVotes from '../../hooks/useCategoryVotes';
+import usePatterns from '../../hooks/usePatterns';
 
 const MontoInline = ({ licitacion }) => {
   const [detail, setDetail] = useState(null);
@@ -43,6 +45,14 @@ const MontoInline = ({ licitacion }) => {
   );
 };
 
+const CATEGORIA_COLORS = {
+  construccion: { color: '#f97316', bg: 'rgba(249,115,22,0.15)' },
+  ingenieria:   { color: '#3b82f6', bg: 'rgba(59,130,246,0.2)' },
+  mantencion:   { color: '#14b8a6', bg: 'rgba(20,184,166,0.15)' },
+  consultoria:  { color: '#a855f7', bg: 'rgba(168,85,247,0.15)' },
+  suministros:  { color: '#94a3b8', bg: 'rgba(148,163,184,0.15)' },
+};
+
 const PAGE_SIZE = 15;
 
 export default function LicitacionesTable({ licitaciones = [], onSelect, title = 'Licitaciones' }) {
@@ -50,6 +60,8 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
   const [sortKey, setSortKey] = useState(null);
   const [sortDir, setSortDir] = useState('asc');
   const { favoritos, rateLicitacion, isCollabActive, roomId } = useFavoritos();
+  const { catVotes, voteCategory, getVotes } = useCategoryVotes();
+  const { getScores } = usePatterns(favoritos, catVotes);
 
   const sorted = useMemo(() => {
     if (!sortKey) return licitaciones;
@@ -152,10 +164,57 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
             {paged.map((l, i) => {
               const dias = diasRestantes(l.FechaCierre);
               const monto = getMontoInteligente(l);
+              const catMatches = getCategoryMatches(l);
+              const communityScores = getScores(l);
               return (
                 <tr key={l.CodigoExterno || i} className="row-clickable" onClick={() => onSelect?.(l)}>
                   <td className="td-code">{l.CodigoExterno || '—'}</td>
-                  <td className="td-name">{truncate(l.Nombre, 65)}</td>
+                  <td className="td-name">
+                    {truncate(l.Nombre, 65)}
+                    {catMatches.length > 0 && (
+                      <div style={{ display: 'flex', gap: 3, flexWrap: 'wrap', marginTop: 4 }}>
+                        {catMatches.map(m => {
+                          const c = CATEGORIA_COLORS[m.id] || { color: '#94a3b8', bg: 'rgba(148,163,184,0.15)' };
+                          const isIng = m.id === 'ingenieria';
+                          const votes = getVotes(l.CodigoExterno, m.id);
+                          const cs = communityScores[m.id];
+                          const displayScore = cs ? cs.score : m.score;
+                          const isCommunity = !!cs;
+                          return (
+                            <span
+                              key={m.id}
+                              title={isCommunity
+                                ? `Comunidad: ${cs.score}% (${cs.sampleSize} ejemplos) · Auto: ${m.score}%`
+                                : `Auto: ${m.score}% coincidencia de palabras clave`}
+                              style={{
+                                display: 'inline-flex', alignItems: 'center', gap: 3,
+                                fontSize: '0.63rem', padding: '1px 4px 1px 6px', borderRadius: 10,
+                                background: c.bg, color: c.color,
+                                fontWeight: isIng ? 700 : 400,
+                                border: isIng ? `1px solid ${c.color}` : '1px solid transparent',
+                                letterSpacing: '0.02em',
+                              }}
+                            >
+                              {isIng ? '★ ' : ''}{m.label} {displayScore}%{isCommunity ? '↑' : ''}
+                              <button
+                                onClick={(e) => { e.stopPropagation(); voteCategory(l.CodigoExterno, m.id); }}
+                                title={votes.myVote ? 'Quitar confirmación' : 'Confirmar esta categoría'}
+                                style={{
+                                  marginLeft: 2, padding: '0 3px', borderRadius: 6, cursor: 'pointer', fontSize: '0.6rem',
+                                  border: 'none', lineHeight: 1.4,
+                                  background: votes.myVote ? c.color : 'rgba(255,255,255,0.1)',
+                                  color: votes.myVote ? '#fff' : c.color,
+                                  fontWeight: 700,
+                                }}
+                              >
+                                ✓{votes.confirmed > 0 ? ` ${votes.confirmed}` : ''}
+                              </button>
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </td>
                   <td><StatusBadge codigo={l.CodigoEstado} /></td>
                   <td style={{ fontSize: '0.78rem' }}>{l.Tipo || '—'}</td>
                   <td className="td-fecha">{formatFechaCorta(l.FechaCierre)}</td>

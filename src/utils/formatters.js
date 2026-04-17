@@ -1,4 +1,4 @@
-import { MONEDAS, ESTADOS, TIPOS } from './constants';
+import { MONEDAS, ESTADOS, TIPOS, CATEGORIAS_INTERES } from './constants';
 
 // ─── Valores de referencia para conversión (actualizar periódicamente) ───
 // UF ~ $38.700 CLP (abril 2026 aprox)
@@ -206,4 +206,19 @@ export function inputDateToAPI(dateStr) {
 export function todayInputFormat() {
   const d = new Date();
   return d.toISOString().split('T')[0];
+}
+
+/**
+ * Retorna las categorías que coinciden con una licitación y su score de coincidencia.
+ * Score = (keywords encontradas / total keywords) * 100
+ */
+export function getCategoryMatches(licitacion) {
+  const text = ((licitacion.Nombre || '') + ' ' + (licitacion.Descripcion || '')).toLowerCase();
+  return CATEGORIAS_INTERES
+    .map(cat => {
+      const matched = cat.keywords.filter(kw => text.includes(kw)).length;
+      if (matched === 0) return null;
+      return { id: cat.id, label: cat.label, score: Math.round((matched / cat.keywords.length) * 100) };
+    })
+    .filter(Boolean);
 }

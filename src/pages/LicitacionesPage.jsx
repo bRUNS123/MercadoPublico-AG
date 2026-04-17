@@ -17,7 +17,7 @@ export default function LicitacionesPage() {
     fecha: todayInputFormat(),
     busqueda: '',
     codigo: '',
-    categoria: '',
+    categoria: [],
     soloFavoritos: false,
   });
 
