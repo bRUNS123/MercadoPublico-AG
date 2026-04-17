@@ -1,5 +1,5 @@
 import { CATEGORIAS_INTERES } from '../../utils/constants';
-import { todayInputFormat } from '../../utils/formatters';
+import { todayInputFormat, subtractDays } from '../../utils/formatters';
 
 export default function FilterBar({ filters, onChange }) {
   const handleChange = (key, value) => {
@@ -13,6 +13,8 @@ export default function FilterBar({ filters, onChange }) {
       : [...current, catId];
     handleChange('categoria', next);
   };
+
+  const today = todayInputFormat();
 
   return (
     <div className="filter-bar">
@@ -35,12 +37,25 @@ export default function FilterBar({ filters, onChange }) {
       </div>
 
       <div className="filter-group">
-        <label className="filter-label">Fecha</label>
+        <label className="filter-label">Desde</label>
         <input
           type="date"
           className="filter-input"
-          value={filters.fecha || todayInputFormat()}
-          onChange={e => handleChange('fecha', e.target.value)}
+          value={filters.fechaDesde || subtractDays(today, 7)}
+          max={filters.fechaHasta || today}
+          onChange={e => handleChange('fechaDesde', e.target.value)}
+        />
+      </div>
+
+      <div className="filter-group">
+        <label className="filter-label">Hasta</label>
+        <input
+          type="date"
+          className="filter-input"
+          value={filters.fechaHasta || today}
+          min={filters.fechaDesde}
+          max={today}
+          onChange={e => handleChange('fechaHasta', e.target.value)}
         />
       </div>
 
@@ -85,7 +100,7 @@ export default function FilterBar({ filters, onChange }) {
         <label className="filter-label">&nbsp;</label>
         <button
           className="btn btn-secondary btn-sm"
-          onClick={() => onChange({ estado: '', fecha: todayInputFormat(), busqueda: '', codigo: '', categoria: [] })}
+          onClick={() => onChange({ estado: '', fechaDesde: subtractDays(today, 7), fechaHasta: today, busqueda: '', codigo: '', categoria: [] })}
         >
           Limpiar
         </button>

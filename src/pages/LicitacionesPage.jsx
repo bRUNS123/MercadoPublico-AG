@@ -6,7 +6,7 @@ import LicitacionDetail from '../components/Licitaciones/LicitacionDetail';
 import Loader from '../components/Common/Loader';
 import useLicitaciones from '../hooks/useLicitaciones';
 import useFavoritos from '../hooks/useFavoritos';
-import { todayInputFormat } from '../utils/formatters';
+import { todayInputFormat, subtractDays } from '../utils/formatters';
 
 export default function LicitacionesPage() {
   const { licitaciones, loading, error, lastUpdate, fetchLicitaciones } = useLicitaciones();
@@ -14,7 +14,8 @@ export default function LicitacionesPage() {
   const [selected, setSelected] = useState(null);
   const [filters, setFilters] = useState({
     estado: '',
-    fecha: todayInputFormat(),
+    fechaDesde: subtractDays(todayInputFormat(), 7),
+    fechaHasta: todayInputFormat(),
     busqueda: '',
     codigo: '',
     categoria: [],

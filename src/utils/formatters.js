@@ -209,6 +209,30 @@ export function todayInputFormat() {
 }
 
 /**
+ * Resta N días a una fecha YYYY-MM-DD
+ */
+export function subtractDays(dateStr, days) {
+  const d = new Date(dateStr);
+  d.setDate(d.getDate() - days);
+  return d.toISOString().split('T')[0];
+}
+
+/**
+ * Genera array de fechas YYYY-MM-DD entre desde y hasta (inclusive), máx 30 días
+ */
+export function getDatesInRange(desde, hasta) {
+  const dates = [];
+  const from = new Date(desde);
+  const to = new Date(hasta);
+  const maxDays = 30;
+  let count = 0;
+  for (let d = new Date(from); d <= to && count < maxDays; d.setDate(d.getDate() + 1), count++) {
+    dates.push(new Date(d).toISOString().split('T')[0]);
+  }
+  return dates;
+}
+
+/**
  * Retorna las categorías que coinciden con una licitación y su score de coincidencia.
  * Score = (keywords encontradas / total keywords) * 100
  */
