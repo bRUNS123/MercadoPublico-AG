@@ -165,11 +165,18 @@ class MercadoPublicoAPI {
     return this._fetch('licitaciones.json', params);
   }
 
-  /** Obtener licitaciones por fecha (Date o string ddmmaaaa) */
+  /** Obtener licitaciones por fecha — todas las páginas (para búsqueda de fecha única) */
   async getLicitacionesPorFecha(fecha, estado = null) {
     const params = { fecha };
     if (estado) params.estado = estado;
     return this._fetchAllPages('licitaciones.json', params);
+  }
+
+  /** Obtener licitaciones por fecha — solo página 1 (para consultas de rango, evita saturar API) */
+  async getLicitacionesPorFechaSimple(fecha, estado = null) {
+    const params = { fecha };
+    if (estado) params.estado = estado;
+    return this._fetch('licitaciones.json', params);
   }
 
   /** Obtener licitaciones activas (publicadas) */

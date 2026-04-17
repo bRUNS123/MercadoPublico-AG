@@ -29,9 +29,10 @@ export default function useLicitaciones() {
         const hasta = params.fechaHasta || today;
         const dates = getDatesInRange(desde, hasta);
 
+        // Para rangos: solo página 1 por día para no saturar la API
         const results = await Promise.all(
           dates.map(d =>
-            api.getLicitacionesPorFecha(inputDateToAPI(d), params.estado || null)
+            api.getLicitacionesPorFechaSimple(inputDateToAPI(d), params.estado || null)
               .catch(() => ({ Listado: [] }))
           )
         );

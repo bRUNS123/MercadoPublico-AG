@@ -31,7 +31,7 @@ export default function LicitacionesPage() {
   }, [filters, fetchLicitaciones]);
 
   useEffect(() => {
-    const timeout = setTimeout(doFetch, 400); // Debounce para búsqueda
+    const timeout = setTimeout(doFetch, 1200); // Debounce — esperar que el usuario termine de escribir/cambiar fechas
     return () => clearTimeout(timeout);
   }, [doFetch]);
 

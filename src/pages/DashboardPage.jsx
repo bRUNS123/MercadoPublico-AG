@@ -16,10 +16,10 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchLicitaciones({ estado: 'activas' });
 
-    // Auto-refresh cada 5 minutos
+    // Auto-refresh cada 30 minutos
     const interval = setInterval(() => {
       fetchLicitaciones({ estado: 'activas' });
-    }, 5 * 60 * 1000);
+    }, 30 * 60 * 1000);
 
     return () => clearInterval(interval);
   }, [fetchLicitaciones]);
