@@ -5,6 +5,7 @@ import StatusChart from '../components/Dashboard/StatusChart';
 import TypeChart from '../components/Dashboard/TypeChart';
 import LicitacionesTable from '../components/Licitaciones/LicitacionesTable';
 import LicitacionDetail from '../components/Licitaciones/LicitacionDetail';
+import CategoryPanel from '../components/Dashboard/CategoryPanel';
 import Loader from '../components/Common/Loader';
 import useLicitaciones from '../hooks/useLicitaciones';
 
@@ -57,6 +58,8 @@ export default function DashboardPage() {
               <StatusChart licitaciones={licitaciones} />
               <TypeChart licitaciones={licitaciones} />
             </div>
+
+            <CategoryPanel licitaciones={licitaciones} />
 
             <LicitacionesTable
               licitaciones={licitaciones.slice(0, 50)}

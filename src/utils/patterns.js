@@ -4,9 +4,9 @@ const STOP_WORDS = new Set([
   'me', 'te', 'mi', 'o', 'e', 'ni', 'ha', 'hay', 'son', 'ser', 'esta', 'este', 'esto',
   'eso', 'esa', 'estos', 'esas', 'ese', 'sin', 'sobre', 'entre', 'hasta', 'desde',
   'hacia', 'ante', 'bajo', 'cada', 'todo', 'toda', 'todos', 'todas', 'otro', 'otra',
+  'proyecto', 'servicio', 'servicios', 'contrato', 'obras', 'obra', 'licitacion',
 ]);
 
-// Tokeniza texto quitando acentos, stopwords y palabras cortas
 export function extractWords(text) {
   if (!text) return [];
   return text
@@ -17,46 +17,69 @@ export function extractWords(text) {
     .filter(w => w.length >= 4 && !STOP_WORDS.has(w));
 }
 
-// Construye patrones a partir de licitaciones bien puntuadas (rating >= 7) con categoría confirmada
+// Construye patrones desde dos fuentes:
+// 1. Licitaciones con rating >= 5 Y categoría confirmada (señal fuerte)
+// 2. Licitaciones con 2+ votos de categoría aunque rating sea bajo (señal comunidad)
 // favoritos: { [codigo]: { rating, licitacion } }
-// catVotes: { "codigo__catId": { [deviceId]: true } }
+// catVotes:  { "codigo__catId": { [deviceId]: true } }
 export function buildPatterns(favoritos, catVotes) {
   const patterns = {};
 
+  // Índice inverso: codigo → licitacion (para acceder desde catVotes)
+  const licitacionByCode = {};
+  Object.values(favoritos).forEach(({ licitacion }) => {
+    if (licitacion?.CodigoExterno) licitacionByCode[licitacion.CodigoExterno] = licitacion;
+  });
+
+  // Fuente 1: favoritos con rating >= 5 + categoría confirmada
   Object.values(favoritos).forEach(({ rating, licitacion }) => {
-    if (!licitacion || rating < 7) return;
+    if (!licitacion || rating < 5) return;
     const codigo = licitacion.CodigoExterno;
     if (!codigo) return;
 
-    // Buscar categorías confirmadas para esta licitación
-    const confirmedCats = [];
     Object.entries(catVotes).forEach(([key, votes]) => {
       if (!key.startsWith(codigo + '__')) return;
       const catId = key.slice(codigo.length + 2);
-      if (Object.values(votes).some(Boolean)) confirmedCats.push(catId);
+      const confirmed = Object.values(votes).filter(Boolean).length;
+      if (confirmed === 0) return;
+      _addToPattern(patterns, catId, licitacion, 1);
     });
+  });
 
-    if (confirmedCats.length === 0) return;
+  // Fuente 2: cualquier licitación con 2+ votos en la misma categoría
+  Object.entries(catVotes).forEach(([key, votes]) => {
+    const sep = key.indexOf('__');
+    if (sep === -1) return;
+    const codigo = key.slice(0, sep);
+    const catId = key.slice(sep + 2);
+    const confirmed = Object.values(votes).filter(Boolean).length;
+    if (confirmed < 2) return;
 
-    const words = extractWords(
-      (licitacion.Nombre || '') + ' ' + (licitacion.Descripcion || '')
-    );
+    const lic = licitacionByCode[codigo];
+    if (!lic) return; // no tenemos el texto, no podemos aprender
 
-    confirmedCats.forEach(catId => {
-      if (!patterns[catId]) patterns[catId] = { __count: 0 };
-      patterns[catId].__count += 1;
-      words.forEach(w => {
-        patterns[catId][w] = (patterns[catId][w] || 0) + 1;
-      });
-    });
+    // Peso mayor para votos comunitarios fuertes (3+)
+    const weight = confirmed >= 3 ? 2 : 1;
+    _addToPattern(patterns, catId, lic, weight);
   });
 
   return patterns;
 }
 
-// Calcula el score comunitario de una licitación para cada categoría con patrones aprendidos.
-// Requiere al menos MIN_SAMPLES buenos ejemplos para reportar un score.
-const MIN_SAMPLES = 3;
+function _addToPattern(patterns, catId, licitacion, weight) {
+  if (!patterns[catId]) patterns[catId] = { __count: 0 };
+  patterns[catId].__count += weight;
+  const words = extractWords(
+    (licitacion.Nombre || '') + ' ' + (licitacion.Descripcion || '')
+  );
+  words.forEach(w => {
+    patterns[catId][w] = (patterns[catId][w] || 0) + weight;
+  });
+}
+
+// Score comunitario para una licitación dado los patrones aprendidos.
+// Retorna también si la detección es por comunidad (source: 'community') o automática.
+const MIN_SAMPLES = 2;
 
 export function getCommunityScores(licitacion, patterns) {
   const words = new Set(extractWords(
@@ -83,4 +106,15 @@ export function getCommunityScores(licitacion, patterns) {
   });
 
   return result;
+}
+
+// Retorna las palabras más frecuentes aprendidas para una categoría (para debug/display)
+export function getTopPatternWords(patterns, catId, n = 10) {
+  const wordFreqs = patterns[catId];
+  if (!wordFreqs) return [];
+  return Object.entries(wordFreqs)
+    .filter(([k]) => k !== '__count')
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, n)
+    .map(([word, freq]) => ({ word, freq }));
 }

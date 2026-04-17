@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { CATEGORIAS_INTERES } from '../../utils/constants';
 import StatusBadge from '../Common/StatusBadge';
 import { getMontoInteligente, formatFechaCorta, diasRestantes, truncate, getCategoryMatches } from '../../utils/formatters';
 import api from '../../api/mercadopublico';
@@ -59,6 +60,7 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
   const [page, setPage] = useState(0);
   const [sortKey, setSortKey] = useState(null);
   const [sortDir, setSortDir] = useState('asc');
+  const [expandedRow, setExpandedRow] = useState(null);
   const { favoritos, rateLicitacion, isCollabActive, roomId } = useFavoritos();
   const { catVotes, voteCategory, getVotes } = useCategoryVotes();
   const { getScores } = usePatterns(favoritos, catVotes);
@@ -163,55 +165,106 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
           <tbody>
             {paged.map((l, i) => {
               const dias = diasRestantes(l.FechaCierre);
-              const monto = getMontoInteligente(l);
               const catMatches = getCategoryMatches(l);
               const communityScores = getScores(l);
+              const isExpanded = expandedRow === l.CodigoExterno;
+
+              // Categorías visibles en modo compacto: auto-detectadas + aprendidas (≥25%) + votadas
+              const visibleCats = CATEGORIAS_INTERES.filter(cat => {
+                const auto = catMatches.find(m => m.id === cat.id);
+                const cs = communityScores[cat.id];
+                const v = getVotes(l.CodigoExterno, cat.id);
+                return auto || (cs && cs.score >= 25) || v.total > 0;
+              });
+
               return (
                 <tr key={l.CodigoExterno || i} className="row-clickable" onClick={() => onSelect?.(l)}>
                   <td className="td-code">{l.CodigoExterno || '—'}</td>
                   <td className="td-name">
                     {truncate(l.Nombre, 65)}
-                    {catMatches.length > 0 && (
-                      <div style={{ display: 'flex', gap: 3, flexWrap: 'wrap', marginTop: 4 }}>
-                        {catMatches.map(m => {
-                          const c = CATEGORIA_COLORS[m.id] || { color: '#94a3b8', bg: 'rgba(148,163,184,0.15)' };
-                          const isIng = m.id === 'ingenieria';
-                          const votes = getVotes(l.CodigoExterno, m.id);
-                          const cs = communityScores[m.id];
-                          const displayScore = cs ? cs.score : m.score;
-                          const isCommunity = !!cs;
-                          return (
-                            <span
-                              key={m.id}
-                              title={isCommunity
-                                ? `Comunidad: ${cs.score}% (${cs.sampleSize} ejemplos) · Auto: ${m.score}%`
-                                : `Auto: ${m.score}% coincidencia de palabras clave`}
+
+                    {/* Badges compactos + botón expandir */}
+                    <div style={{ display: 'flex', gap: 3, flexWrap: 'wrap', marginTop: 4, alignItems: 'center' }}>
+                      {visibleCats.map(cat => {
+                        const auto = catMatches.find(m => m.id === cat.id);
+                        const cs = communityScores[cat.id];
+                        const votes = getVotes(l.CodigoExterno, cat.id);
+                        const c = CATEGORIA_COLORS[cat.id];
+                        const isIng = cat.id === 'ingenieria';
+                        const displayScore = cs ? cs.score : auto?.score;
+                        const isCommunity = !!cs && !auto;
+                        return (
+                          <span key={cat.id}
+                            title={cs
+                              ? `Comunidad: ${cs.score}% (${cs.sampleSize} ej.)${auto ? ` · Auto: ${auto.score}%` : ''}`
+                              : auto ? `Auto: ${auto.score}%` : `${votes.confirmed} voto(s) manual(es)`}
+                            style={{
+                              display: 'inline-flex', alignItems: 'center', gap: 3,
+                              fontSize: '0.63rem', padding: '1px 4px 1px 6px', borderRadius: 10,
+                              background: c.bg, color: c.color,
+                              fontWeight: isIng ? 700 : 400,
+                              border: `1px solid ${isCommunity ? c.color : 'transparent'}`,
+                              letterSpacing: '0.02em',
+                            }}>
+                            {isIng ? '★ ' : ''}{cat.label}
+                            {displayScore != null ? ` ${displayScore}%` : ''}
+                            {isCommunity ? '↑' : ''}
+                            <button onClick={(e) => { e.stopPropagation(); voteCategory(l.CodigoExterno, cat.id); }}
+                              title={votes.myVote ? 'Quitar confirmación' : 'Confirmar'}
                               style={{
-                                display: 'inline-flex', alignItems: 'center', gap: 3,
-                                fontSize: '0.63rem', padding: '1px 4px 1px 6px', borderRadius: 10,
-                                background: c.bg, color: c.color,
-                                fontWeight: isIng ? 700 : 400,
-                                border: isIng ? `1px solid ${c.color}` : '1px solid transparent',
-                                letterSpacing: '0.02em',
-                              }}
-                            >
-                              {isIng ? '★ ' : ''}{m.label} {displayScore}%{isCommunity ? '↑' : ''}
-                              <button
-                                onClick={(e) => { e.stopPropagation(); voteCategory(l.CodigoExterno, m.id); }}
-                                title={votes.myVote ? 'Quitar confirmación' : 'Confirmar esta categoría'}
-                                style={{
-                                  marginLeft: 2, padding: '0 3px', borderRadius: 6, cursor: 'pointer', fontSize: '0.6rem',
-                                  border: 'none', lineHeight: 1.4,
-                                  background: votes.myVote ? c.color : 'rgba(255,255,255,0.1)',
-                                  color: votes.myVote ? '#fff' : c.color,
-                                  fontWeight: 700,
-                                }}
-                              >
-                                ✓{votes.confirmed > 0 ? ` ${votes.confirmed}` : ''}
-                              </button>
-                            </span>
+                                marginLeft: 2, padding: '0 3px', borderRadius: 6, cursor: 'pointer',
+                                fontSize: '0.6rem', border: 'none', lineHeight: 1.4, fontWeight: 700,
+                                background: votes.myVote ? c.color : 'rgba(255,255,255,0.1)',
+                                color: votes.myVote ? '#fff' : c.color,
+                              }}>
+                              ✓{votes.confirmed > 0 ? ` ${votes.confirmed}` : ''}
+                            </button>
+                          </span>
+                        );
+                      })}
+
+                      {/* Botón para expandir/colapsar panel de votación completo */}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setExpandedRow(isExpanded ? null : l.CodigoExterno); }}
+                        title={isExpanded ? 'Cerrar panel de categorías' : 'Votar categorías manualmente'}
+                        style={{
+                          fontSize: '0.6rem', padding: '1px 5px', borderRadius: 8, cursor: 'pointer',
+                          border: '1px solid var(--border-color)', background: isExpanded ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
+                          color: isExpanded ? '#fff' : 'var(--text-muted)', lineHeight: 1.6,
+                        }}>
+                        {isExpanded ? '−' : '＋'}
+                      </button>
+                    </div>
+
+                    {/* Panel expandible: votar las 5 categorías */}
+                    {isExpanded && (
+                      <div onClick={(e) => e.stopPropagation()}
+                        style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginTop: 6, padding: '6px 8px', borderRadius: 8, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)' }}>
+                        {CATEGORIAS_INTERES.map(cat => {
+                          const votes = getVotes(l.CodigoExterno, cat.id);
+                          const cs = communityScores[cat.id];
+                          const auto = catMatches.find(m => m.id === cat.id);
+                          const c = CATEGORIA_COLORS[cat.id];
+                          return (
+                            <button key={cat.id}
+                              onClick={() => voteCategory(l.CodigoExterno, cat.id)}
+                              style={{
+                                fontSize: '0.68rem', padding: '3px 10px', borderRadius: 8, cursor: 'pointer',
+                                border: `1px solid ${c.color}`,
+                                background: votes.myVote ? c.color : 'transparent',
+                                color: votes.myVote ? '#fff' : c.color,
+                                fontWeight: votes.myVote ? 700 : 400,
+                              }}>
+                              {cat.label}
+                              {auto ? ` A:${auto.score}%` : ''}
+                              {cs ? ` C:${cs.score}%↑` : ''}
+                              {votes.confirmed > 0 ? ` ✓${votes.confirmed}` : ''}
+                            </button>
                           );
                         })}
+                        <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', alignSelf: 'center', marginLeft: 4 }}>
+                          A=auto · C=comunidad · ✓=votos
+                        </span>
                       </div>
                     )}
                   </td>
