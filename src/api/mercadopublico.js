@@ -136,6 +136,11 @@ class MercadoPublicoAPI {
       const response = await fetch(urlStr);
       this._incrementRequestCount();
 
+      if (response.status === 500) {
+        // MercadoPublico devuelve 500 cuando no hay resultados para esa fecha/filtro
+        return { Cantidad: 0, Listado: [] };
+      }
+
       if (!response.ok) {
         throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
       }
