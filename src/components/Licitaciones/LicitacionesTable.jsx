@@ -192,12 +192,13 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
               const communityScores = getScores(l);
               const isExpanded = expandedRow === l.CodigoExterno;
 
-              // Categorías visibles en modo compacto: auto-detectadas + aprendidas (≥25%) + votadas
+              // Categorías visibles en modo compacto: auto/comunidad/confirmadas, pero NO si el device la rechazó
               const visibleCats = CATEGORIAS_INTERES.filter(cat => {
                 const auto = catMatches.find(m => m.id === cat.id);
                 const cs = communityScores[cat.id];
                 const v = getVotes(l.CodigoExterno, cat.id);
-                return auto || (cs && cs.score >= 25) || v.total > 0;
+                if (v.myVote === false) return false; // rechazada por este device → ocultar
+                return auto || (cs && cs.score >= 25) || v.confirmed > 0;
               });
 
               const descartada = isDescartada(l.CodigoExterno);
@@ -226,10 +227,10 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                           <span key={cat.id}
                             title={cs
                               ? `Comunidad: ${cs.score}% (${cs.sampleSize} ej.)${auto ? ` · Auto: ${auto.score}%` : ''}`
-                              : auto ? `Auto: ${auto.score}%` : `${votes.confirmed} voto(s) manual(es)`}
+                              : auto ? `Auto: ${auto.score}%` : `${votes.confirmed} confirmación(es)`}
                             style={{
-                              display: 'inline-flex', alignItems: 'center', gap: 3,
-                              fontSize: '0.63rem', padding: '1px 4px 1px 6px', borderRadius: 10,
+                              display: 'inline-flex', alignItems: 'center', gap: 2,
+                              fontSize: '0.63rem', padding: '1px 3px 1px 6px', borderRadius: 10,
                               background: c.bg, color: c.color,
                               fontWeight: isIng ? 700 : 400,
                               border: `1px solid ${isCommunity ? c.color : 'transparent'}`,
@@ -238,15 +239,25 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                             {isIng ? '★ ' : ''}{cat.label}
                             {displayScore != null ? ` ${displayScore}%` : ''}
                             {isCommunity ? '↑' : ''}
-                            <button onClick={(e) => { e.stopPropagation(); voteCategory(l.CodigoExterno, cat.id); }}
-                              title={votes.myVote ? 'Quitar confirmación' : 'Confirmar'}
+                            <button onClick={(e) => { e.stopPropagation(); voteCategory(l.CodigoExterno, cat.id, true); }}
+                              title={votes.myVote === true ? 'Quitar confirmación' : `Confirmar${votes.confirmed > 0 ? ` (${votes.confirmed})` : ''}`}
                               style={{
-                                marginLeft: 2, padding: '0 3px', borderRadius: 6, cursor: 'pointer',
+                                marginLeft: 1, padding: '0 3px', borderRadius: 5, cursor: 'pointer',
                                 fontSize: '0.6rem', border: 'none', lineHeight: 1.4, fontWeight: 700,
-                                background: votes.myVote ? c.color : 'rgba(255,255,255,0.1)',
-                                color: votes.myVote ? '#fff' : c.color,
+                                background: votes.myVote === true ? c.color : 'rgba(255,255,255,0.08)',
+                                color: votes.myVote === true ? '#fff' : c.color,
                               }}>
                               ✓{votes.confirmed > 0 ? ` ${votes.confirmed}` : ''}
+                            </button>
+                            <button onClick={(e) => { e.stopPropagation(); voteCategory(l.CodigoExterno, cat.id, false); }}
+                              title={votes.myVote === false ? 'Quitar rechazo' : `No aplica esta categoría${votes.rejected > 0 ? ` (${votes.rejected})` : ''}`}
+                              style={{
+                                padding: '0 3px', borderRadius: 5, cursor: 'pointer',
+                                fontSize: '0.6rem', border: 'none', lineHeight: 1.4, fontWeight: 700,
+                                background: votes.myVote === false ? '#ef4444' : 'rgba(255,255,255,0.08)',
+                                color: votes.myVote === false ? '#fff' : 'rgba(239,68,68,0.5)',
+                              }}>
+                              ✕{votes.rejected > 0 ? ` ${votes.rejected}` : ''}
                             </button>
                           </span>
                         );
@@ -275,24 +286,43 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                           const auto = catMatches.find(m => m.id === cat.id);
                           const c = CATEGORIA_COLORS[cat.id] || _CAT_FALLBACK;
                           return (
-                            <button key={cat.id}
-                              onClick={() => voteCategory(l.CodigoExterno, cat.id)}
-                              style={{
-                                fontSize: '0.68rem', padding: '3px 10px', borderRadius: 8, cursor: 'pointer',
-                                border: `1px solid ${c.color}`,
-                                background: votes.myVote ? c.color : 'transparent',
-                                color: votes.myVote ? '#fff' : c.color,
-                                fontWeight: votes.myVote ? 700 : 400,
+                            <div key={cat.id} style={{ display: 'inline-flex', alignItems: 'center', borderRadius: 8, overflow: 'hidden', border: `1px solid ${votes.myVote === false ? '#ef4444' : c.color}` }}>
+                              <span style={{
+                                fontSize: '0.68rem', padding: '3px 8px',
+                                background: votes.myVote === true ? c.color : votes.myVote === false ? 'rgba(239,68,68,0.08)' : 'transparent',
+                                color: votes.myVote === true ? '#fff' : votes.myVote === false ? '#ef444488' : c.color,
+                                textDecoration: votes.myVote === false ? 'line-through' : 'none',
+                                fontWeight: 500,
                               }}>
-                              {cat.label}
-                              {auto ? ` A:${auto.score}%` : ''}
-                              {cs ? ` C:${cs.score}%↑` : ''}
-                              {votes.confirmed > 0 ? ` ✓${votes.confirmed}` : ''}
-                            </button>
+                                {cat.label}
+                                {auto ? <span style={{ opacity: 0.75 }}> A:{auto.score}%</span> : ''}
+                                {cs ? <span style={{ opacity: 0.75 }}> C:{cs.score}%↑</span> : ''}
+                              </span>
+                              <button onClick={() => voteCategory(l.CodigoExterno, cat.id, true)}
+                                title={votes.myVote === true ? 'Quitar confirmación' : 'Confirmar: sí aplica'}
+                                style={{
+                                  padding: '3px 6px', cursor: 'pointer', fontSize: '0.7rem', border: 'none',
+                                  borderLeft: `1px solid ${c.color}`, fontWeight: 700,
+                                  background: votes.myVote === true ? c.color : 'transparent',
+                                  color: votes.myVote === true ? '#fff' : c.color,
+                                }}>
+                                ✓{votes.confirmed > 0 ? votes.confirmed : ''}
+                              </button>
+                              <button onClick={() => voteCategory(l.CodigoExterno, cat.id, false)}
+                                title={votes.myVote === false ? 'Quitar rechazo' : 'Rechazar: no aplica esta categoría'}
+                                style={{
+                                  padding: '3px 6px', cursor: 'pointer', fontSize: '0.7rem', border: 'none',
+                                  borderLeft: `1px solid #ef444466`, fontWeight: 700,
+                                  background: votes.myVote === false ? '#ef4444' : 'transparent',
+                                  color: votes.myVote === false ? '#fff' : '#ef444488',
+                                }}>
+                                ✕{votes.rejected > 0 ? votes.rejected : ''}
+                              </button>
+                            </div>
                           );
                         })}
                         <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', alignSelf: 'center', marginLeft: 4 }}>
-                          A=auto · C=comunidad · ✓=votos
+                          A=auto · C=comunidad · ✓=confirmar · ✕=no aplica
                         </span>
                       </div>
                     )}

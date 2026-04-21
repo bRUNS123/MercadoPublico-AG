@@ -48,13 +48,13 @@ export function buildPatterns(favoritos, catVotes, descartados = {}) {
     });
   });
 
-  // Fuente 2: cualquier licitación con 2+ votos en la misma categoría
+  // Fuente 2: cualquier licitación con 2+ confirmaciones en la misma categoría
   Object.entries(catVotes).forEach(([key, votes]) => {
     const sep = key.indexOf('__');
     if (sep === -1) return;
     const codigo = key.slice(0, sep);
     const catId = key.slice(sep + 2);
-    const confirmed = Object.values(votes).filter(Boolean).length;
+    const confirmed = Object.values(votes).filter(v => v === true).length;
     if (confirmed < 2) return;
 
     const lic = licitacionByCode[codigo];
@@ -64,7 +64,26 @@ export function buildPatterns(favoritos, catVotes, descartados = {}) {
     _addToPattern(patterns, catId, lic, weight);
   });
 
-  // Fuente 3: patrones negativos desde descartadas (palabras frecuentes → ruido)
+  // Fuente 3 (negativa): licitaciones con 2+ rechazos en una categoría → esas palabras
+  // van a _neg[catId] para penalizar el score comunitario de esa categoría.
+  const negPatterns = {};
+  Object.entries(catVotes).forEach(([key, votes]) => {
+    const sep = key.indexOf('__');
+    if (sep === -1) return;
+    const codigo = key.slice(0, sep);
+    const catId = key.slice(sep + 2);
+    const rejected = Object.values(votes).filter(v => v === false).length;
+    if (rejected < 1) return; // incluso 1 rechazo ya es señal
+
+    const lic = licitacionByCode[codigo];
+    if (!lic) return;
+
+    if (!negPatterns[catId]) negPatterns[catId] = {};
+    const words = extractWords((lic.Nombre || '') + ' ' + (lic.Descripcion || ''));
+    words.forEach(w => { negPatterns[catId][w] = (negPatterns[catId][w] || 0) + rejected; });
+  });
+
+  // Fuente 4: patrones negativos globales desde descartadas (palabras frecuentes → ruido)
   const noise = {};
   Object.values(descartados).forEach(({ licitacion }) => {
     if (!licitacion) return;
@@ -72,7 +91,7 @@ export function buildPatterns(favoritos, catVotes, descartados = {}) {
     words.forEach(w => { noise[w] = (noise[w] || 0) + 1; });
   });
 
-  return { ...patterns, _noise: noise, _noiseCount: Object.keys(descartados).length };
+  return { ...patterns, _neg: negPatterns, _noise: noise, _noiseCount: Object.keys(descartados).length };
 }
 
 function _addToPattern(patterns, catId, licitacion, weight) {
@@ -95,8 +114,9 @@ export function getCommunityScores(licitacion, patterns) {
   const words = new Set(wordArr);
   const noise = patterns._noise || {};
   const noiseCount = patterns._noiseCount || 0;
+  const negPatterns = patterns._neg || {};
 
-  // Factor de penalización: cuántas palabras de esta licitación aparecen frecuentemente en descartadas
+  // Penalización global por palabras en licitaciones descartadas
   let noisePenalty = 1;
   if (noiseCount >= 3 && wordArr.length > 0) {
     const noiseMatches = wordArr.filter(w => (noise[w] || 0) >= 2).length;
@@ -118,8 +138,16 @@ export function getCommunityScores(licitacion, patterns) {
       .reduce((s, [, f]) => s + f, 0);
 
     const rawScore = totalFreq > 0 ? (matchedFreq / totalFreq) * 100 : 0;
-    const score = Math.round(rawScore * noisePenalty);
 
+    // Penalización por categoría: palabras que aparecen en rechazos de esta categoría
+    let catNoisePenalty = 1;
+    const catNeg = negPatterns[catId];
+    if (catNeg && wordArr.length > 0) {
+      const negMatches = wordArr.filter(w => (catNeg[w] || 0) >= 1).length;
+      catNoisePenalty = Math.max(0.1, 1 - (negMatches / wordArr.length) * 2);
+    }
+
+    const score = Math.round(rawScore * noisePenalty * catNoisePenalty);
     if (score > 0) {
       result[catId] = { score, sampleSize: count };
     }

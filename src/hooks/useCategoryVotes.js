@@ -22,39 +22,44 @@ export default function useCategoryVotes() {
     setCatRoomId(room);
 
     const unsubscribe = votesDB.subscribeToVotes(room, (data) => {
-      setCatVotes(data);
+      setCatVotes(data || {});
     });
-
     return () => unsubscribe();
   }, []);
 
-  // Alterna el voto del dispositivo para una licitación+categoría
-  const voteCategory = useCallback(async (codigoExterno, categoriaId) => {
+  // value: true = confirmar, false = rechazar. Si ya tiene ese valor, lo quita (toggle).
+  const voteCategory = useCallback(async (codigoExterno, categoriaId, value = true) => {
     const key = `${codigoExterno}__${categoriaId}`;
     const current = catVotes[key] || {};
-    const alreadyVoted = current[deviceId] === true;
+    const existing = current[deviceId];
 
     const updated = { ...current };
-    if (alreadyVoted) {
-      delete updated[deviceId];
+    if (existing === value) {
+      delete updated[deviceId]; // toggle off
     } else {
-      updated[deviceId] = true;
+      updated[deviceId] = value;
     }
 
     const newCatVotes = { ...catVotes, [key]: updated };
     setCatVotes(newCatVotes);
-    await votesDB.setVotes(catRoomId, newCatVotes);
+    try {
+      await votesDB.setVotes(catRoomId, newCatVotes);
+    } catch (err) {
+      console.error('Error al guardar voto:', err);
+      setCatVotes(catVotes); // revert
+    }
   }, [catVotes, catRoomId, deviceId]);
 
-  // Retorna { confirmed, total, myVote } para una licitación+categoría
+  // { confirmed, rejected, total, myVote }
   const getVotes = useCallback((codigoExterno, categoriaId) => {
     const key = `${codigoExterno}__${categoriaId}`;
     const voteObj = catVotes[key] || {};
     const values = Object.values(voteObj);
     return {
-      confirmed: values.filter(Boolean).length,
-      total: values.length,
-      myVote: voteObj[deviceId] ?? null,
+      confirmed: values.filter(v => v === true).length,
+      rejected:  values.filter(v => v === false).length,
+      total:     values.length,
+      myVote:    voteObj[deviceId] ?? null, // true | false | null
     };
   }, [catVotes, deviceId]);
 
