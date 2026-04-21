@@ -11,10 +11,12 @@ import usePatterns from '../../hooks/usePatterns';
 const CATEGORIA_COLORS = {
   construccion: { color: '#f97316', bg: 'rgba(249,115,22,0.15)' },
   ingenieria:   { color: '#3b82f6', bg: 'rgba(59,130,246,0.2)' },
+  ito_ite:      { color: '#f59e0b', bg: 'rgba(245,158,11,0.15)' },
   mantencion:   { color: '#14b8a6', bg: 'rgba(20,184,166,0.15)' },
   consultoria:  { color: '#a855f7', bg: 'rgba(168,85,247,0.15)' },
   suministros:  { color: '#94a3b8', bg: 'rgba(148,163,184,0.15)' },
 };
+const _CAT_FALLBACK = { color: '#64748b', bg: 'rgba(100,116,139,0.15)' };
 
 export default function LicitacionDetail({ licitacion, onClose }) {
   const [l, setL] = useState(licitacion);
@@ -180,7 +182,7 @@ export default function LicitacionDetail({ licitacion, onClose }) {
                     const autoMatch = autoMatches.find(m => m.id === cat.id);
                     const cs = communityScores[cat.id];
                     const votes = getVotes(l.CodigoExterno, cat.id);
-                    const c = CATEGORIA_COLORS[cat.id];
+                    const c = CATEGORIA_COLORS[cat.id] || _CAT_FALLBACK;
                     const isIng = cat.id === 'ingenieria';
                     const isRelevant = autoMatch || votes.total > 0 || cs;
                     return (
