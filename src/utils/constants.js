@@ -84,15 +84,15 @@ export const CATEGORIAS_INTERES = [
   {
     id: 'construccion',
     label: 'Construcción',
-    keywords: ['construcci', 'edifici', 'paviment', 'demolici', 'urbanizaci', 'vialidad', 'alcantarill', 'infraestructur'],
+    keywords: ['construcci', 'edifici', 'paviment', 'demolici', 'urbanizaci', 'vialidad', 'alcantarill', 'infraestructur', 'hormigon', 'topograf'],
   },
   {
     id: 'ingenieria',
     label: 'Ingeniería Civil',
     keywords: [
-      'ingenier', 'estructur', 'calculo', 'civil', 'topograf', 'geotecn',
+      'ingenier', 'estructur', 'calculo', 'civil', 'geotecn',
       'diseno estructur', 'analisis estructur', 'mecanica suelo',
-      'sismico', 'hormigon', 'acero estructur', 'fundacion',
+      'sismico', 'acero estructur', 'fundacion',
       'patologia estructur', 'reforzamiento', 'memoria de calculo',
     ],
   },
