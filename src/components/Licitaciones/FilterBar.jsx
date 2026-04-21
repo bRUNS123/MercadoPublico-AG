@@ -82,13 +82,21 @@ export default function FilterBar({ filters, onChange }) {
       </div>
 
       <div className="filter-group" style={{ flex: 1, minWidth: 300 }}>
-        <label className="filter-label">Categorías Rápidas</label>
+        <label className="filter-label">
+          Categorías Rápidas
+          {(filters.categoria || []).length > 0 && (
+            <span style={{ marginLeft: 6, fontSize: '0.7rem', background: 'var(--accent-primary)', color: '#fff', borderRadius: 10, padding: '1px 7px', fontWeight: 700 }}>
+              {(filters.categoria || []).length} activa{(filters.categoria || []).length > 1 ? 's' : ''}
+            </span>
+          )}
+        </label>
         <div className="category-chips">
           {CATEGORIAS_INTERES.map(cat => (
             <button
               key={cat.id}
               className={`category-chip ${(filters.categoria || []).includes(cat.id) ? 'active' : ''}`}
               onClick={() => toggleCategory(cat.id)}
+              title={`Filtrar por: ${cat.label}`}
             >
               {cat.label}
             </button>

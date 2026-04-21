@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import api from '../api/mercadopublico';
-import { inputDateToAPI, todayInputFormat, subtractDays, getDatesInRange } from '../utils/formatters';
+import { inputDateToAPI, todayInputFormat, subtractDays, getDatesInRange, norm } from '../utils/formatters';
 import { CATEGORIAS_INTERES } from '../utils/constants';
 
 export default function useLicitaciones() {
@@ -48,22 +48,22 @@ export default function useLicitaciones() {
           });
       }
 
-      // Filtrar por búsqueda de texto
+      // Filtrar por búsqueda de texto (normaliza acentos en ambos lados)
       if (params.busqueda) {
-        const q = params.busqueda.toLowerCase();
+        const q = norm(params.busqueda);
         listado = listado.filter(l =>
-          (l.Nombre || '').toLowerCase().includes(q) ||
-          (l.Descripcion || '').toLowerCase().includes(q)
+          norm(l.Nombre || '').includes(q) ||
+          norm(l.Descripcion || '').includes(q)
         );
       }
 
-      // Filtrar por categorías rápidas (multi-selección, lógica OR entre categorías)
+      // Filtrar por categorías rápidas (multi-selección OR, con normalización de acentos)
       if (params.categoria && params.categoria.length > 0) {
         const cats = CATEGORIAS_INTERES.filter(c => params.categoria.includes(c.id));
         if (cats.length > 0) {
           listado = listado.filter(l => {
-            const text = ((l.Nombre || '') + ' ' + (l.Descripcion || '')).toLowerCase();
-            return cats.some(cat => cat.keywords.some(kw => text.includes(kw)));
+            const text = norm((l.Nombre || '') + ' ' + (l.Descripcion || ''));
+            return cats.some(cat => cat.keywords.some(kw => text.includes(norm(kw))));
           });
         }
       }
