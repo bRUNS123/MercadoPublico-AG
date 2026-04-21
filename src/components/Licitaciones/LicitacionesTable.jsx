@@ -59,7 +59,7 @@ const _CAT_FALLBACK = { color: '#64748b', bg: 'rgba(100,116,139,0.15)' };
 
 const PAGE_SIZE = 15;
 
-export default function LicitacionesTable({ licitaciones = [], onSelect, title = 'Licitaciones' }) {
+export default function LicitacionesTable({ licitaciones = [], onSelect, title = 'Licitaciones', hasActiveFilters = false, onClearFilters, onRefresh }) {
   const [page, setPage] = useState(0);
   const [sortKey, setSortKey] = useState(null);
   const [sortDir, setSortDir] = useState('asc');
@@ -131,7 +131,23 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
         <div className="empty-state">
           <div className="empty-icon">📭</div>
           <div className="empty-title">Sin licitaciones</div>
-          <div className="empty-desc">No se encontraron licitaciones con los filtros seleccionados. Intenta cambiar la fecha o los filtros.</div>
+          <div className="empty-desc">
+            {hasActiveFilters
+              ? 'Los filtros activos no arrojaron resultados. Prueba limpiando las categorías o ampliando el rango de fechas.'
+              : 'No hay licitaciones para el rango de fechas seleccionado. Prueba ampliar las fechas o hacer un refresh.'}
+          </div>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 16, flexWrap: 'wrap' }}>
+            {hasActiveFilters && onClearFilters && (
+              <button className="btn btn-secondary btn-sm" onClick={onClearFilters}>
+                Limpiar filtros
+              </button>
+            )}
+            {onRefresh && (
+              <button className="btn btn-primary btn-sm" onClick={onRefresh}>
+                ↺ Buscar de nuevo
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );

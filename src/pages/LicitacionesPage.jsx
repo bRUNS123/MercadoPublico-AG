@@ -7,39 +7,55 @@ import Loader from '../components/Common/Loader';
 import useLicitaciones from '../hooks/useLicitaciones';
 import useFavoritos from '../hooks/useFavoritos';
 import { todayInputFormat, subtractDays } from '../utils/formatters';
+import api from '../api/mercadopublico';
+
+const FILTERS_DEFAULT = {
+  estado: '',
+  fechaDesde: subtractDays(todayInputFormat(), 7),
+  fechaHasta: todayInputFormat(),
+  busqueda: '',
+  codigo: '',
+  categoria: [],
+  soloFavoritos: false,
+};
 
 export default function LicitacionesPage() {
   const { licitaciones, loading, error, lastUpdate, fetchLicitaciones } = useLicitaciones();
   const { favoritos } = useFavoritos();
   const [selected, setSelected] = useState(null);
-  const [filters, setFilters] = useState({
-    estado: '',
-    fechaDesde: subtractDays(todayInputFormat(), 7),
-    fechaHasta: todayInputFormat(),
-    busqueda: '',
-    codigo: '',
-    categoria: [],
-    soloFavoritos: false,
-  });
+  const [filters, setFilters] = useState(FILTERS_DEFAULT);
 
-  const doFetch = useCallback(() => {
-    // Si estamos en modo "sólo favoritos", no golpeamos la API si no queremos, pero como el hook 
-    // fetchLicitaciones ya maneja el fetching de lo del día, lo dejamos así.
+  const doFetch = useCallback((extraParams = {}) => {
     if (!filters.soloFavoritos) {
-      fetchLicitaciones(filters);
+      fetchLicitaciones({ ...filters, ...extraParams });
     }
   }, [filters, fetchLicitaciones]);
 
+  // Debounce normal para cambios de filtros
   useEffect(() => {
-    const timeout = setTimeout(doFetch, 1200); // Debounce — esperar que el usuario termine de escribir/cambiar fechas
+    const timeout = setTimeout(() => doFetch(), 1200);
     return () => clearTimeout(timeout);
   }, [doFetch]);
+
+  // Refresh manual: limpia caché de API y re-fetcha inmediatamente
+  const handleRefresh = useCallback(() => {
+    api._clearOldCache();
+    fetchLicitaciones({ ...filters, _ts: Date.now() }); // _ts fuerza recalculo del hook
+  }, [filters, fetchLicitaciones]);
+
+  const hasActiveFilters = filters.categoria.length > 0 || filters.busqueda || filters.estado || filters.codigo;
+
+  const subtitle = loading
+    ? 'Buscando licitaciones...'
+    : lastUpdate
+      ? `${licitaciones.length} resultados · ${lastUpdate.toLocaleTimeString('es-CL')}`
+      : 'Sin datos';
 
   return (
     <>
       <Header
         title="Explorar Licitaciones"
-        subtitle={lastUpdate ? `${licitaciones.length} resultados · ${lastUpdate.toLocaleTimeString('es-CL')}` : 'Buscando...'}
+        subtitle={subtitle}
       />
       <div className="app-content page-enter">
         {error && (
@@ -48,17 +64,19 @@ export default function LicitacionesPage() {
           </div>
         )}
 
-        <FilterBar 
-          filters={filters} 
-          onChange={setFilters} 
+        <FilterBar
+          filters={filters}
+          onChange={setFilters}
+          onRefresh={handleRefresh}
+          loading={loading}
         />
 
-        <div style={{ padding: '0 24px', marginBottom: 10 }}>
+        <div style={{ padding: '0 24px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 16 }}>
           <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-            <input 
-              type="checkbox" 
-              checked={filters.soloFavoritos} 
-              onChange={e => setFilters(f => ({ ...f, soloFavoritos: e.target.checked }))} 
+            <input
+              type="checkbox"
+              checked={filters.soloFavoritos}
+              onChange={e => setFilters(f => ({ ...f, soloFavoritos: e.target.checked }))}
             />
             <span>⭐ Mostrar sólo puntuadas</span>
           </label>
@@ -69,12 +87,15 @@ export default function LicitacionesPage() {
         ) : (
           <LicitacionesTable
             licitaciones={
-              filters.soloFavoritos 
+              filters.soloFavoritos
                 ? Object.values(favoritos).map(f => f.licitacion).filter(Boolean)
                 : licitaciones
             }
             onSelect={setSelected}
-            title={filters.soloFavoritos ? "Mis Favoritos" : "Resultados"}
+            title={filters.soloFavoritos ? 'Mis Favoritos' : 'Resultados'}
+            hasActiveFilters={hasActiveFilters}
+            onClearFilters={() => setFilters(FILTERS_DEFAULT)}
+            onRefresh={handleRefresh}
           />
         )}
 

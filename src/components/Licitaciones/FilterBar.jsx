@@ -1,7 +1,7 @@
 import { CATEGORIAS_INTERES } from '../../utils/constants';
 import { todayInputFormat, subtractDays } from '../../utils/formatters';
 
-export default function FilterBar({ filters, onChange }) {
+export default function FilterBar({ filters, onChange, onRefresh, loading }) {
   const handleChange = (key, value) => {
     onChange({ ...filters, [key]: value });
   };
@@ -104,14 +104,26 @@ export default function FilterBar({ filters, onChange }) {
         </div>
       </div>
 
-      <div className="filter-group" style={{ minWidth: 'auto' }}>
+      <div className="filter-group" style={{ minWidth: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
         <label className="filter-label">&nbsp;</label>
-        <button
-          className="btn btn-secondary btn-sm"
-          onClick={() => onChange({ estado: '', fechaDesde: subtractDays(today, 7), fechaHasta: today, busqueda: '', codigo: '', categoria: [] })}
-        >
-          Limpiar
-        </button>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button
+            className="btn btn-secondary btn-sm"
+            onClick={() => onChange({ estado: '', fechaDesde: subtractDays(today, 7), fechaHasta: today, busqueda: '', codigo: '', categoria: [], soloFavoritos: false })}
+          >
+            Limpiar
+          </button>
+          {onRefresh && (
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={onRefresh}
+              disabled={loading}
+              title="Limpiar caché y buscar de nuevo"
+            >
+              {loading ? '...' : '↺ Refresh'}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
