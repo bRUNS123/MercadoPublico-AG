@@ -79,12 +79,48 @@ export const UNIDADES_TIEMPO = {
 };
 
 // ─── Categorías de interés para filtro rápido (Construcción / Ingeniería) ───
+// Keywords sin acentos — el matching normaliza ambos lados antes de comparar
 export const CATEGORIAS_INTERES = [
-  { id: 'construccion', label: 'Construcción', keywords: ['construcci', 'obra', 'edifici', 'paviment', 'demolici'] },
-  { id: 'ingenieria', label: 'Ingeniería Civil', keywords: ['ingenier', 'estructur', 'cálculo', 'civil', 'topograf', 'geotecn'] },
-  { id: 'mantencion', label: 'Mantención', keywords: ['mantenci', 'mantenimi', 'reparaci', 'mejorami'] },
-  { id: 'consultoria', label: 'Consultoría', keywords: ['consultor', 'asesor', 'estudio', 'informe'] },
-  { id: 'suministros', label: 'Suministros', keywords: ['suministr', 'material', 'insumo', 'herramient', 'equip'] },
+  {
+    id: 'construccion',
+    label: 'Construcción',
+    keywords: ['construcci', 'edifici', 'paviment', 'demolici', 'urbanizaci', 'vialidad', 'alcantarill', 'infraestructur'],
+  },
+  {
+    id: 'ingenieria',
+    label: 'Ingeniería Civil',
+    keywords: [
+      'ingenier', 'estructur', 'calculo', 'civil', 'topograf', 'geotecn',
+      'diseno estructur', 'analisis estructur', 'mecanica suelo',
+      'sismico', 'hormigon', 'acero estructur', 'fundacion',
+      'patologia estructur', 'reforzamiento', 'memoria de calculo',
+    ],
+  },
+  {
+    id: 'ito_ite',
+    label: 'ITO / ITE',
+    keywords: [
+      'aito', 'inspector tecnico', 'inspeccion tecnica',
+      'inspeccion de obra', 'asesoria ito', 'apoyo ito',
+      'supervision de obra', 'inspeccion tecnica de edificio',
+      'asistencia tecnica de obra',
+    ],
+  },
+  {
+    id: 'mantencion',
+    label: 'Mantención',
+    keywords: ['mantenci', 'mantenimi', 'reparaci', 'mejorami', 'conservaci', 'rehabilitaci'],
+  },
+  {
+    id: 'consultoria',
+    label: 'Consultoría',
+    keywords: ['consultor', 'asesor', 'estudio', 'informe', 'diagnostico', 'levantamiento'],
+  },
+  {
+    id: 'suministros',
+    label: 'Suministros',
+    keywords: ['suministr', 'material', 'insumo', 'herramient', 'equip'],
+  },
 ];
 
 // ─── API Base URL ───

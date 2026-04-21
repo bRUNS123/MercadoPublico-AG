@@ -232,15 +232,18 @@ export function getDatesInRange(desde, hasta) {
   return dates;
 }
 
+const _norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
 /**
  * Retorna las categorías que coinciden con una licitación y su score de coincidencia.
  * Score = (keywords encontradas / total keywords) * 100
+ * Normaliza acentos en texto y keywords antes de comparar.
  */
 export function getCategoryMatches(licitacion) {
-  const text = ((licitacion.Nombre || '') + ' ' + (licitacion.Descripcion || '')).toLowerCase();
+  const text = _norm((licitacion.Nombre || '') + ' ' + (licitacion.Descripcion || ''));
   return CATEGORIAS_INTERES
     .map(cat => {
-      const matched = cat.keywords.filter(kw => text.includes(kw)).length;
+      const matched = cat.keywords.filter(kw => text.includes(_norm(kw))).length;
       if (matched === 0) return null;
       return { id: cat.id, label: cat.label, score: Math.round((matched / cat.keywords.length) * 100) };
     })
