@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { votesDB } from '../api/firebase';
 import { buildPatterns, getCommunityScores } from '../utils/patterns';
 
-export default function usePatterns(favoritos, catVotes) {
+export default function usePatterns(favoritos, catVotes, descartados = {}) {
   const [patterns, setPatterns] = useState({});
   const [roomId, setRoomId] = useState('public');
   const lastKeyRef = useRef('');
@@ -28,12 +28,13 @@ export default function usePatterns(favoritos, catVotes) {
       .sort()
       .join(',');
     const catKeys = Object.keys(catVotes).sort().join(',');
-    const dataKey = goodKeys + '||' + catKeys;
+    const descKeys = Object.keys(descartados).sort().join(',');
+    const dataKey = goodKeys + '||' + catKeys + '||' + descKeys;
 
-    if (dataKey === lastKeyRef.current || !goodKeys) return;
+    if (dataKey === lastKeyRef.current || (!goodKeys && !descKeys)) return;
     lastKeyRef.current = dataKey;
 
-    const newPatterns = buildPatterns(favoritos, catVotes);
+    const newPatterns = buildPatterns(favoritos, catVotes, descartados);
     if (Object.keys(newPatterns).length === 0) return;
 
     setPatterns(newPatterns);

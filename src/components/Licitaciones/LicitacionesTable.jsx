@@ -6,6 +6,7 @@ import api from '../../api/mercadopublico';
 import useFavoritos from '../../hooks/useFavoritos';
 import useCategoryVotes from '../../hooks/useCategoryVotes';
 import usePatterns from '../../hooks/usePatterns';
+import useDescartados from '../../hooks/useDescartados';
 
 const MontoInline = ({ licitacion }) => {
   const [detail, setDetail] = useState(null);
@@ -63,16 +64,18 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
   const [sortKey, setSortKey] = useState(null);
   const [sortDir, setSortDir] = useState('asc');
   const [expandedRow, setExpandedRow] = useState(null);
+  const [showDescartadas, setShowDescartadas] = useState(false);
   const { favoritos, rateLicitacion, isCollabActive, roomId } = useFavoritos();
   const { catVotes, voteCategory, getVotes } = useCategoryVotes();
-  const { getScores } = usePatterns(favoritos, catVotes);
+  const { descartados, descartarLicitacion, isDescartada } = useDescartados();
+  const { getScores } = usePatterns(favoritos, catVotes, descartados);
 
   const sorted = useMemo(() => {
-    if (!sortKey) return licitaciones;
-    return [...licitaciones].sort((a, b) => {
+    const base = showDescartadas ? licitaciones : licitaciones.filter(l => !isDescartada(l.CodigoExterno));
+    if (!sortKey) return base;
+    return [...base].sort((a, b) => {
       let va, vb;
       if (sortKey === '_monto') {
-        // Sort by CLP-converted value
         va = getMontoInteligente(a).clpValue;
         vb = getMontoInteligente(b).clpValue;
       } else {
@@ -87,7 +90,12 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
       if (va > vb) return sortDir === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [licitaciones, sortKey, sortDir]);
+  }, [licitaciones, sortKey, sortDir, showDescartadas, descartados]);
+
+  const descartadasCount = useMemo(
+    () => licitaciones.filter(l => isDescartada(l.CodigoExterno)).length,
+    [licitaciones, descartados]
+  );
 
   const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
   const paged = sorted.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
@@ -134,7 +142,20 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
       <div className="table-header" style={{ flexWrap: 'wrap', gap: 16 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div className="table-title">{title}</div>
-          <div className="table-count">{licitaciones.length} resultados</div>
+          <div className="table-count">{sorted.length} resultados</div>
+          {descartadasCount > 0 && (
+            <button
+              onClick={() => setShowDescartadas(s => !s)}
+              style={{
+                fontSize: '0.75rem', padding: '2px 10px', borderRadius: 10, cursor: 'pointer',
+                border: '1px solid var(--border-color)',
+                background: showDescartadas ? 'rgba(239,68,68,0.15)' : 'var(--bg-tertiary)',
+                color: showDescartadas ? '#ef4444' : 'var(--text-muted)',
+              }}
+            >
+              {showDescartadas ? '✕ Ocultar' : `✕ ${descartadasCount} descartada${descartadasCount > 1 ? 's' : ''}`}
+            </button>
+          )}
         </div>
         <div style={{ fontSize: '0.85rem', color: isCollabActive ? 'var(--success)' : 'var(--text-muted)' }}>
            {isCollabActive ? '🟢 Sincronizado (Sala: ' + roomId + ')' : '📴 Modo Local'}
@@ -161,7 +182,7 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                 Monto (CLP){getSortIndicator('_monto')}
               </th>
               <th style={{ textAlign: 'center', width: 60 }}>Pts.</th>
-              <th></th>
+              <th style={{ textAlign: 'center', width: 36 }} title="Descartar licitación">✕</th>
             </tr>
           </thead>
           <tbody>
@@ -179,8 +200,14 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                 return auto || (cs && cs.score >= 25) || v.total > 0;
               });
 
+              const descartada = isDescartada(l.CodigoExterno);
               return (
-                <tr key={l.CodigoExterno || i} className="row-clickable" onClick={() => onSelect?.(l)}>
+                <tr
+                  key={l.CodigoExterno || i}
+                  className="row-clickable"
+                  onClick={() => onSelect?.(l)}
+                  style={descartada ? { opacity: 0.4, textDecoration: 'line-through' } : undefined}
+                >
                   <td className="td-code">{l.CodigoExterno || '—'}</td>
                   <td className="td-name">
                     {truncate(l.Nombre, 65)}
@@ -296,7 +323,22 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                       ))}
                     </select>
                   </td>
-                  <td><span className="view-link">Ver</span></td>
+                  <td onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); descartarLicitacion(l); }}
+                      title={isDescartada(l.CodigoExterno) ? 'Restaurar licitación' : 'Descartar — no sirve'}
+                      style={{
+                        width: 26, height: 26, borderRadius: '50%', cursor: 'pointer',
+                        border: `1px solid ${isDescartada(l.CodigoExterno) ? '#ef4444' : 'var(--border-color)'}`,
+                        background: isDescartada(l.CodigoExterno) ? 'rgba(239,68,68,0.15)' : 'transparent',
+                        color: isDescartada(l.CodigoExterno) ? '#ef4444' : 'var(--text-muted)',
+                        fontSize: '0.75rem', fontWeight: 700, lineHeight: 1,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto',
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </td>
                 </tr>
               );
             })}
