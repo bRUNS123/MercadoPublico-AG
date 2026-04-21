@@ -1,18 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
-import { createRoomDB } from '../api/firebase';
-
-const descDB = createRoomDB('desc');
+import { votesDB } from '../api/firebase';
 
 export default function useDescartados() {
   const [descartados, setDescartados] = useState({});
-  const [roomId, setRoomId] = useState('public');
+  const [roomId, setRoomId] = useState('desc_public');
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
     const sala = urlParams.get('sala') || localStorage.getItem('mp_collab_room') || 'public';
-    setRoomId(sala);
+    const room = `desc_${sala}`;
+    setRoomId(room);
 
-    const unsubscribe = descDB.subscribeToVotes(sala, (data) => {
+    const unsubscribe = votesDB.subscribeToVotes(room, (data) => {
       setDescartados(data || {});
     });
     return () => unsubscribe();
@@ -40,7 +39,7 @@ export default function useDescartados() {
 
     setDescartados(next);
     try {
-      await descDB.setVotes(roomId, next);
+      await votesDB.setVotes(roomId, next);
     } catch (err) {
       console.error('Error al descartar:', err);
       setDescartados(prev);

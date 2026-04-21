@@ -24,47 +24,43 @@ if (firebaseConfig.apiKey && firebaseConfig.apiKey !== 'tu-api-key') {
     console.error("Error al inicializar Firebase:", error);
   }
 } else {
-  console.log("📁 Firebase no configurado. Se usará LocalStorage para los favoritos.");
+  console.log("📁 Firebase no configurado. Se usará LocalStorage.");
 }
 
-// Factory: crea una instancia de DB para un namespace (ej: 'votes', 'desc', 'cat')
-export function createRoomDB(prefix) {
-  return {
-    isActive: () => isFirebaseActive,
+// Interfaz única — abstrae Firestore o LocalStorage.
+// roomId es la clave de partición: 'public', 'cat_public', 'desc_public', etc.
+// Cada namespace usa un roomId distinto para no colisionar en el mismo doc de Firestore.
+export const votesDB = {
+  isActive: () => isFirebaseActive,
 
-    subscribeToVotes: (roomId, callback) => {
-      const key = `${prefix}_${roomId}`;
-      const lsKey = `ls_${key}`;
-      if (isFirebaseActive) {
-        const roomRef = doc(db, "rooms", key);
-        return onSnapshot(roomRef, (snap) => callback(snap.exists() ? snap.data() : {}));
-      } else {
-        // Migración: si existe la clave legacy (votes_roomId) y no la nueva, moverla
-        const legacy = localStorage.getItem(key);
-        if (legacy && !localStorage.getItem(lsKey)) {
-          localStorage.setItem(lsKey, legacy);
-        }
-        const localData = JSON.parse(localStorage.getItem(lsKey) || '{}');
-        callback(localData);
-        const handleStorage = (e) => {
-          if (e.key === lsKey) callback(JSON.parse(e.newValue || '{}'));
-        };
-        window.addEventListener('storage', handleStorage);
-        return () => window.removeEventListener('storage', handleStorage);
+  subscribeToVotes: (roomId, callback) => {
+    if (isFirebaseActive) {
+      const roomRef = doc(db, "rooms", roomId);
+      return onSnapshot(roomRef, (snap) => callback(snap.exists() ? snap.data() : {}));
+    } else {
+      const lsKey = `mp_db_${roomId}`;
+      // Migración de claves legacy (votes_roomId → mp_db_roomId)
+      const legacy = localStorage.getItem(`votes_${roomId}`);
+      if (legacy && !localStorage.getItem(lsKey)) {
+        localStorage.setItem(lsKey, legacy);
       }
-    },
-
-    setVotes: async (roomId, data) => {
-      const key = `${prefix}_${roomId}`;
-      const lsKey = `ls_${key}`;
-      if (isFirebaseActive) {
-        await setDoc(doc(db, "rooms", key), data, { merge: true });
-      } else {
-        localStorage.setItem(lsKey, JSON.stringify(data));
-        window.dispatchEvent(new StorageEvent('storage', { key: lsKey, newValue: JSON.stringify(data) }));
-      }
+      const localData = JSON.parse(localStorage.getItem(lsKey) || '{}');
+      callback(localData);
+      const handleStorage = (e) => {
+        if (e.key === lsKey) callback(JSON.parse(e.newValue || '{}'));
+      };
+      window.addEventListener('storage', handleStorage);
+      return () => window.removeEventListener('storage', handleStorage);
     }
-  };
-}
+  },
 
-export const votesDB = createRoomDB('votes');
+  setVotes: async (roomId, data) => {
+    if (isFirebaseActive) {
+      await setDoc(doc(db, "rooms", roomId), data, { merge: true });
+    } else {
+      const lsKey = `mp_db_${roomId}`;
+      localStorage.setItem(lsKey, JSON.stringify(data));
+      window.dispatchEvent(new StorageEvent('storage', { key: lsKey, newValue: JSON.stringify(data) }));
+    }
+  }
+};
