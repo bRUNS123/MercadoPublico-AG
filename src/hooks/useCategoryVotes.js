@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { votesDB } from '../api/firebase';
 
 const getDeviceId = () => {
@@ -14,6 +14,9 @@ export default function useCategoryVotes() {
   const [catVotes, setCatVotes] = useState({});
   const [catRoomId, setCatRoomId] = useState('cat_public');
   const deviceId = getDeviceId();
+  // Mientras hay un write local pendiente, ignoramos callbacks de Firebase/storage
+  // para que el optimistic update no sea sobreescrito por datos "viejos" del servidor.
+  const localPendingRef = useRef(false);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
@@ -22,13 +25,14 @@ export default function useCategoryVotes() {
     setCatRoomId(room);
 
     const unsubscribe = votesDB.subscribeToVotes(room, (data) => {
+      if (localPendingRef.current) return; // ignorar mientras hay write local en vuelo
       setCatVotes(data || {});
     });
     return () => unsubscribe();
   }, []);
 
   // value: true = confirmar, false = rechazar. Si ya tiene ese valor, lo quita (toggle).
-  const voteCategory = useCallback(async (codigoExterno, categoriaId, value = true) => {
+  const voteCategory = useCallback((codigoExterno, categoriaId, value = true) => {
     const key = `${codigoExterno}__${categoriaId}`;
     const current = catVotes[key] || {};
     const existing = current[deviceId];
@@ -41,13 +45,19 @@ export default function useCategoryVotes() {
     }
 
     const newCatVotes = { ...catVotes, [key]: updated };
+
+    // Actualización inmediata — nunca revertir aunque falle el guardado
+    localPendingRef.current = true;
     setCatVotes(newCatVotes);
-    try {
-      await votesDB.setVotes(catRoomId, newCatVotes);
-    } catch (err) {
-      console.error('Error al guardar voto:', err);
-      setCatVotes(catVotes); // revert
-    }
+
+    // Guardar en background; liberar el bloqueo cuando el servidor confirme
+    votesDB.setVotes(catRoomId, newCatVotes)
+      .then(() => { localPendingRef.current = false; })
+      .catch(err => {
+        console.error('Error al guardar voto de categoría:', err);
+        localPendingRef.current = false;
+        // No revertimos: el usuario ya vio el cambio y el voto estará en próxima sesión si usamos localStorage
+      });
   }, [catVotes, catRoomId, deviceId]);
 
   // { confirmed, rejected, total, myVote }

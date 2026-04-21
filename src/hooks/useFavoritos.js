@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { votesDB } from '../api/firebase';
 
 export default function useFavoritos() {
   const [favoritos, setFavoritos] = useState({});
   const [isCollabActive, setIsCollabActive] = useState(false);
   const [roomId, setRoomId] = useState('public');
+  const localPendingRef = useRef(false);
 
   useEffect(() => {
     // Verificar si hay una sala compartida en la URL (ej: /#/?sala=miempresa)
@@ -16,7 +17,7 @@ export default function useFavoritos() {
 
     // Se suscribe a los cambios (Firebase o LocalStorage)
     const unsubscribe = votesDB.subscribeToVotes(sala, (data) => {
-      // Si el almacenamiento principal viene vacío, intentar recuperar del backup
+      if (localPendingRef.current) return; // ignorar mientras hay write local en vuelo
       if (!data || Object.keys(data).length === 0) {
         const backup = localStorage.getItem('mp_votes_backup');
         if (backup) {
@@ -53,15 +54,17 @@ export default function useFavoritos() {
       };
     }
 
+    localPendingRef.current = true;
     setFavoritos(newFavoritos);
-    try {
-      await votesDB.setVotes(roomId, newFavoritos);
-      // Guardar siempre en localStorage como respaldo, independiente de Firebase
-      localStorage.setItem('mp_votes_backup', JSON.stringify(newFavoritos));
-    } catch (err) {
-      console.error('Error al guardar puntuación:', err);
-      setFavoritos(previous); // revertir si falló
-    }
+    votesDB.setVotes(roomId, newFavoritos)
+      .then(() => {
+        localStorage.setItem('mp_votes_backup', JSON.stringify(newFavoritos));
+        localPendingRef.current = false;
+      })
+      .catch(err => {
+        console.error('Error al guardar puntuación:', err);
+        localPendingRef.current = false;
+      });
   }, [favoritos, roomId]);
 
   const changeRoom = (newRoom) => {
