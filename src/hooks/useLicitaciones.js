@@ -1,8 +1,9 @@
 import { useState, useCallback } from 'react';
 import api from '../api/mercadopublico';
-import { inputDateToAPI, todayInputFormat, subtractDays, getDatesInRange, norm } from '../utils/formatters';
-import { CATEGORIAS_INTERES } from '../utils/constants';
+import { inputDateToAPI, todayInputFormat, subtractDays, getDatesInRange } from '../utils/formatters';
 
+// Solo maneja la obtención de datos desde la API.
+// Los filtros de categoria y busqueda se aplican en el componente (client-side, instantáneo).
 export default function useLicitaciones() {
   const [licitaciones, setLicitaciones] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,13 +24,11 @@ export default function useLicitaciones() {
         const data = await api.getLicitacionesActivas();
         listado = data?.Listado || [];
       } else {
-        // Rango de fechas: fetch cada día en paralelo y combinar
         const today = todayInputFormat();
         const desde = params.fechaDesde || subtractDays(today, 7);
         const hasta = params.fechaHasta || today;
         const dates = getDatesInRange(desde, hasta);
 
-        // Para rangos: solo página 1 por día para no saturar la API
         const results = await Promise.all(
           dates.map(d =>
             api.getLicitacionesPorFechaSimple(inputDateToAPI(d), params.estado || null)
@@ -37,7 +36,6 @@ export default function useLicitaciones() {
           )
         );
 
-        // Combinar y deduplicar por CodigoExterno
         const seen = new Set();
         listado = results
           .flatMap(r => r?.Listado || [])
@@ -46,26 +44,6 @@ export default function useLicitaciones() {
             seen.add(l.CodigoExterno);
             return true;
           });
-      }
-
-      // Filtrar por búsqueda de texto (normaliza acentos en ambos lados)
-      if (params.busqueda) {
-        const q = norm(params.busqueda);
-        listado = listado.filter(l =>
-          norm(l.Nombre || '').includes(q) ||
-          norm(l.Descripcion || '').includes(q)
-        );
-      }
-
-      // Filtrar por categorías rápidas (multi-selección OR, con normalización de acentos)
-      if (params.categoria && params.categoria.length > 0) {
-        const cats = CATEGORIAS_INTERES.filter(c => params.categoria.includes(c.id));
-        if (cats.length > 0) {
-          listado = listado.filter(l => {
-            const text = norm((l.Nombre || '') + ' ' + (l.Descripcion || ''));
-            return cats.some(cat => cat.keywords.some(kw => text.includes(norm(kw))));
-          });
-        }
       }
 
       setLicitaciones(listado);
