@@ -78,6 +78,9 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
       if (sortKey === '_monto') {
         va = getMontoInteligente(a).clpValue;
         vb = getMontoInteligente(b).clpValue;
+      } else if (sortKey === '_rating') {
+        va = favoritos[a.CodigoExterno]?.rating ?? 0;
+        vb = favoritos[b.CodigoExterno]?.rating ?? 0;
       } else {
         va = a[sortKey];
         vb = b[sortKey];
@@ -90,7 +93,7 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
       if (va > vb) return sortDir === 'asc' ? 1 : -1;
       return 0;
     });
-  }, [licitaciones, sortKey, sortDir, showDescartadas, descartados]);
+  }, [licitaciones, sortKey, sortDir, showDescartadas, descartados, favoritos]);
 
   const descartadasCount = useMemo(
     () => licitaciones.filter(l => isDescartada(l.CodigoExterno)).length,
@@ -159,6 +162,19 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div className="table-title">{title}</div>
           <div className="table-count">{sorted.length} resultados</div>
+          <button
+            onClick={() => { setSortKey('_rating'); setSortDir('desc'); setPage(0); }}
+            style={{
+              fontSize: '0.72rem', padding: '2px 10px', borderRadius: 10, cursor: 'pointer',
+              border: '1px solid var(--border-color)',
+              background: sortKey === '_rating' ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
+              color: sortKey === '_rating' ? '#fff' : 'var(--text-muted)',
+              fontWeight: sortKey === '_rating' ? 700 : 400,
+            }}
+            title="Ordenar por puntuación descendente"
+          >
+            ⭐ Mejor puntuadas
+          </button>
           {descartadasCount > 0 && (
             <button
               onClick={() => setShowDescartadas(s => !s)}
@@ -197,7 +213,9 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
               <th onClick={() => handleSort('_monto')} className={sortKey === '_monto' ? 'sorted' : ''}>
                 Monto (CLP){getSortIndicator('_monto')}
               </th>
-              <th style={{ textAlign: 'center', width: 60 }}>Pts.</th>
+              <th onClick={() => handleSort('_rating')} className={sortKey === '_rating' ? 'sorted' : ''} style={{ textAlign: 'center', width: 60, cursor: 'pointer' }}>
+                Pts.{getSortIndicator('_rating')}
+              </th>
               <th style={{ textAlign: 'center', width: 36 }} title="Descartar licitación">✕</th>
             </tr>
           </thead>
