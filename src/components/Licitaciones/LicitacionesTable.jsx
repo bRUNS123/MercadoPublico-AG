@@ -163,7 +163,7 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
           <div className="table-title">{title}</div>
           <div className="table-count">{sorted.length} resultados</div>
           <button
-            onClick={() => { setSortKey('_rating'); setSortDir('desc'); setPage(0); }}
+            onClick={() => { setSortKey(k => k === '_rating' ? null : '_rating'); setSortDir('desc'); setPage(0); }}
             style={{
               fontSize: '0.72rem', padding: '2px 10px', borderRadius: 10, cursor: 'pointer',
               border: '1px solid var(--border-color)',
