@@ -108,9 +108,27 @@ La sección "Compras Ágiles" consume la nueva [API Compra Ágil v2 Beta](https:
 > `Access-Control-Allow-Origin`. En **desarrollo local** (`npm run dev`) esto no es un problema
 > porque Vite hace de proxy (`/api-ca` → `https://api2.mercadopublico.cl`, configurado en
 > `vite.config.js`). En **producción (GitHub Pages)**, al ser un sitio estático sin backend,
-> las consultas directas al navegador pueden ser bloqueadas por CORS hasta que ChileCompra
-> habilite CORS o se agregue un proxy de producción (p. ej. un Cloudflare Worker) — esto
-> queda como mejora futura, no incluida en esta versión.
+> las consultas directas al navegador son bloqueadas por CORS — para resolverlo hay un
+> proxy gratuito listo para desplegar (ver siguiente sección).
+
+### 🌐 Proxy CORS para producción (Cloudflare Workers, gratis)
+
+El archivo [`cloudflare-worker/compra-agil-proxy.js`](cloudflare-worker/compra-agil-proxy.js)
+es un Worker que reenvía las peticiones a `api2.mercadopublico.cl` agregando las cabeceras
+CORS necesarias. Plan gratuito de Cloudflare: 100.000 peticiones/día, sin tarjeta de crédito.
+
+1. Crea una cuenta gratis en [dash.cloudflare.com/sign-up](https://dash.cloudflare.com/sign-up).
+2. **Workers & Pages → Create → Create Worker**, dale un nombre (ej. `mp-compra-agil-proxy`).
+3. **Edit code** → reemplaza el contenido por el de `cloudflare-worker/compra-agil-proxy.js` → **Deploy**.
+4. Copia la URL pública (`https://<nombre>.<tu-subdominio>.workers.dev`).
+5. En `.env.local`, define:
+   ```bash
+   VITE_COMPRA_AGIL_PROXY_URL=https://<nombre>.<tu-subdominio>.workers.dev
+   ```
+6. Vuelve a correr `npm run deploy` para reconstruir y publicar con el proxy configurado.
+
+> El worker restringe `Access-Control-Allow-Origin` a `https://bruns123.github.io`. Si
+> publicas el sitio en otro dominio/usuario, edita `ALLOWED_ORIGIN` en el worker.
 
 ## 🚢 Deploy a GitHub Pages
 

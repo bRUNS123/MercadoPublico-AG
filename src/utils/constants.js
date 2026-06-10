@@ -162,6 +162,9 @@ export const REGIONES = {
 };
 
 // ─── API Base URL — Compra Ágil v2 (Beta) ───
+// En dev usa el proxy de Vite (sin CORS). En producción usa el proxy de Cloudflare Worker
+// (VITE_COMPRA_AGIL_PROXY_URL, ver cloudflare-worker/) si está configurado; si no, intenta
+// la URL directa (fallará por CORS hasta que se despliegue el proxy).
 export const API_BASE_URL_COMPRA_AGIL = import.meta.env.DEV
   ? '/api-ca'
-  : 'https://api2.mercadopublico.cl';
+  : (import.meta.env.VITE_COMPRA_AGIL_PROXY_URL || 'https://api2.mercadopublico.cl');
