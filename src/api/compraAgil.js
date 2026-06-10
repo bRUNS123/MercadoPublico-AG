@@ -174,7 +174,7 @@ class CompraAgilAPI {
     const t = ticket || this.ticket;
     if (!t) return { ok: false, ticketOk: false, serverOk: false, error: 'Sin ticket configurado.' };
 
-    const url = `${this.baseUrl}/v2/compra-agil?estado=publicada&tamano_pagina=1`;
+    const url = `${this.baseUrl}/v2/compra-agil?estado=publicada&tamano_pagina=10`;
     try {
       const res = await fetch(url, { headers: { ticket: t } });
       let body = null;
