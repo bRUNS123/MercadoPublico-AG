@@ -1,9 +1,12 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { votesDB } from '../api/firebase';
 
 export default function useDescartados() {
   const [descartados, setDescartados] = useState({});
   const [roomId, setRoomId] = useState('desc_public');
+  const localPendingRef = useRef(false);
+  const descartadosRef = useRef({});
+  descartadosRef.current = descartados;
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
@@ -12,15 +15,16 @@ export default function useDescartados() {
     setRoomId(room);
 
     const unsubscribe = votesDB.subscribeToVotes(room, (data) => {
+      if (localPendingRef.current) return;
       setDescartados(data || {});
     });
     return () => unsubscribe();
   }, []);
 
-  const descartarLicitacion = useCallback(async (licitacion) => {
+  const descartarLicitacion = useCallback((licitacion) => {
     const codigo = licitacion.CodigoExterno;
-    const prev = { ...descartados };
-    const next = { ...descartados };
+    // Leer del ref para evitar stale closure
+    const next = { ...descartadosRef.current };
 
     if (next[codigo]) {
       delete next[codigo];
@@ -37,16 +41,17 @@ export default function useDescartados() {
       };
     }
 
+    descartadosRef.current = next;
+    localPendingRef.current = true;
     setDescartados(next);
-    try {
-      await votesDB.setVotes(roomId, next);
-    } catch (err) {
-      console.error('Error al descartar:', err);
-      setDescartados(prev);
-    }
-  }, [descartados, roomId]);
 
-  const isDescartada = useCallback((codigo) => !!descartados[codigo], [descartados]);
+    // replaceVotes reemplaza el doc completo — necesario para que los borrados (restaurar) funcionen en Firestore
+    votesDB.replaceVotes(roomId, next)
+      .then(() => { localPendingRef.current = false; })
+      .catch(err => { console.error('Error al descartar:', err); localPendingRef.current = false; });
+  }, [roomId]);
+
+  const isDescartada = useCallback((codigo) => !!descartadosRef.current[codigo], []);
 
   return { descartados, descartarLicitacion, isDescartada };
 }

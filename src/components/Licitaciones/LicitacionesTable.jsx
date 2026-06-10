@@ -3,7 +3,6 @@ import { CATEGORIAS_INTERES } from '../../utils/constants';
 import StatusBadge from '../Common/StatusBadge';
 import { getMontoInteligente, formatFechaCorta, diasRestantes, truncate, getCategoryMatches } from '../../utils/formatters';
 import api from '../../api/mercadopublico';
-import useFavoritos from '../../hooks/useFavoritos';
 import useCategoryVotes from '../../hooks/useCategoryVotes';
 import usePatterns from '../../hooks/usePatterns';
 import useDescartados from '../../hooks/useDescartados';
@@ -59,13 +58,12 @@ const _CAT_FALLBACK = { color: '#64748b', bg: 'rgba(100,116,139,0.15)' };
 
 const PAGE_SIZE = 15;
 
-export default function LicitacionesTable({ licitaciones = [], onSelect, title = 'Licitaciones', hasActiveFilters = false, onClearFilters, onRefresh }) {
+export default function LicitacionesTable({ licitaciones = [], onSelect, title = 'Licitaciones', hasActiveFilters = false, onClearFilters, onRefresh, favoritos = {}, rateLicitacion, isCollabActive = false, roomId = 'public' }) {
   const [page, setPage] = useState(0);
   const [sortKey, setSortKey] = useState(null);
   const [sortDir, setSortDir] = useState('asc');
   const [expandedRow, setExpandedRow] = useState(null);
   const [showDescartadas, setShowDescartadas] = useState(false);
-  const { favoritos, rateLicitacion, isCollabActive, roomId } = useFavoritos();
   const { catVotes, voteCategory, getVotes } = useCategoryVotes();
   const { descartados, descartarLicitacion, isDescartada } = useDescartados();
   const { getScores } = usePatterns(favoritos, catVotes, descartados);

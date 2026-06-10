@@ -6,6 +6,18 @@ export const ESTADOS = {
   8: { nombre: 'Adjudicada', color: '#3b82f6', bg: 'rgba(59,130,246,0.15)' },
   18: { nombre: 'Revocada', color: '#ef4444', bg: 'rgba(239,68,68,0.15)' },
   19: { nombre: 'Suspendida', color: '#f97316', bg: 'rgba(249,115,22,0.15)' },
+  20: { nombre: 'Cancelada', color: '#ef4444', bg: 'rgba(239,68,68,0.15)' },
+};
+
+// ─── Estados de Compra Ágil → mapeo a códigos numéricos de ESTADOS ───
+// Permite reutilizar StatusBadge sin cambios para los items de Compra Ágil
+export const ESTADOS_COMPRA_AGIL = {
+  publicada: 5,              // Publicada
+  cerrada: 6,                // Cerrada
+  desierta: 7,                // Desierta
+  proveedor_seleccionado: 8, // Adjudicada
+  oc_emitida: 8,             // Adjudicada (OC emitida)
+  cancelada: 20,             // Cancelada
 };
 
 export const ESTADO_NOMBRES = {
@@ -44,6 +56,7 @@ export const TIPOS = {
   R1: 'OC menor a 3 UTM',
   CA: 'OC sin resolución',
   SE: 'OC sin emisión automática',
+  AG: 'Compra Ágil',
 };
 
 // ─── Monedas ───
@@ -127,3 +140,28 @@ export const CATEGORIAS_INTERES = [
 export const API_BASE_URL = import.meta.env.DEV
   ? '/api-mp/servicios/v1/publico'
   : 'https://api.mercadopublico.cl/servicios/v1/publico';
+
+// ─── Regiones de Chile (códigos 1-16, usados por la API Compra Ágil) ───
+export const REGIONES = {
+  1: 'Tarapacá',
+  2: 'Antofagasta',
+  3: 'Atacama',
+  4: 'Coquimbo',
+  5: 'Valparaíso',
+  6: "O'Higgins",
+  7: 'Maule',
+  8: 'Biobío',
+  9: 'Araucanía',
+  10: 'Los Lagos',
+  11: 'Aysén',
+  12: 'Magallanes y Antártica',
+  13: 'Metropolitana',
+  14: 'Los Ríos',
+  15: 'Arica y Parinacota',
+  16: 'Ñuble',
+};
+
+// ─── API Base URL — Compra Ágil v2 (Beta) ───
+export const API_BASE_URL_COMPRA_AGIL = import.meta.env.DEV
+  ? '/api-ca'
+  : 'https://api2.mercadopublico.cl';

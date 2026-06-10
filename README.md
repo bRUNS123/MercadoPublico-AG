@@ -11,6 +11,7 @@ Dashboard web para visualizar, clasificar y filtrar licitaciones de [MercadoPúb
 - **Categorías rápidas**: Construcción, Ingeniería Civil, Mantención, Consultoría, Suministros
 - **Vista detallada** de cada licitación (organismo, items, fechas, montos)
 - **Indicador de días restantes** con colores (urgente/pronto/ok)
+- **Compras Ágiles**: explorador de oportunidades abiertas de Compra Ágil (API v2 Beta de ChileCompra)
 - **Cache inteligente** para optimizar el uso de la API (límite 10.000 req/día)
 - **Dark mode premium** con glassmorphism y animaciones suaves
 
@@ -31,6 +32,9 @@ npm install
 Crea un archivo `.env` en la raíz del proyecto:
 ```bash
 VITE_API_TICKET=TU_TICKET_AQUI
+
+# Opcional, para la sección "Compras Ágiles" (ver más abajo)
+VITE_API_TICKET_COMPRA_AGIL=
 ```
 > **¿No tienes ticket?** Solicítalo gratis en [api.mercadopublico.cl](https://api.mercadopublico.cl/modules/IniciarSesion.aspx) con tu ClaveÚnica.
 
@@ -56,21 +60,25 @@ Abre `http://localhost:5173/MercadoPublico-AG/` en tu navegador.
 ```
 src/
 ├── api/
-│   └── mercadopublico.js    # Cliente API con cache y rate limiting
+│   ├── mercadopublico.js    # Cliente API Licitaciones, con cache y rate limiting
+│   └── compraAgil.js        # Cliente API Compra Ágil v2 (Beta)
 ├── components/
 │   ├── Layout/              # Sidebar, Header, Layout
 │   ├── Dashboard/           # KPICards, StatusChart, TypeChart
-│   ├── Licitaciones/        # FilterBar, Table, Detail modal
+│   ├── Licitaciones/        # FilterBar(s), Table, Detail modal
 │   └── Common/              # StatusBadge, Loader
 ├── hooks/
-│   └── useLicitaciones.js   # Hook de data fetching
+│   ├── useLicitaciones.js   # Hook de data fetching (Licitaciones)
+│   └── useComprasAgiles.js  # Hook de data fetching (Compra Ágil)
 ├── pages/
 │   ├── DashboardPage.jsx    # Vista principal
 │   ├── LicitacionesPage.jsx # Explorador con filtros
-│   └── SettingsPage.jsx     # Configuración del ticket
+│   ├── ComprasAgilesPage.jsx # Explorador de Compras Ágiles abiertas
+│   └── SettingsPage.jsx     # Configuración de tickets
 └── utils/
-    ├── constants.js         # Estados, tipos, monedas, categorías
-    └── formatters.js        # Formateo de fechas, montos, texto
+    ├── constants.js         # Estados, tipos, monedas, categorías, regiones
+    ├── formatters.js         # Formateo de fechas, montos, texto
+    └── compraAgilAdapter.js  # Adapta respuestas de Compra Ágil al formato de Licitación
 ```
 
 ## 🔗 API de MercadoPúblico
@@ -84,6 +92,25 @@ La aplicación consume la [API pública de MercadoPúblico](https://api.mercadop
 | `licitaciones.json?codigo=XXXX` | Detalle de una licitación |
 
 **Límites**: 10.000 solicitudes por día por ticket.
+
+## ⚡ API Compra Ágil v2 (Beta)
+
+La sección "Compras Ágiles" consume la nueva [API Compra Ágil v2 Beta](https://api2.mercadopublico.cl) de ChileCompra (lanzada en mayo 2026):
+
+| Endpoint | Descripción |
+|---|---|
+| `/v2/compra-agil?estado=publicada` | Oportunidades de Compra Ágil actualmente abiertas |
+| `/v2/compra-agil/{codigo}` | Detalle de una Compra Ágil |
+
+**Ticket**: usa **el mismo ticket** de la API de Licitaciones (`VITE_API_TICKET`) — confirmado que funciona contra `api2.mercadopublico.cl`. Si ChileCompra te entrega un ticket distinto para Compra Ágil, puedes configurarlo aparte en `VITE_API_TICKET_COMPRA_AGIL` o desde **Configuración** en la app.
+
+> **⚠️ Limitación conocida (CORS)**: `api2.mercadopublico.cl` todavía no envía cabeceras
+> `Access-Control-Allow-Origin`. En **desarrollo local** (`npm run dev`) esto no es un problema
+> porque Vite hace de proxy (`/api-ca` → `https://api2.mercadopublico.cl`, configurado en
+> `vite.config.js`). En **producción (GitHub Pages)**, al ser un sitio estático sin backend,
+> las consultas directas al navegador pueden ser bloqueadas por CORS hasta que ChileCompra
+> habilite CORS o se agregue un proxy de producción (p. ej. un Cloudflare Worker) — esto
+> queda como mejora futura, no incluida en esta versión.
 
 ## 🚢 Deploy a GitHub Pages
 

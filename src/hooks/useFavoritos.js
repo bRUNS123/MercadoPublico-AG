@@ -6,6 +6,8 @@ export default function useFavoritos() {
   const [isCollabActive, setIsCollabActive] = useState(false);
   const [roomId, setRoomId] = useState('public');
   const localPendingRef = useRef(false);
+  const favoritosRef = useRef({});
+  favoritosRef.current = favoritos;
 
   useEffect(() => {
     // Verificar si hay una sala compartida en la URL (ej: /#/?sala=miempresa)
@@ -31,9 +33,8 @@ export default function useFavoritos() {
     return () => unsubscribe();
   }, []);
 
-  const rateLicitacion = useCallback(async (licitacion, score) => {
-    const previous = { ...favoritos };
-    const newFavoritos = { ...favoritos };
+  const rateLicitacion = useCallback((licitacion, score) => {
+    const newFavoritos = { ...favoritosRef.current };
 
     if (!score || score <= 0) {
       delete newFavoritos[licitacion.CodigoExterno];
@@ -42,30 +43,27 @@ export default function useFavoritos() {
         rating: parseInt(score, 10),
         savedAt: new Date().toISOString(),
         licitacion: {
-           CodigoExterno: licitacion.CodigoExterno,
-           Nombre: licitacion.Nombre,
-           CodigoEstado: licitacion.CodigoEstado,
-           FechaCierre: licitacion.FechaCierre,
-           MontoEstimado: licitacion.MontoEstimado,
-           Estimacion: licitacion.Estimacion,
-           Moneda: licitacion.Moneda,
-           Tipo: licitacion.Tipo,
+          CodigoExterno: licitacion.CodigoExterno,
+          Nombre: licitacion.Nombre,
+          CodigoEstado: licitacion.CodigoEstado,
+          FechaCierre: licitacion.FechaCierre,
+          MontoEstimado: licitacion.MontoEstimado,
+          Estimacion: licitacion.Estimacion,
+          Moneda: licitacion.Moneda,
+          Tipo: licitacion.Tipo,
         }
       };
     }
 
+    favoritosRef.current = newFavoritos;
     localPendingRef.current = true;
     setFavoritos(newFavoritos);
-    votesDB.setVotes(roomId, newFavoritos)
-      .then(() => {
-        localStorage.setItem('mp_votes_backup', JSON.stringify(newFavoritos));
-        localPendingRef.current = false;
-      })
-      .catch(err => {
-        console.error('Error al guardar puntuación:', err);
-        localPendingRef.current = false;
-      });
-  }, [favoritos, roomId]);
+
+    // replaceVotes reemplaza el doc completo — necesario para que los borrados (score=0) funcionen en Firestore
+    votesDB.replaceVotes(roomId, newFavoritos)
+      .then(() => { localStorage.setItem('mp_votes_backup', JSON.stringify(newFavoritos)); localPendingRef.current = false; })
+      .catch(err => { console.error('Error al guardar puntuación:', err); localPendingRef.current = false; });
+  }, [roomId]);
 
   const changeRoom = (newRoom) => {
     localStorage.setItem('mp_collab_room', newRoom);

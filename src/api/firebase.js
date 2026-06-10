@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, doc, onSnapshot, setDoc } from "firebase/firestore";
+import { initializeFirestore, persistentLocalCache, doc, onSnapshot, setDoc, deleteField } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -17,14 +17,27 @@ let isFirebaseActive = false;
 if (firebaseConfig.apiKey && firebaseConfig.apiKey !== 'tu-api-key') {
   try {
     const app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
+    // persistentLocalCache: guarda en IndexedDB — sobrevive recargas de página
+    db = initializeFirestore(app, {
+      localCache: persistentLocalCache()
+    });
     isFirebaseActive = true;
-    console.log("🔥 Firebase inicializado correctamente.");
+    console.log("🔥 Firebase inicializado con persistencia offline.");
   } catch (error) {
     console.error("Error al inicializar Firebase:", error);
   }
 } else {
   console.log("📁 Firebase no configurado. Se usará LocalStorage.");
+}
+
+// Convierte recursivamente undefined → null para que Firestore no rechace el write
+function sanitize(obj) {
+  if (obj === undefined) return null;
+  if (obj === null || typeof obj !== 'object') return obj;
+  if (Array.isArray(obj)) return obj.map(sanitize);
+  return Object.fromEntries(
+    Object.entries(obj).map(([k, v]) => [k, sanitize(v)])
+  );
 }
 
 // Interfaz única — abstrae Firestore o LocalStorage.
@@ -54,13 +67,40 @@ export const votesDB = {
     }
   },
 
+  // Escribe solo el delta { [key]: value } — usa merge para no pisar otras claves
   setVotes: async (roomId, data) => {
     if (isFirebaseActive) {
-      await setDoc(doc(db, "rooms", roomId), data, { merge: true });
+      await setDoc(doc(db, "rooms", roomId), sanitize(data), { merge: true });
+    } else {
+      const lsKey = `mp_db_${roomId}`;
+      const existing = JSON.parse(localStorage.getItem(lsKey) || '{}');
+      const merged = { ...existing, ...data };
+      localStorage.setItem(lsKey, JSON.stringify(merged));
+      window.dispatchEvent(new StorageEvent('storage', { key: lsKey, newValue: JSON.stringify(merged) }));
+    }
+  },
+
+  // Reemplaza el documento completo — usar cuando hay borrados (favoritos, descartados)
+  replaceVotes: async (roomId, data) => {
+    if (isFirebaseActive) {
+      await setDoc(doc(db, "rooms", roomId), sanitize(data));
     } else {
       const lsKey = `mp_db_${roomId}`;
       localStorage.setItem(lsKey, JSON.stringify(data));
       window.dispatchEvent(new StorageEvent('storage', { key: lsKey, newValue: JSON.stringify(data) }));
+    }
+  },
+
+  // Elimina una clave del documento
+  deleteVoteKey: async (roomId, key) => {
+    if (isFirebaseActive) {
+      await setDoc(doc(db, "rooms", roomId), { [key]: deleteField() }, { merge: true });
+    } else {
+      const lsKey = `mp_db_${roomId}`;
+      const existing = JSON.parse(localStorage.getItem(lsKey) || '{}');
+      delete existing[key];
+      localStorage.setItem(lsKey, JSON.stringify(existing));
+      window.dispatchEvent(new StorageEvent('storage', { key: lsKey, newValue: JSON.stringify(existing) }));
     }
   }
 };

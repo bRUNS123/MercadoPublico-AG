@@ -3,6 +3,8 @@ import StatusBadge from '../Common/StatusBadge';
 import { formatMonto, formatFecha, diasRestantes, getTipoNombre, getMontoInteligente, getCategoryMatches } from '../../utils/formatters';
 import { MONEDAS, MODALIDADES_PAGO, CATEGORIAS_INTERES } from '../../utils/constants';
 import api from '../../api/mercadopublico';
+import compraAgilApi from '../../api/compraAgil';
+import { adaptCompraAgil } from '../../utils/compraAgilAdapter';
 import Loader from '../Common/Loader';
 import useFavoritos from '../../hooks/useFavoritos';
 import useCategoryVotes from '../../hooks/useCategoryVotes';
@@ -27,8 +29,35 @@ export default function LicitacionDetail({ licitacion, onClose }) {
   const { getScores } = usePatterns(favoritos, catVotes);
 
   useEffect(() => {
+    const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
+  useEffect(() => {
+    if (!licitacion) return;
+
+    // Compra Ágil: el listado no trae descripción ni productos, hay que pedir el detalle siempre
+    if (licitacion._esCompraAgil) {
+      setLoading(true);
+      setErrorMsg(null);
+      compraAgilApi.getCompraAgilPorCodigo(licitacion.CodigoExterno)
+        .then(data => {
+          if (data?.payload) {
+            setL(adaptCompraAgil(data.payload));
+          } else {
+            setErrorMsg("No se encontró información detallada en la API de Compra Ágil.");
+          }
+        })
+        .catch(err => {
+          setErrorMsg(err.message || "Error al obtener detalle.");
+        })
+        .finally(() => setLoading(false));
+      return;
+    }
+
     // Si la licitación ya tiene Items, es probable que ya esté completa
-    if (licitacion && !licitacion.Items && licitacion.CodigoExterno) {
+    if (!licitacion.Items && licitacion.CodigoExterno) {
       setLoading(true);
       setErrorMsg(null);
       api.getLicitacionPorCodigo(licitacion.CodigoExterno)
@@ -294,16 +323,18 @@ export default function LicitacionDetail({ licitacion, onClose }) {
           )}
 
           {/* Link a MercadoPúblico */}
-          <div className="detail-section" style={{ textAlign: 'center' }}>
-            <a
-              href={`https://www.mercadopublico.cl/Procurement/Modules/RFB/DetailsAcquisition.aspx?idlicitacion=${l.CodigoExterno}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary"
-            >
-              🌐 Ver en MercadoPúblico
-            </a>
-          </div>
+          {!l._esCompraAgil && (
+            <div className="detail-section" style={{ textAlign: 'center' }}>
+              <a
+                href={`https://www.mercadopublico.cl/Procurement/Modules/RFB/DetailsAcquisition.aspx?idlicitacion=${l.CodigoExterno}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+              >
+                🌐 Ver en MercadoPúblico
+              </a>
+            </div>
+          )}
             </>
           )}
         </div>

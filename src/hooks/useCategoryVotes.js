@@ -14,9 +14,9 @@ export default function useCategoryVotes() {
   const [catVotes, setCatVotes] = useState({});
   const [catRoomId, setCatRoomId] = useState('cat_public');
   const deviceId = getDeviceId();
-  // Mientras hay un write local pendiente, ignoramos callbacks de Firebase/storage
-  // para que el optimistic update no sea sobreescrito por datos "viejos" del servidor.
   const localPendingRef = useRef(false);
+  const catVotesRef = useRef({});
+  catVotesRef.current = catVotes;
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
@@ -24,43 +24,58 @@ export default function useCategoryVotes() {
     const room = `cat_${sala}`;
     setCatRoomId(room);
 
+    // Cargar backup local inmediatamente mientras llega el snapshot de Firebase
+    const backupKey = `mp_catvotes_backup_${room}`;
+    const backup = localStorage.getItem(backupKey);
+    if (backup) {
+      try { setCatVotes(JSON.parse(backup)); } catch { /* ignore */ }
+    }
+
     const unsubscribe = votesDB.subscribeToVotes(room, (data) => {
-      if (localPendingRef.current) return; // ignorar mientras hay write local en vuelo
-      setCatVotes(data || {});
+      if (localPendingRef.current) return;
+      const votes = data || {};
+      setCatVotes(votes);
+      // Actualizar backup local con datos frescos del servidor
+      if (Object.keys(votes).length > 0) {
+        localStorage.setItem(backupKey, JSON.stringify(votes));
+      }
     });
     return () => unsubscribe();
   }, []);
 
-  // value: true = confirmar, false = rechazar. Si ya tiene ese valor, lo quita (toggle).
   const voteCategory = useCallback((codigoExterno, categoriaId, value = true) => {
     const key = `${codigoExterno}__${categoriaId}`;
-    const current = catVotes[key] || {};
+    // Leer del ref para evitar stale closure en votos rápidos
+    const current = catVotesRef.current[key] || {};
     const existing = current[deviceId];
 
     const updated = { ...current };
     if (existing === value) {
-      delete updated[deviceId]; // toggle off
+      delete updated[deviceId];
     } else {
       updated[deviceId] = value;
     }
 
-    const newCatVotes = { ...catVotes, [key]: updated };
+    const newCatVotes = { ...catVotesRef.current, [key]: updated };
+    catVotesRef.current = newCatVotes;
 
-    // Actualización inmediata — nunca revertir aunque falle el guardado
     localPendingRef.current = true;
     setCatVotes(newCatVotes);
 
-    // Guardar en background; liberar el bloqueo cuando el servidor confirme
-    votesDB.setVotes(catRoomId, newCatVotes)
-      .then(() => { localPendingRef.current = false; })
-      .catch(err => {
-        console.error('Error al guardar voto de categoría:', err);
-        localPendingRef.current = false;
-        // No revertimos: el usuario ya vio el cambio y el voto estará en próxima sesión si usamos localStorage
-      });
-  }, [catVotes, catRoomId, deviceId]);
+    // Backup local inmediato — garantiza que el voto sobrevive una recarga aunque Firebase tarde
+    const backupKey = `mp_catvotes_backup_${catRoomId}`;
+    try { localStorage.setItem(backupKey, JSON.stringify(newCatVotes)); } catch { /* storage lleno */ }
 
-  // { confirmed, rejected, total, myVote }
+    const done = () => { localPendingRef.current = false; };
+    const fail = (err) => { console.error('Error al guardar voto:', err); localPendingRef.current = false; };
+
+    if (Object.keys(updated).length === 0) {
+      votesDB.deleteVoteKey(catRoomId, key).then(done).catch(fail);
+    } else {
+      votesDB.setVotes(catRoomId, { [key]: updated }).then(done).catch(fail);
+    }
+  }, [catRoomId, deviceId]);
+
   const getVotes = useCallback((codigoExterno, categoriaId) => {
     const key = `${codigoExterno}__${categoriaId}`;
     const voteObj = catVotes[key] || {};
@@ -69,7 +84,7 @@ export default function useCategoryVotes() {
       confirmed: values.filter(v => v === true).length,
       rejected:  values.filter(v => v === false).length,
       total:     values.length,
-      myVote:    voteObj[deviceId] ?? null, // true | false | null
+      myVote:    voteObj[deviceId] ?? null,
     };
   }, [catVotes, deviceId]);
 

@@ -922,6 +922,18 @@ tbody tr:last-child td {
   max-width: 400px;
 }
 
+.warning-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-md);
+  color: #fcd34d;
+  font-size: 0.85rem;
+}
+
 .error-banner {
   display: flex;
   align-items: center;

@@ -12,6 +12,12 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api-mp/, ''),
         secure: false,
       },
+      '/api-ca': {
+        target: 'https://api2.mercadopublico.cl',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api-ca/, ''),
+        secure: false,
+      },
     },
   },
 })

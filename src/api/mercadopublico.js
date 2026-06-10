@@ -218,17 +218,49 @@ class MercadoPublicoAPI {
     this.ticket = ticket;
   }
 
-  /** Validar ticket haciendo una petición de prueba */
-  async validarTicket(ticket) {
-    const oldTicket = this.ticket;
-    this.ticket = ticket;
+  /** Diagnóstico completo: ticket + estado del servidor de MercadoPublico */
+  async diagnosticar(ticket) {
+    const t = ticket || this.ticket;
+    if (!t) return { ok: false, ticketOk: false, serverOk: false, error: 'Sin ticket configurado.' };
+
+    const url = `${this.baseUrl}/licitaciones.json?ticket=${t}&estado=activas`;
     try {
-      const data = await this._fetch('licitaciones.json', { estado: 'activas' }, 0);
-      return { valid: true, cantidad: data?.Cantidad || 0 };
-    } catch (err) {
-      this.ticket = oldTicket;
-      return { valid: false, error: err.message };
+      const res = await fetch(url);
+      let body = null;
+      try { body = await res.json(); } catch { /* no json */ }
+
+      // Error de servidor/DB de ChileCompra (código 10000 = SQL Server caído)
+      if (body?.Codigo === 10000) {
+        return {
+          ok: false,
+          ticketOk: true,
+          serverOk: false,
+          error: 'El servidor de MercadoPúblico está caído (base de datos inaccesible). El ticket es válido — espera y reintenta más tarde.',
+          detail: body.Mensaje,
+        };
+      }
+
+      if (res.status === 401 || res.status === 403 || body?.Codigo === 401) {
+        return { ok: false, ticketOk: false, serverOk: true, error: 'Ticket inválido o sin permisos.' };
+      }
+
+      if (!res.ok && res.status !== 500) {
+        return { ok: false, ticketOk: null, serverOk: false, error: `Error HTTP ${res.status} del servidor de MercadoPúblico.` };
+      }
+
+      // 500 o Cantidad=0 = servidor OK pero sin datos (feriado, rango vacío)
+      const cantidad = body?.Cantidad || 0;
+      return { ok: true, ticketOk: true, serverOk: true, cantidad };
+    } catch {
+      return { ok: false, ticketOk: null, serverOk: false, error: 'Sin conexión al servidor de MercadoPúblico.' };
     }
+  }
+
+  /** @deprecated usar diagnosticar() */
+  async validarTicket(ticket) {
+    const res = await this.diagnosticar(ticket);
+    if (res.ok) return { valid: true, cantidad: res.cantidad };
+    return { valid: false, error: res.error };
   }
 }
 

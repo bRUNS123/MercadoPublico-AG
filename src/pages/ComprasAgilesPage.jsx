@@ -1,52 +1,52 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import Header from '../components/Layout/Header';
-import FilterBar from '../components/Licitaciones/FilterBar';
+import FilterBarCompraAgil from '../components/Licitaciones/FilterBarCompraAgil';
 import LicitacionesTable from '../components/Licitaciones/LicitacionesTable';
 import LicitacionDetail from '../components/Licitaciones/LicitacionDetail';
 import Loader from '../components/Common/Loader';
-import useLicitaciones from '../hooks/useLicitaciones';
+import useComprasAgiles from '../hooks/useComprasAgiles';
 import useFavoritos from '../hooks/useFavoritos';
 import useDescartados from '../hooks/useDescartados';
-import { todayInputFormat, subtractDays, norm } from '../utils/formatters';
+import { norm } from '../utils/formatters';
 import { CATEGORIAS_INTERES } from '../utils/constants';
-import api from '../api/mercadopublico';
+import compraAgilApi from '../api/compraAgil';
 
 const FILTERS_DEFAULT = {
-  estado: '',
-  fechaDesde: subtractDays(todayInputFormat(), 7),
-  fechaHasta: todayInputFormat(),
+  estado: 'publicada',
+  region: '',
   busqueda: '',
   codigo: '',
   categoria: [],
   soloFavoritos: false,
 };
 
-export default function LicitacionesPage() {
-  const { licitaciones, loading, error, lastUpdate, fetchLicitaciones } = useLicitaciones();
+export default function ComprasAgilesPage() {
+  const { comprasAgiles, loading, error, lastUpdate, fetchComprasAgiles } = useComprasAgiles();
   const { favoritos, rateLicitacion, isCollabActive, roomId } = useFavoritos();
   const { descartados, descartarLicitacion } = useDescartados();
   const [selected, setSelected] = useState(null);
   const [filters, setFilters] = useState(FILTERS_DEFAULT);
   const [showDescartadasPanel, setShowDescartadasPanel] = useState(false);
 
-  // ── Efecto 1: re-fetch desde API solo cuando cambian parámetros que requieren red ──
+  const sinTicket = !compraAgilApi.ticket;
+
+  // ── Efecto: re-fetch desde API solo cuando cambian parámetros que requieren red ──
   // busqueda y categoria NO están aquí — se filtran en cliente sin tocar la API
   useEffect(() => {
-    if (filters.soloFavoritos) return;
+    if (sinTicket || filters.soloFavoritos) return;
     const timeout = setTimeout(() => {
-      fetchLicitaciones({
+      fetchComprasAgiles({
         estado: filters.estado,
-        fechaDesde: filters.fechaDesde,
-        fechaHasta: filters.fechaHasta,
+        region: filters.region,
         codigo: filters.codigo,
       });
     }, 800);
     return () => clearTimeout(timeout);
-  }, [filters.estado, filters.fechaDesde, filters.fechaHasta, filters.codigo, filters.soloFavoritos, fetchLicitaciones]);
+  }, [filters.estado, filters.region, filters.codigo, filters.soloFavoritos, sinTicket, fetchComprasAgiles]);
 
   // ── Filtrado client-side: instantáneo, sin API ──
-  const licitacionesFiltradas = useMemo(() => {
-    let result = licitaciones;
+  const comprasFiltradas = useMemo(() => {
+    let result = comprasAgiles;
 
     if (filters.busqueda) {
       const q = norm(filters.busqueda);
@@ -65,39 +65,47 @@ export default function LicitacionesPage() {
     }
 
     return result;
-  }, [licitaciones, filters.busqueda, filters.categoria]);
+  }, [comprasAgiles, filters.busqueda, filters.categoria]);
 
   // Refresh manual: limpia caché y re-fetcha
   const handleRefresh = useCallback(() => {
-    api._clearOldCache();
-    fetchLicitaciones({
+    compraAgilApi._clearOldCache();
+    fetchComprasAgiles({
       estado: filters.estado,
-      fechaDesde: filters.fechaDesde,
-      fechaHasta: filters.fechaHasta,
+      region: filters.region,
       codigo: filters.codigo,
     });
-  }, [filters, fetchLicitaciones]);
+  }, [filters, fetchComprasAgiles]);
 
-  const hasActiveFilters = filters.categoria.length > 0 || filters.busqueda || filters.estado || filters.codigo;
-  const descartadasList = Object.values(descartados).map(d => d.licitacion).filter(Boolean);
+  const hasActiveFilters = filters.categoria.length > 0 || filters.busqueda || filters.region || filters.codigo;
+  const descartadasList = Object.values(descartados).map(d => d.licitacion).filter(l => l?._esCompraAgil);
 
   const displayList = filters.soloFavoritos
-    ? Object.values(favoritos).map(f => f.licitacion).filter(Boolean)
-    : licitacionesFiltradas;
+    ? Object.values(favoritos).map(f => f.licitacion).filter(l => l?._esCompraAgil)
+    : comprasFiltradas;
 
-  const subtitle = loading
-    ? 'Buscando licitaciones...'
-    : lastUpdate
-      ? `${licitacionesFiltradas.length} resultado${licitacionesFiltradas.length !== 1 ? 's' : ''}${filters.categoria.length > 0 || filters.busqueda ? ` (filtrado de ${licitaciones.length})` : ''} · ${lastUpdate.toLocaleTimeString('es-CL')}`
-      : 'Sin datos';
+  const subtitle = sinTicket
+    ? 'Falta configurar el ticket de Compra Ágil'
+    : loading
+      ? 'Buscando oportunidades de Compra Ágil...'
+      : lastUpdate
+        ? `${comprasFiltradas.length} resultado${comprasFiltradas.length !== 1 ? 's' : ''}${filters.categoria.length > 0 || filters.busqueda ? ` (filtrado de ${comprasAgiles.length})` : ''} · ${lastUpdate.toLocaleTimeString('es-CL')}`
+        : 'Sin datos';
 
   return (
     <>
-      <Header title="Explorar Licitaciones" subtitle={subtitle} />
+      <Header title="Compras Ágiles" subtitle={subtitle} />
       <div className="app-content page-enter">
+        {sinTicket && (
+          <div className="warning-banner">
+            ⚠️ No se ha configurado el ticket de la API Compra Ágil. Ve a{' '}
+            <a href="#/configuracion">Configuración</a> para ingresarlo.
+          </div>
+        )}
+
         {error && <div className="error-banner">⚠️ {error}</div>}
 
-        <FilterBar
+        <FilterBarCompraAgil
           filters={filters}
           onChange={setFilters}
           onRefresh={handleRefresh}
@@ -115,16 +123,16 @@ export default function LicitacionesPage() {
           </label>
         </div>
 
-        {loading && !filters.soloFavoritos ? (
-          <Loader text="Buscando licitaciones..." />
+        {!sinTicket && loading && !filters.soloFavoritos ? (
+          <Loader text="Buscando oportunidades de Compra Ágil..." />
         ) : (
           <LicitacionesTable
             licitaciones={displayList}
             onSelect={setSelected}
-            title={filters.soloFavoritos ? 'Mis Favoritos' : 'Resultados'}
+            title={filters.soloFavoritos ? 'Mis Favoritos' : 'Compras Ágiles Publicadas'}
             hasActiveFilters={hasActiveFilters}
             onClearFilters={() => setFilters(FILTERS_DEFAULT)}
-            onRefresh={handleRefresh}
+            onRefresh={sinTicket ? undefined : handleRefresh}
             favoritos={favoritos}
             rateLicitacion={rateLicitacion}
             isCollabActive={isCollabActive}
