@@ -29,11 +29,15 @@ export default function ComprasAgilesPage() {
   const [showDescartadasPanel, setShowDescartadasPanel] = useState(false);
 
   const sinTicket = !compraAgilApi.ticket;
+  // La API de Compra Ágil bloquea (403) las peticiones que no vienen de IPs chilenas (WAF),
+  // por lo que solo funciona en desarrollo local (vía proxy de Vite). En producción
+  // (GitHub Pages) se muestra un aviso en vez de intentar la petición.
+  const soloLocal = !import.meta.env.DEV;
 
   // ── Efecto: re-fetch desde API solo cuando cambian parámetros que requieren red ──
   // busqueda y categoria NO están aquí — se filtran en cliente sin tocar la API
   useEffect(() => {
-    if (sinTicket || filters.soloFavoritos) return;
+    if (sinTicket || soloLocal || filters.soloFavoritos) return;
     const timeout = setTimeout(() => {
       fetchComprasAgiles({
         estado: filters.estado,
@@ -84,7 +88,9 @@ export default function ComprasAgilesPage() {
     ? Object.values(favoritos).map(f => f.licitacion).filter(l => l?._esCompraAgil)
     : comprasFiltradas;
 
-  const subtitle = sinTicket
+  const subtitle = soloLocal
+    ? 'Disponible solo en desarrollo local'
+    : sinTicket
     ? 'Falta configurar el ticket de Compra Ágil'
     : loading
       ? 'Buscando oportunidades de Compra Ágil...'
@@ -96,7 +102,16 @@ export default function ComprasAgilesPage() {
     <>
       <Header title="Compras Ágiles" subtitle={subtitle} />
       <div className="app-content page-enter">
-        {sinTicket && (
+        {soloLocal && (
+          <div className="warning-banner">
+            ⚠️ Esta sección consulta la API Compra Ágil de ChileCompra (api2.mercadopublico.cl),
+            que bloquea las peticiones que no provienen de IPs chilenas. Por eso solo funciona
+            ejecutando la app en local con <code>npm run dev</code> (usa un proxy que evita el
+            bloqueo). Aquí solo puedes ver tus favoritos guardados.
+          </div>
+        )}
+
+        {!soloLocal && sinTicket && (
           <div className="warning-banner">
             ⚠️ No se ha configurado el ticket de la API Compra Ágil. Ve a{' '}
             <a href="#/configuracion">Configuración</a> para ingresarlo.
@@ -123,7 +138,7 @@ export default function ComprasAgilesPage() {
           </label>
         </div>
 
-        {!sinTicket && loading && !filters.soloFavoritos ? (
+        {!sinTicket && !soloLocal && loading && !filters.soloFavoritos ? (
           <Loader text="Buscando oportunidades de Compra Ágil..." />
         ) : (
           <LicitacionesTable
@@ -132,7 +147,7 @@ export default function ComprasAgilesPage() {
             title={filters.soloFavoritos ? 'Mis Favoritos' : 'Compras Ágiles Publicadas'}
             hasActiveFilters={hasActiveFilters}
             onClearFilters={() => setFilters(FILTERS_DEFAULT)}
-            onRefresh={sinTicket ? undefined : handleRefresh}
+            onRefresh={(sinTicket || soloLocal) ? undefined : handleRefresh}
             favoritos={favoritos}
             rateLicitacion={rateLicitacion}
             isCollabActive={isCollabActive}

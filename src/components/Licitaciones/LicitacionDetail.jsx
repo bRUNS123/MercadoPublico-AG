@@ -37,8 +37,10 @@ export default function LicitacionDetail({ licitacion, onClose }) {
   useEffect(() => {
     if (!licitacion) return;
 
-    // Compra Ágil: el listado no trae descripción ni productos, hay que pedir el detalle siempre
+    // Compra Ágil: el listado no trae descripción ni productos, hay que pedir el detalle siempre.
+    // En producción la API bloquea peticiones no chilenas (CORS) — se muestra lo que ya se tenga guardado.
     if (licitacion._esCompraAgil) {
+      if (!import.meta.env.DEV) return;
       setLoading(true);
       setErrorMsg(null);
       compraAgilApi.getCompraAgilPorCodigo(licitacion.CodigoExterno)
