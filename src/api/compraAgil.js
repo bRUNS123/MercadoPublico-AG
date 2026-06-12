@@ -143,11 +143,22 @@ class CompraAgilAPI {
       )
     );
 
+    const allItems = [...items, ...rest.flatMap(p => p?.payload?.items || [])];
+
+    // El listado "publicada" cambia entre páginas mientras se hacen los fetches en paralelo,
+    // por lo que un mismo código puede aparecer en dos páginas consecutivas.
+    const seen = new Set();
+    const dedupedItems = allItems.filter(item => {
+      if (seen.has(item.codigo)) return false;
+      seen.add(item.codigo);
+      return true;
+    });
+
     return {
       ...first,
       payload: {
         ...first.payload,
-        items: [...items, ...rest.flatMap(p => p?.payload?.items || [])],
+        items: dedupedItems,
       },
     };
   }
