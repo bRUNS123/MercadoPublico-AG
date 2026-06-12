@@ -161,6 +161,13 @@ export const REGIONES = {
   16: 'Ñuble',
 };
 
+// ─── Estados de Seguimiento (clasificación de trabajo, independiente de la puntuación 1-10) ───
+export const SEGUIMIENTO_ESTADOS = {
+  interesante: { label: 'Interesante', icon: '🔎', color: '#3b82f6', bg: 'rgba(59,130,246,0.15)' },
+  en_estudio: { label: 'En Estudio', icon: '📋', color: '#f59e0b', bg: 'rgba(245,158,11,0.15)' },
+  postulada: { label: 'Postulada', icon: '📨', color: '#10b981', bg: 'rgba(16,185,129,0.15)' },
+};
+
 // ─── API Base URL — Compra Ágil v2 (Beta) ───
 // Solo funciona en desarrollo local (npm run dev), vía el proxy de Vite (/api-ca → sin CORS).
 // La API de ChileCompra (api2.mercadopublico.cl) bloquea con 403 las peticiones que no

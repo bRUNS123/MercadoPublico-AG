@@ -46,6 +46,15 @@ export default function Sidebar() {
           Compras Ágiles
         </NavLink>
 
+        <NavLink to="/seguimiento" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="4" y="2" width="16" height="20" rx="2"/>
+            <path d="M9 9l2 2 4-4"/>
+            <line x1="8" y1="16" x2="16" y2="16"/>
+          </svg>
+          Seguimiento
+        </NavLink>
+
         <div className="sidebar-section">Sistema</div>
 
         <NavLink to="/configuracion" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>

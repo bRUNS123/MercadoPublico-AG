@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
-import { CATEGORIAS_INTERES } from '../../utils/constants';
+import { CATEGORIAS_INTERES, SEGUIMIENTO_ESTADOS } from '../../utils/constants';
 import StatusBadge from '../Common/StatusBadge';
 import { getMontoInteligente, formatFechaCorta, diasRestantes, truncate, getCategoryMatches } from '../../utils/formatters';
 import api from '../../api/mercadopublico';
 import useCategoryVotes from '../../hooks/useCategoryVotes';
 import usePatterns from '../../hooks/usePatterns';
 import useDescartados from '../../hooks/useDescartados';
+import useSeguimiento from '../../hooks/useSeguimiento';
 
 const MontoInline = ({ licitacion }) => {
   const [detail, setDetail] = useState(null);
@@ -66,6 +67,7 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
   const [showDescartadas, setShowDescartadas] = useState(false);
   const { catVotes, voteCategory, getVotes } = useCategoryVotes();
   const { descartados, descartarLicitacion, isDescartada } = useDescartados();
+  const { seguimiento, setEstadoSeguimiento } = useSeguimiento();
   const { getScores } = usePatterns(favoritos, catVotes, descartados);
 
   const sorted = useMemo(() => {
@@ -214,6 +216,7 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
               <th onClick={() => handleSort('_rating')} className={sortKey === '_rating' ? 'sorted' : ''} style={{ textAlign: 'center', width: 60, cursor: 'pointer' }}>
                 Pts.{getSortIndicator('_rating')}
               </th>
+              <th style={{ textAlign: 'center', width: 110 }} title="Estado de seguimiento">Seguimiento</th>
               <th style={{ textAlign: 'center', width: 36 }} title="Descartar licitación">✕</th>
             </tr>
           </thead>
@@ -382,6 +385,24 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                       <option value="0">-</option>
                       {[...Array(10)].map((_, i) => (
                         <option key={10-i} value={10-i}>{10-i}</option>
+                      ))}
+                    </select>
+                  </td>
+                  <td style={{ textAlign: 'center' }}>
+                    <select
+                      value={seguimiento[l.CodigoExterno]?.estado || ''}
+                      onChange={(e) => { e.stopPropagation(); setEstadoSeguimiento(l, e.target.value); }}
+                      onClick={(e) => e.stopPropagation()}
+                      style={{
+                        padding: '4px 6px', borderRadius: 4, border: '1px solid var(--border-color)',
+                        background: seguimiento[l.CodigoExterno] ? SEGUIMIENTO_ESTADOS[seguimiento[l.CodigoExterno].estado]?.bg : 'var(--bg-secondary)',
+                        color: seguimiento[l.CodigoExterno] ? SEGUIMIENTO_ESTADOS[seguimiento[l.CodigoExterno].estado]?.color : 'var(--text-muted)',
+                        fontWeight: 600, fontSize: '0.78rem', maxWidth: 110,
+                      }}
+                    >
+                      <option value="">Sin clasificar</option>
+                      {Object.entries(SEGUIMIENTO_ESTADOS).map(([id, cfg]) => (
+                        <option key={id} value={id}>{cfg.icon} {cfg.label}</option>
                       ))}
                     </select>
                   </td>

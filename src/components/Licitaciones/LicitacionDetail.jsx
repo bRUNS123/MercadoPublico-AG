@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import StatusBadge from '../Common/StatusBadge';
 import { formatMonto, formatFecha, diasRestantes, getTipoNombre, getMontoInteligente, getCategoryMatches } from '../../utils/formatters';
-import { MONEDAS, MODALIDADES_PAGO, CATEGORIAS_INTERES } from '../../utils/constants';
+import { MONEDAS, MODALIDADES_PAGO, CATEGORIAS_INTERES, SEGUIMIENTO_ESTADOS } from '../../utils/constants';
 import api from '../../api/mercadopublico';
 import compraAgilApi from '../../api/compraAgil';
 import { adaptCompraAgil } from '../../utils/compraAgilAdapter';
@@ -9,6 +9,7 @@ import Loader from '../Common/Loader';
 import useFavoritos from '../../hooks/useFavoritos';
 import useCategoryVotes from '../../hooks/useCategoryVotes';
 import usePatterns from '../../hooks/usePatterns';
+import useSeguimiento from '../../hooks/useSeguimiento';
 
 const CATEGORIA_COLORS = {
   construccion: { color: '#f97316', bg: 'rgba(249,115,22,0.15)' },
@@ -26,6 +27,7 @@ export default function LicitacionDetail({ licitacion, onClose }) {
   const [errorMsg, setErrorMsg] = useState(null);
   const { favoritos, rateLicitacion } = useFavoritos();
   const { catVotes, voteCategory, getVotes } = useCategoryVotes();
+  const { seguimiento, setEstadoSeguimiento } = useSeguimiento();
   const { getScores } = usePatterns(favoritos, catVotes);
 
   useEffect(() => {
@@ -112,6 +114,26 @@ export default function LicitacionDetail({ licitacion, onClose }) {
                 <option value="0">Ninguna</option>
                 {[...Array(10)].map((_, i) => (
                   <option key={10-i} value={10-i}>{10 - i} ⭐</option>
+                ))}
+              </select>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: 1 }}>SEGUIMIENTO</span>
+              <select
+                value={seguimiento[l.CodigoExterno]?.estado || ''}
+                onChange={(e) => setEstadoSeguimiento(l, e.target.value)}
+                style={{
+                  background: seguimiento[l.CodigoExterno] ? SEGUIMIENTO_ESTADOS[seguimiento[l.CodigoExterno].estado]?.bg : 'var(--bg-secondary)',
+                  border: '1px solid var(--border-color)',
+                  fontSize: '0.95rem', height: 48, borderRadius: '8px',
+                  cursor: 'pointer', padding: '0 12px', fontWeight: 'bold',
+                  color: seguimiento[l.CodigoExterno] ? SEGUIMIENTO_ESTADOS[seguimiento[l.CodigoExterno].estado]?.color : 'var(--text-primary)',
+                  outline: 'none'
+                }}
+              >
+                <option value="">Sin clasificar</option>
+                {Object.entries(SEGUIMIENTO_ESTADOS).map(([id, cfg]) => (
+                  <option key={id} value={id}>{cfg.icon} {cfg.label}</option>
                 ))}
               </select>
             </div>
