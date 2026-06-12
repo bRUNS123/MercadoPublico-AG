@@ -947,6 +947,19 @@ tbody tr:last-child td {
   margin-bottom: 20px;
 }
 
+.info-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: var(--radius-md);
+  color: #93c5fd;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
 /* ─── Detail Modal ─── */
 .modal-overlay {
   position: fixed;

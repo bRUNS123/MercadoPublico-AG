@@ -104,14 +104,46 @@ La sección "Compras Ágiles" consume la nueva [API Compra Ágil v2 Beta](https:
 
 **Ticket**: usa **el mismo ticket** de la API de Licitaciones (`VITE_API_TICKET`) — confirmado que funciona contra `api2.mercadopublico.cl`. Si ChileCompra te entrega un ticket distinto para Compra Ágil, puedes configurarlo aparte en `VITE_API_TICKET_COMPRA_AGIL` o desde **Configuración** en la app.
 
-> **⚠️ Limitación conocida (solo funciona en desarrollo local)**: `api2.mercadopublico.cl`
-> no envía cabeceras `Access-Control-Allow-Origin` y, además, su WAF responde `403 Forbidden`
-> a peticiones que no provienen de IPs chilenas — esto bloquea por igual cualquier proxy
-> serverless gratuito (Cloudflare Workers, Vercel, Netlify, etc.), ya que ninguno garantiza
-> una IP residencial chilena. Por eso esta sección **solo funciona corriendo la app en local**
-> (`npm run dev`, que usa el proxy de Vite `/api-ca` configurado en `vite.config.js`). En la
-> versión publicada (GitHub Pages) se muestra un aviso y solo se pueden ver los favoritos
-> ya guardados.
+> **⚠️ Limitación conocida**: `api2.mercadopublico.cl` no envía cabeceras
+> `Access-Control-Allow-Origin` y, además, su WAF responde `403 Forbidden` a peticiones que
+> no provienen de IPs chilenas — esto bloquea por igual cualquier proxy serverless gratuito
+> (Cloudflare Workers, Vercel, Netlify, etc.), ya que ninguno garantiza una IP residencial
+> chilena.
+>
+> En **desarrollo local** (`npm run dev`) esto no es un problema: se usa el proxy de Vite
+> `/api-ca` configurado en `vite.config.js`, que sale con la IP real del equipo.
+>
+> En la **versión publicada (GitHub Pages)** se muestra un snapshot estático en
+> `public/data/compra-agil-publicada.json`, generado periódicamente desde un equipo con IP
+> chilena (ver siguiente sección).
+
+### 📡 Snapshot de Compra Ágil para producción
+
+Como `api2.mercadopublico.cl` bloquea producción, los datos de la sección "Compras Ágiles"
+en GitHub Pages provienen de un snapshot JSON estático (`public/data/compra-agil-publicada.json`,
+con `{ fetchedAt, totalResultados, items }`) generado por `scripts/fetch-compra-agil-snapshot.js`
+desde un equipo con IP chilena.
+
+**Regenerar y publicar el snapshot manualmente**:
+
+```bash
+npm run deploy:snapshot
+```
+
+Esto descarga hasta 1000 oportunidades "publicada" (20 páginas de 50), las guarda en
+`public/data/compra-agil-publicada.json` y ejecuta `npm run deploy` (build + publicación en
+`gh-pages`). El archivo del snapshot **no se commitea en `master`** (está en `.gitignore`),
+solo viaja en la rama `gh-pages`.
+
+**Automatizar con el Programador de tareas de Windows** (ejecutar unas 4-10 veces al día
+desde el equipo con IP chilena que actúa como servidor):
+
+```cmd
+schtasks /create /tn "LicitaBoard - Snapshot Compra Agil" /tr "\"D:\PROGRAMACION\MercadoPublico-AG (API)\scripts\update-compra-agil.cmd\"" /sc daily /st 08:00 /ri 120 /du 14:00 /f
+```
+
+Esto crea una tarea que corre cada 2 horas entre las 08:00 y las 22:00 (7 veces al día),
+registrando el resultado en `scripts/update-compra-agil.log`.
 
 ## 🚢 Deploy a GitHub Pages
 

@@ -21,23 +21,21 @@ const FILTERS_DEFAULT = {
 };
 
 export default function ComprasAgilesPage() {
-  const { comprasAgiles, loading, error, lastUpdate, fetchComprasAgiles } = useComprasAgiles();
+  const { comprasAgiles, loading, error, lastUpdate, fetchedAt, fetchComprasAgiles } = useComprasAgiles();
   const { favoritos, rateLicitacion, isCollabActive, roomId } = useFavoritos();
   const { descartados, descartarLicitacion } = useDescartados();
   const [selected, setSelected] = useState(null);
   const [filters, setFilters] = useState(FILTERS_DEFAULT);
   const [showDescartadasPanel, setShowDescartadasPanel] = useState(false);
 
-  const sinTicket = !compraAgilApi.ticket;
-  // La API de Compra Ágil bloquea (403) las peticiones que no vienen de IPs chilenas (WAF),
-  // por lo que solo funciona en desarrollo local (vía proxy de Vite). En producción
-  // (GitHub Pages) se muestra un aviso en vez de intentar la petición.
-  const soloLocal = !import.meta.env.DEV;
+  // En producción se lee un snapshot estático (no requiere ticket).
+  const sinTicket = import.meta.env.DEV && !compraAgilApi.ticket;
 
-  // ── Efecto: re-fetch desde API solo cuando cambian parámetros que requieren red ──
+  // ── Efecto (DEV): re-fetch desde la API en vivo solo cuando cambian parámetros que requieren red ──
   // busqueda y categoria NO están aquí — se filtran en cliente sin tocar la API
   useEffect(() => {
-    if (sinTicket || soloLocal || filters.soloFavoritos) return;
+    if (!import.meta.env.DEV) return;
+    if (sinTicket || filters.soloFavoritos) return;
     const timeout = setTimeout(() => {
       fetchComprasAgiles({
         estado: filters.estado,
@@ -48,9 +46,29 @@ export default function ComprasAgilesPage() {
     return () => clearTimeout(timeout);
   }, [filters.estado, filters.region, filters.codigo, filters.soloFavoritos, sinTicket, fetchComprasAgiles]);
 
+  // ── Efecto (PROD): carga única del snapshot estático ──
+  useEffect(() => {
+    if (import.meta.env.DEV) return;
+    fetchComprasAgiles();
+  }, [fetchComprasAgiles]);
+
   // ── Filtrado client-side: instantáneo, sin API ──
   const comprasFiltradas = useMemo(() => {
     let result = comprasAgiles;
+
+    if (!import.meta.env.DEV) {
+      // En producción estado/región/código se filtran sobre el snapshot (estado siempre es "publicada")
+      if (filters.estado) {
+        result = result.filter(l => l._raw?.estado?.codigo === filters.estado);
+      }
+      if (filters.region) {
+        result = result.filter(l => String(l._raw?.institucion?.region ?? '') === filters.region);
+      }
+      if (filters.codigo) {
+        const q = norm(filters.codigo);
+        result = result.filter(l => norm(l.CodigoExterno || '').includes(q));
+      }
+    }
 
     if (filters.busqueda) {
       const q = norm(filters.busqueda);
@@ -69,10 +87,14 @@ export default function ComprasAgilesPage() {
     }
 
     return result;
-  }, [comprasAgiles, filters.busqueda, filters.categoria]);
+  }, [comprasAgiles, filters.busqueda, filters.categoria, filters.estado, filters.region, filters.codigo]);
 
-  // Refresh manual: limpia caché y re-fetcha
+  // Refresh manual
   const handleRefresh = useCallback(() => {
+    if (!import.meta.env.DEV) {
+      fetchComprasAgiles();
+      return;
+    }
     compraAgilApi._clearOldCache();
     fetchComprasAgiles({
       estado: filters.estado,
@@ -88,9 +110,7 @@ export default function ComprasAgilesPage() {
     ? Object.values(favoritos).map(f => f.licitacion).filter(l => l?._esCompraAgil)
     : comprasFiltradas;
 
-  const subtitle = soloLocal
-    ? 'Disponible solo en desarrollo local'
-    : sinTicket
+  const subtitle = sinTicket
     ? 'Falta configurar el ticket de Compra Ágil'
     : loading
       ? 'Buscando oportunidades de Compra Ágil...'
@@ -102,19 +122,17 @@ export default function ComprasAgilesPage() {
     <>
       <Header title="Compras Ágiles" subtitle={subtitle} />
       <div className="app-content page-enter">
-        {soloLocal && (
-          <div className="warning-banner">
-            ⚠️ Esta sección consulta la API Compra Ágil de ChileCompra (api2.mercadopublico.cl),
-            que bloquea las peticiones que no provienen de IPs chilenas. Por eso solo funciona
-            ejecutando la app en local con <code>npm run dev</code> (usa un proxy que evita el
-            bloqueo). Aquí solo puedes ver tus favoritos guardados.
-          </div>
-        )}
-
-        {!soloLocal && sinTicket && (
+        {sinTicket && (
           <div className="warning-banner">
             ⚠️ No se ha configurado el ticket de la API Compra Ágil. Ve a{' '}
             <a href="#/configuracion">Configuración</a> para ingresarlo.
+          </div>
+        )}
+
+        {!import.meta.env.DEV && fetchedAt && (
+          <div className="info-banner">
+            📡 Datos de Compra Ágil (estado "Publicada") actualizados periódicamente desde un
+            equipo con IP chilena · última actualización: {fetchedAt.toLocaleString('es-CL')}
           </div>
         )}
 
@@ -138,7 +156,7 @@ export default function ComprasAgilesPage() {
           </label>
         </div>
 
-        {!sinTicket && !soloLocal && loading && !filters.soloFavoritos ? (
+        {!sinTicket && loading && !filters.soloFavoritos ? (
           <Loader text="Buscando oportunidades de Compra Ágil..." />
         ) : (
           <LicitacionesTable
@@ -147,7 +165,7 @@ export default function ComprasAgilesPage() {
             title={filters.soloFavoritos ? 'Mis Favoritos' : 'Compras Ágiles Publicadas'}
             hasActiveFilters={hasActiveFilters}
             onClearFilters={() => setFilters(FILTERS_DEFAULT)}
-            onRefresh={(sinTicket || soloLocal) ? undefined : handleRefresh}
+            onRefresh={sinTicket ? undefined : handleRefresh}
             favoritos={favoritos}
             rateLicitacion={rateLicitacion}
             isCollabActive={isCollabActive}
