@@ -347,10 +347,21 @@ export default function LicitacionDetail({ licitacion, onClose }) {
           )}
 
           {/* Link a MercadoPúblico */}
-          {!l._esCompraAgil && (
+          {!l._esCompraAgil ? (
             <div className="detail-section" style={{ textAlign: 'center' }}>
               <a
                 href={`https://www.mercadopublico.cl/Procurement/Modules/RFB/DetailsAcquisition.aspx?idlicitacion=${l.CodigoExterno}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-primary"
+              >
+                🌐 Ver en MercadoPúblico
+              </a>
+            </div>
+          ) : (
+            <div className="detail-section" style={{ textAlign: 'center' }}>
+              <a
+                href={`https://buscador.mercadopublico.cl/ficha?code=${l.CodigoExterno}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-primary"
