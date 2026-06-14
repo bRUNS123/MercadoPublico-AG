@@ -16,7 +16,8 @@ const ROOT = resolve(__dirname, '..');
 const BASE_URL = 'https://api2.mercadopublico.cl';
 const PAGE_SIZE = 50;
 const MAX_PAGES = Number(process.env.SNAPSHOT_MAX_PAGES || 20);
-const DELAY_MS = 150;
+const DELAY_MS = Number(process.env.SNAPSHOT_DELAY_MS || 400);
+const MAX_RETRIES = 3;
 
 function loadEnvLocal() {
   const env = {};
@@ -41,12 +42,26 @@ function sleep(ms) {
 
 async function fetchPage(ticket, numeroPagina) {
   const url = `${BASE_URL}/v2/compra-agil?estado=publicada&tamano_pagina=${PAGE_SIZE}&numero_pagina=${numeroPagina}`;
-  const res = await fetch(url, { headers: { ticket } });
-  if (!res.ok) {
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    const res = await fetch(url, { headers: { ticket } });
+    if (res.ok) {
+      if (attempt > 1) fetchPage.retriedPages++;
+      return res.json();
+    }
+
+    if (res.status === 429 && attempt < MAX_RETRIES) {
+      const retryAfter = Number(res.headers.get('retry-after'));
+      const waitMs = retryAfter > 0 ? retryAfter * 1000 : 1000 * attempt;
+      console.warn(`  Aviso: HTTP 429 en página ${numeroPagina}, reintentando en ${waitMs}ms (intento ${attempt}/${MAX_RETRIES})...`);
+      await sleep(waitMs);
+      continue;
+    }
+
     throw new Error(`HTTP ${res.status} en página ${numeroPagina}`);
   }
-  return res.json();
 }
+fetchPage.retriedPages = 0;
 
 async function main() {
   const env = loadEnvLocal();
@@ -67,6 +82,7 @@ async function main() {
   const pagesToFetch = Math.min(totalPaginas, MAX_PAGES);
   console.log(`Total disponible: ${totalResultados} resultados en ${totalPaginas} páginas. Descargando ${pagesToFetch} página(s)...`);
 
+  const omittedPages = [];
   for (let p = 2; p <= pagesToFetch; p++) {
     await sleep(DELAY_MS);
     console.log(`Obteniendo página ${p}/${pagesToFetch}...`);
@@ -75,7 +91,15 @@ async function main() {
       items.push(...(data?.payload?.items || []));
     } catch (err) {
       console.warn(`  Aviso: falló la página ${p} (${err.message}), se omite.`);
+      omittedPages.push(p);
     }
+  }
+
+  if (fetchPage.retriedPages > 0) {
+    console.log(`Páginas que requirieron reintento por 429: ${fetchPage.retriedPages}`);
+  }
+  if (omittedPages.length > 0) {
+    console.warn(`Páginas omitidas tras agotar reintentos: ${omittedPages.join(', ')}`);
   }
 
   // Dedup por código (el listado "publicada" cambia entre páginas durante la descarga)
