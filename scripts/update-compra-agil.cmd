@@ -6,6 +6,8 @@ REM desde un equipo con IP chilena (ver README para el comando schtasks).
 cd /d "%~dp0.."
 
 echo [%date% %time%] Iniciando actualizacion de Compra Agil >> "%~dp0update-compra-agil.log"
+echo [%date% %time%] git pull --ff-only >> "%~dp0update-compra-agil.log"
+git pull --ff-only >> "%~dp0update-compra-agil.log" 2>&1
 call npm run deploy:snapshot >> "%~dp0update-compra-agil.log" 2>&1
 echo [%date% %time%] Finalizado (codigo %errorlevel%) >> "%~dp0update-compra-agil.log"
 echo. >> "%~dp0update-compra-agil.log"
