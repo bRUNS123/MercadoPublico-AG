@@ -12,6 +12,7 @@ dist/
 # Snapshot de Compra Ágil (se genera localmente y se publica solo en gh-pages)
 public/data/
 scripts/update-compra-agil.log
+scripts/sync-status.json
 
 # Environment
 .env
