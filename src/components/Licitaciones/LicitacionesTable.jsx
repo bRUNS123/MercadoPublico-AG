@@ -206,6 +206,7 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
               </th>
               <th>Estado</th>
               <th>Tipo</th>
+              <th style={{ minWidth: 110 }}>Región detectada</th>
               <th onClick={() => handleSort('FechaCierre')} className={sortKey === 'FechaCierre' ? 'sorted' : ''}>
                 Cierre{getSortIndicator('FechaCierre')}
               </th>
@@ -364,6 +365,9 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                   </td>
                   <td><StatusBadge codigo={l.CodigoEstado} /></td>
                   <td style={{ fontSize: '0.78rem' }}>{l.Tipo || '—'}</td>
+                  <td style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                    {l.RegionDetectada?.nombreCompleto || (l.Comprador?.RegionUnidad ? `🏛️ ${l.Comprador.RegionUnidad}` : '—')}
+                  </td>
                   <td className="td-fecha">{formatFechaCorta(l.FechaCierre)}</td>
                   <td className={`td-dias ${getDiasClass(dias)}`}>
                     {dias !== null ? (dias === 0 ? 'Cerrado' : `${dias}d`) : '—'}

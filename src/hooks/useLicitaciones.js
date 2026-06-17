@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import api from '../api/mercadopublico';
 import { inputDateToAPI, todayInputFormat, subtractDays, getDatesInRange } from '../utils/formatters';
+import { detectRegion } from '../utils/detectRegion';
 
 // Solo maneja la obtención de datos desde la API.
 // Los filtros de categoria y busqueda se aplican en el componente (client-side, instantáneo).
@@ -46,7 +47,19 @@ export default function useLicitaciones() {
           });
       }
 
-      setLicitaciones(listado);
+      // Detectar regiones desde descripción (en paralelo)
+      const conRegion = await Promise.all(
+        listado.map(async (item) => {
+          try {
+            const detected = await detectRegion(item.Nombre, item.Descripcion);
+            return { ...item, RegionDetectada: detected };
+          } catch {
+            return { ...item, RegionDetectada: null };
+          }
+        })
+      );
+
+      setLicitaciones(conRegion);
       setLastUpdate(new Date());
     } catch (err) {
       setError(err.message);
