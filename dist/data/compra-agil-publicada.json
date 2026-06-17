@@ -3610,8 +3610,8 @@
       "links": {
         "detalle": "/v2/compra-agil/1358-4-COT26"
       },
-      "rating": null,
-      "rating_count": 0
+      "rating": 5.0,
+      "rating_count": 2
     },
     {
       "codigo": "1057417-2555-COT26",
@@ -18574,8 +18574,8 @@
       "links": {
         "detalle": "/v2/compra-agil/2298-180-COT26"
       },
-      "rating": null,
-      "rating_count": 0
+      "rating": 4.0,
+      "rating_count": 1
     },
     {
       "codigo": "1214102-721-COT26",
