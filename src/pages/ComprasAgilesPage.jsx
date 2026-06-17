@@ -115,7 +115,7 @@ export default function ComprasAgilesPage() {
     : loading
       ? 'Buscando oportunidades de Compra Ágil...'
       : lastUpdate
-        ? `${comprasFiltradas.length} resultado${comprasFiltradas.length !== 1 ? 's' : ''}${filters.categoria.length > 0 || filters.busqueda ? ` (filtrado de ${comprasAgiles.length})` : ''} · ${lastUpdate.toLocaleTimeString('es-CL')}`
+        ? `${comprasFiltradas.length} resultado${comprasFiltradas.length !== 1 ? 's' : ''}${filters.categoria.length > 0 || filters.busqueda ? ` (filtrado de ${comprasAgiles.length})` : ''} · ${lastUpdate.toLocaleTimeString('es-CL')}${fetchedAt ? ` · 📡 Snapshot: ${fetchedAt.toLocaleString('es-CL', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}` : ''}`
         : 'Sin datos';
 
   return (

@@ -21,6 +21,7 @@ export default function useComprasAgiles() {
     try {
       if (import.meta.env.DEV) {
         let listado = [];
+        let snapshotAt = null;
 
         if (params.codigo) {
           const data = await compraAgilApi.getCompraAgilPorCodigo(params.codigo);
@@ -32,7 +33,15 @@ export default function useComprasAgiles() {
         }
 
         setComprasAgiles(listado.map(adaptCompraAgil));
-        setFetchedAt(null);
+        // En dev también leemos el snapshot local si existe para mostrar su fecha
+        try {
+          const snapRes = await fetch(`${import.meta.env.BASE_URL}data/compra-agil-publicada.json`, { cache: 'no-store' });
+          if (snapRes.ok) {
+            const snapData = await snapRes.json();
+            snapshotAt = snapData.fetchedAt ? new Date(snapData.fetchedAt) : null;
+          }
+        } catch { /* snapshot no disponible en dev, se ignora */ }
+        setFetchedAt(snapshotAt);
       } else {
         const res = await fetch(`${import.meta.env.BASE_URL}data/compra-agil-publicada.json`, { cache: 'no-store' });
         if (!res.ok) {
