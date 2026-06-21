@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { votesDB } from '../api/firebase';
-import { buildPatterns, getCommunityScores } from '../utils/patterns';
+import { buildPatterns, getCommunityScores, getRelevanceScore } from '../utils/patterns';
 
 export default function usePatterns(favoritos, catVotes, descartados = {}) {
   const [patterns, setPatterns] = useState({});
@@ -41,8 +41,8 @@ export default function usePatterns(favoritos, catVotes, descartados = {}) {
     votesDB.setVotes(`patterns_${roomId}`, newPatterns);
   }, [favoritos, catVotes, roomId]);
 
-  // Calcula el score comunitario para una licitación
   const getScores = (licitacion) => getCommunityScores(licitacion, patterns);
+  const getRelScore = (licitacion) => getRelevanceScore(licitacion, patterns);
 
-  return { patterns, getScores };
+  return { patterns, getScores, getRelevanceScore: getRelScore };
 }

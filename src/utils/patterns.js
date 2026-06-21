@@ -91,6 +91,16 @@ export function buildPatterns(favoritos, catVotes, descartados = {}) {
     words.forEach(w => { noise[w] = (noise[w] || 0) + 1; });
   });
 
+  // Fuente 5: perfil general desde ratings >= 7 (sin requerir categoría confirmada)
+  const generalProfile = { __count: 0 };
+  Object.values(favoritos).forEach(({ rating, licitacion }) => {
+    if (!licitacion || rating < 7) return;
+    generalProfile.__count++;
+    const words = extractWords((licitacion.Nombre || '') + ' ' + (licitacion.Descripcion || ''));
+    words.forEach(w => { generalProfile[w] = (generalProfile[w] || 0) + 1; });
+  });
+  if (generalProfile.__count >= 2) patterns._general = generalProfile;
+
   return { ...patterns, _neg: negPatterns, _noise: noise, _noiseCount: Object.keys(descartados).length };
 }
 
@@ -154,6 +164,28 @@ export function getCommunityScores(licitacion, patterns) {
   });
 
   return result;
+}
+
+// Score de relevancia personal 0–100: combina el perfil general del usuario
+// (aprendido de ratings >= 7) con el mejor score comunitario por categoría.
+export function getRelevanceScore(licitacion, patterns) {
+  if (!patterns || !Object.keys(patterns).length) return 0;
+  const wordArr = extractWords((licitacion.Nombre || '') + ' ' + (licitacion.Descripcion || ''));
+  const words = new Set(wordArr);
+  let best = 0;
+
+  const gen = patterns._general;
+  if (gen && gen.__count >= 2) {
+    const entries = Object.entries(gen).filter(([k]) => k !== '__count');
+    const totalFreq = entries.reduce((s, [, f]) => s + f, 0);
+    const matchFreq = entries.filter(([w]) => words.has(w)).reduce((s, [, f]) => s + f, 0);
+    best = Math.max(best, totalFreq > 0 ? Math.round((matchFreq / totalFreq) * 100) : 0);
+  }
+
+  const cs = getCommunityScores(licitacion, patterns);
+  Object.values(cs).forEach(({ score }) => { best = Math.max(best, score); });
+
+  return best;
 }
 
 // Retorna las palabras más frecuentes aprendidas para una categoría (para debug/display)

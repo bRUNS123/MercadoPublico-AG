@@ -68,7 +68,7 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
   const { catVotes, voteCategory, getVotes } = useCategoryVotes();
   const { descartados, descartarLicitacion, isDescartada } = useDescartados();
   const { seguimiento, setEstadoSeguimiento } = useSeguimiento();
-  const { getScores } = usePatterns(favoritos, catVotes, descartados);
+  const { getScores, getRelevanceScore } = usePatterns(favoritos, catVotes, descartados);
 
   const sorted = useMemo(() => {
     const base = showDescartadas ? licitaciones : licitaciones.filter(l => !isDescartada(l.CodigoExterno));
@@ -81,6 +81,9 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
       } else if (sortKey === '_rating') {
         va = favoritos[a.CodigoExterno]?.rating ?? 0;
         vb = favoritos[b.CodigoExterno]?.rating ?? 0;
+      } else if (sortKey === '_relevance') {
+        va = getRelevanceScore(a);
+        vb = getRelevanceScore(b);
       } else {
         va = a[sortKey];
         vb = b[sortKey];
@@ -174,6 +177,19 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
             title="Ordenar por puntuación descendente"
           >
             ⭐ Mejor puntuadas
+          </button>
+          <button
+            onClick={() => { setSortKey(k => k === '_relevance' ? null : '_relevance'); setSortDir('desc'); setPage(0); }}
+            style={{
+              fontSize: '0.72rem', padding: '2px 10px', borderRadius: 10, cursor: 'pointer',
+              border: '1px solid var(--border-color)',
+              background: sortKey === '_relevance' ? '#7c3aed' : 'var(--bg-tertiary)',
+              color: sortKey === '_relevance' ? '#fff' : 'var(--text-muted)',
+              fontWeight: sortKey === '_relevance' ? 700 : 400,
+            }}
+            title="Ordenar por relevancia según tu perfil aprendido de puntuaciones"
+          >
+            ✨ Por relevancia
           </button>
           {descartadasCount > 0 && (
             <button
@@ -298,6 +314,33 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                           </span>
                         );
                       })}
+
+                      {/* Badge de relevancia personal + "No es" */}
+                      {(() => {
+                        const relevanceScore = getRelevanceScore(l);
+                        if (relevanceScore < 40 || descartada) return null;
+                        return (
+                          <span style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 2,
+                            fontSize: '0.63rem', padding: '1px 3px 1px 6px', borderRadius: 10,
+                            background: 'rgba(124,58,237,0.15)', color: '#7c3aed',
+                            border: '1px solid rgba(124,58,237,0.4)',
+                          }}>
+                            ✨ {relevanceScore}%
+                            <button
+                              onClick={(e) => { e.stopPropagation(); descartarLicitacion(l); }}
+                              title="No es relevante para mí — enseñar al sistema"
+                              style={{
+                                marginLeft: 1, padding: '0 3px', borderRadius: 5, cursor: 'pointer',
+                                fontSize: '0.6rem', border: 'none', lineHeight: 1.4, fontWeight: 700,
+                                background: 'rgba(255,255,255,0.08)', color: '#7c3aed',
+                              }}
+                            >
+                              ✗
+                            </button>
+                          </span>
+                        );
+                      })()}
 
                       {/* Botón para expandir/colapsar panel de votación completo */}
                       <button
