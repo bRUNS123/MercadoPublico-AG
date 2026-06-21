@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "npm run build && npx gh-pages -d dist",
+    "deploy": "npm run build && npx --yes gh-pages -d dist",
     "snapshot:compra-agil": "node scripts/fetch-compra-agil-snapshot.js",
     "deploy:snapshot": "npm run snapshot:compra-agil && npm run deploy"
   },
