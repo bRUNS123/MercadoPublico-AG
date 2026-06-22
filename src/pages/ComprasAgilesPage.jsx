@@ -129,12 +129,31 @@ export default function ComprasAgilesPage() {
           </div>
         )}
 
-        {!import.meta.env.DEV && fetchedAt && (
-          <div className="info-banner">
-            📡 Datos de Compra Ágil (estado "Publicada") actualizados periódicamente desde un
-            equipo con IP chilena · última actualización: {fetchedAt.toLocaleString('es-CL')}
-          </div>
-        )}
+        {!import.meta.env.DEV && fetchedAt && (() => {
+          const horasDesde = (Date.now() - fetchedAt.getTime()) / 3600000;
+          const label = fetchedAt.toLocaleString('es-CL', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+          if (horasDesde > 24) {
+            const dias = Math.floor(horasDesde / 24);
+            return (
+              <div className="error-banner">
+                🔴 Datos desactualizados hace {dias} día{dias > 1 ? 's' : ''} · última actualización: {label} · La tarea automática del notebook puede haber fallado — revisa el log.
+              </div>
+            );
+          }
+          if (horasDesde > 4) {
+            const horas = Math.floor(horasDesde);
+            return (
+              <div className="warning-banner">
+                ⚠️ Datos de hace {horas} hora{horas > 1 ? 's' : ''} · última actualización: {label} · Puede que falten licitaciones recientes.
+              </div>
+            );
+          }
+          return (
+            <div className="info-banner">
+              📡 Datos actualizados · última actualización: {label}
+            </div>
+          );
+        })()}
 
         {error && <div className="error-banner">⚠️ {error}</div>}
 
