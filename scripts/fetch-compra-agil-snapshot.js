@@ -15,7 +15,7 @@ const ROOT = resolve(__dirname, '..');
 
 const BASE_URL = 'https://api2.mercadopublico.cl';
 const PAGE_SIZE = 50;
-const MAX_PAGES = Number(process.env.SNAPSHOT_MAX_PAGES || 20);
+const MAX_PAGES = Number(process.env.SNAPSHOT_MAX_PAGES || 200);
 const DELAY_MS = Number(process.env.SNAPSHOT_DELAY_MS || 400);
 const MAX_RETRIES = 3;
 
