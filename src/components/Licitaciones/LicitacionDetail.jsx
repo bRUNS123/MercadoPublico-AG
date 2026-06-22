@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import StatusBadge from '../Common/StatusBadge';
 import { formatMonto, formatFecha, diasRestantes, getTipoNombre, getMontoInteligente, getCategoryMatches } from '../../utils/formatters';
 import { MONEDAS, MODALIDADES_PAGO, CATEGORIAS_INTERES, SEGUIMIENTO_ESTADOS } from '../../utils/constants';
@@ -25,6 +25,7 @@ export default function LicitacionDetail({ licitacion, onClose }) {
   const [l, setL] = useState(licitacion);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [zipping, setZipping] = useState(false);
   const { favoritos, rateLicitacion } = useFavoritos();
   const { catVotes, voteCategory, getVotes } = useCategoryVotes();
   const { seguimiento, setEstadoSeguimiento } = useSeguimiento();
@@ -78,6 +79,93 @@ export default function LicitacionDetail({ licitacion, onClose }) {
         .finally(() => setLoading(false));
     }
   }, [licitacion]);
+
+  const adjuntos = useMemo(() => {
+    if (l._esCompraAgil) {
+      const docs = l._raw?.documentos || l._raw?.adjuntos || [];
+      if (!Array.isArray(docs)) return [];
+      return docs.map(d => ({
+        nombre: d.nombre || d.nombre_archivo || d.titulo || 'documento',
+        url: d.url || d.url_archivo || d.enlace || '',
+        tipo: d.tipo_documento || d.tipo || d.descripcion || '',
+      })).filter(d => d.url);
+    }
+    const raw = l.Adjuntos?.Archivos?.Archivo;
+    if (!raw) return [];
+    const arr = Array.isArray(raw) ? raw : [raw];
+    return arr.map(a => ({
+      nombre: a.Nombre || a.NombreArchivo || 'archivo',
+      url: a.URL || a.Url || '',
+      tipo: a.TipoDocumento || a.Descripcion || '',
+    })).filter(a => a.url);
+  }, [l]);
+
+  const descargarZip = async () => {
+    if (!adjuntos.length || zipping) return;
+    setZipping(true);
+    try {
+      const { zip, strToU8 } = await import('fflate');
+      const seguimientoLabel = seguimiento[l.CodigoExterno]
+        ? (SEGUIMIENTO_ESTADOS[seguimiento[l.CodigoExterno].estado]?.label || 'Sin clasificar')
+        : 'Sin clasificar';
+
+      const resumen = [
+        `Código: ${l.CodigoExterno}`,
+        `Nombre: ${l.Nombre || '—'}`,
+        `Clasificación: ${seguimientoLabel}`,
+        `Estado: ${l.CodigoEstado || '—'}`,
+        `Fecha de Cierre: ${l.FechaCierre || '—'}`,
+        `Organismo: ${l.Comprador?.NombreOrganismo || '—'}`,
+        '',
+        `Adjuntos (${adjuntos.length}):`,
+        ...adjuntos.map((a, i) => `${i + 1}. ${a.nombre}\n   ${a.url}`),
+      ].join('\n');
+
+      const files = { 'resumen.txt': [strToU8(resumen), { level: 1 }] };
+      const failed = [];
+
+      const results = await Promise.allSettled(
+        adjuntos.map(async (adj) => {
+          const res = await fetch(adj.url, { mode: 'cors' });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const buf = await res.arrayBuffer();
+          return { nombre: adj.nombre, data: new Uint8Array(buf) };
+        })
+      );
+
+      results.forEach((r, i) => {
+        if (r.status === 'fulfilled') {
+          files[r.value.nombre] = [r.value.data, { level: 0 }];
+        } else {
+          failed.push(`${adjuntos[i].nombre}\n   ${adjuntos[i].url}`);
+        }
+      });
+
+      if (failed.length > 0) {
+        const nota = `Archivos no descargados automáticamente (restricción CORS del servidor).\nPuedes abrirlos manualmente copiando cada URL en el navegador:\n\n${failed.join('\n\n')}`;
+        files['descargar_manualmente.txt'] = [strToU8(nota), { level: 1 }];
+      }
+
+      const zipped = await new Promise((resolve, reject) => {
+        zip(files, (err, data) => err ? reject(err) : resolve(data));
+      });
+
+      const blob = new Blob([zipped], { type: 'application/zip' });
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      const safeName = `${l.CodigoExterno} - ${(l.Nombre || '').replace(/[<>:"/\\|?*]/g, '_').slice(0, 60)}`;
+      a.download = `${safeName}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+    } catch (err) {
+      console.error('Error al generar ZIP:', err);
+    } finally {
+      setZipping(false);
+    }
+  };
 
   if (!l) return null;
 
@@ -343,6 +431,66 @@ export default function LicitacionDetail({ licitacion, onClose }) {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+
+          {/* Adjuntos */}
+          {adjuntos.length > 0 && (
+            <div className="detail-section">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <div className="detail-section-title" style={{ marginBottom: 0 }}>📎 Adjuntos ({adjuntos.length})</div>
+                <button
+                  onClick={descargarZip}
+                  disabled={zipping}
+                  style={{
+                    fontSize: '0.78rem', padding: '5px 14px', borderRadius: 8,
+                    cursor: zipping ? 'default' : 'pointer',
+                    border: '1px solid var(--border-color)',
+                    background: zipping ? 'var(--bg-secondary)' : 'var(--bg-tertiary)',
+                    color: zipping ? 'var(--text-muted)' : 'var(--text-primary)',
+                    display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
+                  }}
+                  title="Descargar todos los adjuntos en un archivo ZIP"
+                >
+                  {zipping ? '⏳ Preparando...' : '📦 Descargar todos (.zip)'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {adjuntos.map((adj, i) => {
+                  const isPDF = /\.pdf$/i.test(adj.nombre);
+                  const isImg = /\.(jpe?g|png|gif|webp|bmp)$/i.test(adj.nombre);
+                  const icon = isPDF ? '📄' : isImg ? '🖼️' : '📎';
+                  return (
+                    <div key={i} style={{
+                      display: 'flex', alignItems: 'center', gap: 10, padding: '7px 12px',
+                      background: 'var(--bg-tertiary)', borderRadius: 8,
+                      border: '1px solid var(--border-color)', fontSize: '0.83rem',
+                    }}>
+                      <span style={{ fontSize: '1rem', flexShrink: 0 }}>{icon}</span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {adj.nombre}
+                        </div>
+                        {adj.tipo && (
+                          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 1 }}>{adj.tipo}</div>
+                        )}
+                      </div>
+                      <a
+                        href={adj.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          fontSize: '0.75rem', padding: '3px 10px', borderRadius: 6, flexShrink: 0,
+                          border: '1px solid var(--border-color)', color: 'var(--accent-primary)',
+                          background: 'var(--bg-secondary)', textDecoration: 'none', whiteSpace: 'nowrap',
+                        }}
+                      >
+                        ↗ Abrir
+                      </a>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
