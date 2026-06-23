@@ -5,6 +5,9 @@ REM desde un equipo con IP chilena (ver README para el comando schtasks).
 
 cd /d "%~dp0.."
 
+REM Usar Node 22 (requerido por Vite 8 / Rolldown)
+set "PATH=C:\Users\Usuario\AppData\Roaming\fnm\node-versions\v22.22.3\installation;%PATH%"
+
 echo [%date% %time%] Iniciando actualizacion de Compra Agil >> "%~dp0update-compra-agil.log"
 echo [%date% %time%] git pull --ff-only >> "%~dp0update-compra-agil.log"
 git pull --ff-only >> "%~dp0update-compra-agil.log" 2>&1
