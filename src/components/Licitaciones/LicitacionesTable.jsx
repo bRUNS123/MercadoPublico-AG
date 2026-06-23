@@ -234,7 +234,7 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                 Pts.{getSortIndicator('_rating')}
               </th>
               <th style={{ textAlign: 'center', width: 110 }} title="Estado de seguimiento">Seguimiento</th>
-              <th style={{ textAlign: 'center', width: 36 }} title="Descartar licitación">✕</th>
+              <th style={{ textAlign: 'center', width: 70 }} title="Acciones rápidas"></th>
             </tr>
           </thead>
           <tbody>
@@ -341,6 +341,25 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                           </span>
                         );
                       })()}
+
+                      {/* Badge de adjuntos (Compra Ágil) */}
+                      {l._esCompraAgil && (l._raw?.documentos?.length > 0) && (
+                        <a
+                          href={`https://buscador.mercadopublico.cl/ficha?code=${l.CodigoExterno}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          title={`${l._raw.documentos.length} adjunto${l._raw.documentos.length !== 1 ? 's' : ''} — abrir en MercadoPúblico`}
+                          style={{
+                            display: 'inline-flex', alignItems: 'center', gap: 3,
+                            fontSize: '0.63rem', padding: '1px 6px', borderRadius: 10,
+                            background: 'rgba(59,130,246,0.12)', color: '#60a5fa',
+                            border: '1px solid rgba(59,130,246,0.35)', textDecoration: 'none',
+                          }}
+                        >
+                          📎 {l._raw.documentos.length}
+                        </a>
+                      )}
 
                       {/* Botón para expandir/colapsar panel de votación completo */}
                       <button
@@ -454,20 +473,41 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                     </select>
                   </td>
                   <td onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); descartarLicitacion(l); }}
-                      title={isDescartada(l.CodigoExterno) ? 'Restaurar licitación' : 'Descartar — no sirve'}
-                      style={{
-                        width: 26, height: 26, borderRadius: '50%', cursor: 'pointer',
-                        border: `1px solid ${isDescartada(l.CodigoExterno) ? '#ef4444' : 'var(--border-color)'}`,
-                        background: isDescartada(l.CodigoExterno) ? 'rgba(239,68,68,0.15)' : 'transparent',
-                        color: isDescartada(l.CodigoExterno) ? '#ef4444' : 'var(--text-muted)',
-                        fontSize: '0.75rem', fontWeight: 700, lineHeight: 1,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto',
-                      }}
-                    >
-                      ✕
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                      <a
+                        href={l._esCompraAgil
+                          ? `https://buscador.mercadopublico.cl/ficha?code=${l.CodigoExterno}`
+                          : `https://www.mercadopublico.cl/Procurement/Modules/RFB/DetailsAcquisition.aspx?idlicitacion=${l.CodigoExterno}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        title="Ver en MercadoPúblico"
+                        style={{
+                          width: 26, height: 26, borderRadius: '50%',
+                          border: '1px solid var(--border-color)',
+                          background: 'transparent', color: 'var(--accent-primary)',
+                          fontSize: '0.8rem', lineHeight: '24px', textAlign: 'center',
+                          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                          textDecoration: 'none',
+                        }}
+                      >
+                        🌐
+                      </a>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); descartarLicitacion(l); }}
+                        title={isDescartada(l.CodigoExterno) ? 'Restaurar licitación' : 'Descartar — no sirve'}
+                        style={{
+                          width: 26, height: 26, borderRadius: '50%', cursor: 'pointer',
+                          border: `1px solid ${isDescartada(l.CodigoExterno) ? '#ef4444' : 'var(--border-color)'}`,
+                          background: isDescartada(l.CodigoExterno) ? 'rgba(239,68,68,0.15)' : 'transparent',
+                          color: isDescartada(l.CodigoExterno) ? '#ef4444' : 'var(--text-muted)',
+                          fontSize: '0.75rem', fontWeight: 700, lineHeight: 1,
+                          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );

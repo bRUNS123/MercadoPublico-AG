@@ -49,6 +49,9 @@ export default function LicitacionDetail({ licitacion, onClose }) {
       compraAgilApi.getCompraAgilPorCodigo(licitacion.CodigoExterno)
         .then(data => {
           if (data?.payload) {
+            console.log('[LicitacionDetail CA] payload keys:', Object.keys(data.payload));
+            console.log('[LicitacionDetail CA] documentos:', data.payload.documentos);
+            console.log('[LicitacionDetail CA] adjuntos:', data.payload.adjuntos);
             setL(adaptCompraAgil(data.payload));
           } else {
             setErrorMsg("No se encontró información detallada en la API de Compra Ágil.");
@@ -68,6 +71,7 @@ export default function LicitacionDetail({ licitacion, onClose }) {
       api.getLicitacionPorCodigo(licitacion.CodigoExterno)
         .then(data => {
           if (data.Listado && data.Listado.length > 0) {
+            console.log('[LicitacionDetail] Adjuntos en respuesta:', data.Listado[0].Adjuntos);
             setL(data.Listado[0]);
           } else {
             setErrorMsg("No se encontró información detallada en la API.");
@@ -82,13 +86,16 @@ export default function LicitacionDetail({ licitacion, onClose }) {
 
   const adjuntos = useMemo(() => {
     if (l._esCompraAgil) {
-      const docs = l._raw?.documentos || l._raw?.adjuntos || [];
-      if (!Array.isArray(docs)) return [];
+      // API no entrega URL de descarga directa — usamos el buscador como fallback
+      const docs = l._raw?.documentos || [];
+      if (!Array.isArray(docs) || docs.length === 0) return [];
+      const fichaUrl = `https://buscador.mercadopublico.cl/ficha?code=${l.CodigoExterno}`;
       return docs.map(d => ({
-        nombre: d.nombre || d.nombre_archivo || d.titulo || 'documento',
-        url: d.url || d.url_archivo || d.enlace || '',
-        tipo: d.tipo_documento || d.tipo || d.descripcion || '',
-      })).filter(d => d.url);
+        nombre: d.nombre || `Documento ${d.id}`,
+        url: fichaUrl,
+        tipo: '',
+        _esFichaFallback: true,
+      }));
     }
     const raw = l.Adjuntos?.Archivos?.Archivo;
     if (!raw) return [];
@@ -97,6 +104,7 @@ export default function LicitacionDetail({ licitacion, onClose }) {
       nombre: a.Nombre || a.NombreArchivo || 'archivo',
       url: a.URL || a.Url || '',
       tipo: a.TipoDocumento || a.Descripcion || '',
+      _esFichaFallback: false,
     })).filter(a => a.url);
   }, [l]);
 
@@ -435,64 +443,90 @@ export default function LicitacionDetail({ licitacion, onClose }) {
           )}
 
           {/* Adjuntos */}
-          {adjuntos.length > 0 && (
-            <div className="detail-section">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                <div className="detail-section-title" style={{ marginBottom: 0 }}>📎 Adjuntos ({adjuntos.length})</div>
-                <button
-                  onClick={descargarZip}
-                  disabled={zipping}
-                  style={{
-                    fontSize: '0.78rem', padding: '5px 14px', borderRadius: 8,
-                    cursor: zipping ? 'default' : 'pointer',
-                    border: '1px solid var(--border-color)',
-                    background: zipping ? 'var(--bg-secondary)' : 'var(--bg-tertiary)',
-                    color: zipping ? 'var(--text-muted)' : 'var(--text-primary)',
-                    display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
-                  }}
-                  title="Descargar todos los adjuntos en un archivo ZIP"
-                >
-                  {zipping ? '⏳ Preparando...' : '📦 Descargar todos (.zip)'}
-                </button>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {adjuntos.map((adj, i) => {
-                  const isPDF = /\.pdf$/i.test(adj.nombre);
-                  const isImg = /\.(jpe?g|png|gif|webp|bmp)$/i.test(adj.nombre);
-                  const icon = isPDF ? '📄' : isImg ? '🖼️' : '📎';
-                  return (
-                    <div key={i} style={{
-                      display: 'flex', alignItems: 'center', gap: 10, padding: '7px 12px',
-                      background: 'var(--bg-tertiary)', borderRadius: 8,
-                      border: '1px solid var(--border-color)', fontSize: '0.83rem',
-                    }}>
-                      <span style={{ fontSize: '1rem', flexShrink: 0 }}>{icon}</span>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {adj.nombre}
+          {adjuntos.length > 0 && (() => {
+            const esFallback = adjuntos[0]?._esFichaFallback;
+            return (
+              <div className="detail-section">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                  <div className="detail-section-title" style={{ marginBottom: 0 }}>📎 Adjuntos ({adjuntos.length})</div>
+                  {!esFallback && (
+                    <button
+                      onClick={descargarZip}
+                      disabled={zipping}
+                      style={{
+                        fontSize: '0.78rem', padding: '5px 14px', borderRadius: 8,
+                        cursor: zipping ? 'default' : 'pointer',
+                        border: '1px solid var(--border-color)',
+                        background: zipping ? 'var(--bg-secondary)' : 'var(--bg-tertiary)',
+                        color: zipping ? 'var(--text-muted)' : 'var(--text-primary)',
+                        display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap',
+                      }}
+                      title="Descargar todos los adjuntos en un archivo ZIP"
+                    >
+                      {zipping ? '⏳ Preparando...' : '📦 Descargar todos (.zip)'}
+                    </button>
+                  )}
+                  {esFallback && (
+                    <a
+                      href={adjuntos[0].url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        fontSize: '0.78rem', padding: '5px 14px', borderRadius: 8,
+                        border: '1px solid var(--border-color)', color: 'var(--accent-primary)',
+                        background: 'var(--bg-tertiary)', textDecoration: 'none', whiteSpace: 'nowrap',
+                      }}
+                    >
+                      ↗ Abrir todos en MercadoPúblico
+                    </a>
+                  )}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {adjuntos.map((adj, i) => {
+                    const isPDF = /\.pdf$/i.test(adj.nombre);
+                    const isImg = /\.(jpe?g|png|gif|webp|bmp)$/i.test(adj.nombre);
+                    const icon = isPDF ? '📄' : isImg ? '🖼️' : '📎';
+                    return (
+                      <div key={i} style={{
+                        display: 'flex', alignItems: 'center', gap: 10, padding: '7px 12px',
+                        background: 'var(--bg-tertiary)', borderRadius: 8,
+                        border: '1px solid var(--border-color)', fontSize: '0.83rem',
+                      }}>
+                        <span style={{ fontSize: '1rem', flexShrink: 0 }}>{icon}</span>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {adj.nombre}
+                          </div>
+                          {adj.tipo && (
+                            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 1 }}>{adj.tipo}</div>
+                          )}
                         </div>
-                        {adj.tipo && (
-                          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 1 }}>{adj.tipo}</div>
+                        {!esFallback && (
+                          <a
+                            href={adj.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              fontSize: '0.75rem', padding: '3px 10px', borderRadius: 6, flexShrink: 0,
+                              border: '1px solid var(--border-color)', color: 'var(--accent-primary)',
+                              background: 'var(--bg-secondary)', textDecoration: 'none', whiteSpace: 'nowrap',
+                            }}
+                          >
+                            ↗ Abrir
+                          </a>
                         )}
                       </div>
-                      <a
-                        href={adj.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          fontSize: '0.75rem', padding: '3px 10px', borderRadius: 6, flexShrink: 0,
-                          border: '1px solid var(--border-color)', color: 'var(--accent-primary)',
-                          background: 'var(--bg-secondary)', textDecoration: 'none', whiteSpace: 'nowrap',
-                        }}
-                      >
-                        ↗ Abrir
-                      </a>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
+                {esFallback && (
+                  <div style={{ fontSize: '0.73rem', color: 'var(--text-muted)', marginTop: 8 }}>
+                    La API no entrega URLs de descarga directa — usa el botón de arriba para abrirlos en MercadoPúblico.
+                  </div>
+                )}
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* Link a MercadoPúblico */}
           {!l._esCompraAgil ? (
