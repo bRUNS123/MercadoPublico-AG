@@ -11,8 +11,14 @@ import useCategoryVotes from '../../hooks/useCategoryVotes';
 import usePatterns from '../../hooks/usePatterns';
 import useSeguimiento from '../../hooks/useSeguimiento';
 
-const CA_ADJUNTO_BASE = 'https://adjunto.mercadopublico.cl/adjunto-compra-agil';
+// adjunto.mercadopublico.cl solo permite CORS desde buscador.mercadopublico.cl.
+// En producción (GitHub Pages) se necesita un proxy. Si VITE_ADJUNTO_PROXY_URL está
+// definida, las peticiones van por ahí sin header (el Worker agrega user_key).
+// En dev, se llama directo con el header (Node/Vite dev server no tiene restricción CORS).
+const CA_ADJUNTO_DIRECT = 'https://adjunto.mercadopublico.cl/adjunto-compra-agil';
 const CA_USER_KEY = '41186b85826e80d1a0d445a6ce67d1a3';
+const CA_PROXY = import.meta.env.VITE_ADJUNTO_PROXY_URL || null;
+const CA_ADJUNTO_BASE = CA_PROXY || CA_ADJUNTO_DIRECT;
 
 const CATEGORIA_COLORS = {
   construccion: { color: '#f97316', bg: 'rgba(249,115,22,0.15)' },
@@ -85,14 +91,15 @@ export default function LicitacionDetail({ licitacion, onClose }) {
     }
   }, [licitacion]);
 
-  // Compra Ágil: obtener lista de adjuntos con UUIDs reales para descarga directa
-  // adjunto.mercadopublico.cl tiene CORS: * — funciona desde cualquier origen sin autenticación de usuario
+  // Compra Ágil: obtener lista de adjuntos con UUIDs reales para descarga directa.
+  // Usa proxy si VITE_ADJUNTO_PROXY_URL está configurada (producción), sino directo (dev).
   useEffect(() => {
     if (!licitacion?._esCompraAgil) return;
     setCaAdjuntos(null);
     setLoadingCaAdjuntos(true);
+    const fetchHeaders = CA_PROXY ? {} : { 'user_key': CA_USER_KEY };
     fetch(`${CA_ADJUNTO_BASE}/v1/adjuntos-compra-agil/listar/${licitacion.CodigoExterno}`, {
-      headers: { 'user_key': CA_USER_KEY },
+      headers: fetchHeaders,
     })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
@@ -135,7 +142,7 @@ export default function LicitacionDetail({ licitacion, onClose }) {
   const descargarAdjunto = async (adj) => {
     if (!adj.url) return;
     try {
-      const fetchOpts = adj._needsHeader ? { headers: { 'user_key': CA_USER_KEY } } : {};
+      const fetchOpts = (adj._needsHeader && !CA_PROXY) ? { headers: { 'user_key': CA_USER_KEY } } : {};
       const res = await fetch(adj.url, fetchOpts);
       if (!res.ok) return;
       const blob = await res.blob();
@@ -178,9 +185,9 @@ export default function LicitacionDetail({ licitacion, onClose }) {
 
       const results = await Promise.allSettled(
         adjuntos.map(async (adj) => {
-          const fetchOpts = adj._needsHeader
+          const fetchOpts = (adj._needsHeader && !CA_PROXY)
             ? { headers: { 'user_key': CA_USER_KEY } }
-            : { mode: 'cors' };
+            : {};
           const res = await fetch(adj.url, fetchOpts);
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const buf = await res.arrayBuffer();
