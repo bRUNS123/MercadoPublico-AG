@@ -11,6 +11,9 @@ import useCategoryVotes from '../../hooks/useCategoryVotes';
 import usePatterns from '../../hooks/usePatterns';
 import useSeguimiento from '../../hooks/useSeguimiento';
 
+const CA_ADJUNTO_BASE = 'https://adjunto.mercadopublico.cl/adjunto-compra-agil';
+const CA_USER_KEY = '41186b85826e80d1a0d445a6ce67d1a3';
+
 const CATEGORIA_COLORS = {
   construccion: { color: '#f97316', bg: 'rgba(249,115,22,0.15)' },
   ingenieria:   { color: '#3b82f6', bg: 'rgba(59,130,246,0.2)' },
@@ -26,6 +29,8 @@ export default function LicitacionDetail({ licitacion, onClose }) {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [zipping, setZipping] = useState(false);
+  const [caAdjuntos, setCaAdjuntos] = useState(null);
+  const [loadingCaAdjuntos, setLoadingCaAdjuntos] = useState(false);
   const { favoritos, rateLicitacion } = useFavoritos();
   const { catVotes, voteCategory, getVotes } = useCategoryVotes();
   const { seguimiento, setEstadoSeguimiento } = useSeguimiento();
@@ -49,9 +54,6 @@ export default function LicitacionDetail({ licitacion, onClose }) {
       compraAgilApi.getCompraAgilPorCodigo(licitacion.CodigoExterno)
         .then(data => {
           if (data?.payload) {
-            console.log('[LicitacionDetail CA] payload keys:', Object.keys(data.payload));
-            console.log('[LicitacionDetail CA] documentos:', data.payload.documentos);
-            console.log('[LicitacionDetail CA] adjuntos:', data.payload.adjuntos);
             setL(adaptCompraAgil(data.payload));
           } else {
             setErrorMsg("No se encontró información detallada en la API de Compra Ágil.");
@@ -71,7 +73,6 @@ export default function LicitacionDetail({ licitacion, onClose }) {
       api.getLicitacionPorCodigo(licitacion.CodigoExterno)
         .then(data => {
           if (data.Listado && data.Listado.length > 0) {
-            console.log('[LicitacionDetail] Adjuntos en respuesta:', data.Listado[0].Adjuntos);
             setL(data.Listado[0]);
           } else {
             setErrorMsg("No se encontró información detallada en la API.");
@@ -84,17 +85,40 @@ export default function LicitacionDetail({ licitacion, onClose }) {
     }
   }, [licitacion]);
 
+  // Compra Ágil: obtener lista de adjuntos con UUIDs reales para descarga directa
+  // adjunto.mercadopublico.cl tiene CORS: * — funciona desde cualquier origen sin autenticación de usuario
+  useEffect(() => {
+    if (!licitacion?._esCompraAgil) return;
+    setCaAdjuntos(null);
+    setLoadingCaAdjuntos(true);
+    fetch(`${CA_ADJUNTO_BASE}/v1/adjuntos-compra-agil/listar/${licitacion.CodigoExterno}`, {
+      headers: { 'user_key': CA_USER_KEY },
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        const files = data?.payload?.files || [];
+        setCaAdjuntos(files.map(f => ({
+          nombre: f.nombreArchivo || 'Documento',
+          url: `${CA_ADJUNTO_BASE}/v1/adjuntos-compra-agil/descargar/${f.id}`,
+        })));
+      })
+      .catch(() => setCaAdjuntos([]))
+      .finally(() => setLoadingCaAdjuntos(false));
+  }, [licitacion?.CodigoExterno, licitacion?._esCompraAgil]);
+
   const adjuntos = useMemo(() => {
     if (l._esCompraAgil) {
-      // API no entrega URL de descarga directa — usamos el buscador como fallback
+      // Si ya tenemos los UUIDs reales del endpoint /listar, usarlos con descarga directa
+      if (caAdjuntos && caAdjuntos.length > 0) {
+        return caAdjuntos.map(a => ({ ...a, tipo: '', _needsHeader: true, _esFichaFallback: false }));
+      }
+      // Fallback: mostrar nombres del snapshot sin URL real
       const docs = l._raw?.documentos || [];
       if (!Array.isArray(docs) || docs.length === 0) return [];
-      const fichaUrl = `https://buscador.mercadopublico.cl/ficha?code=${l.CodigoExterno}`;
       return docs.map(d => ({
         nombre: d.nombre || `Documento ${d.id}`,
-        url: fichaUrl,
-        tipo: '',
-        _esFichaFallback: true,
+        url: `https://buscador.mercadopublico.cl/ficha?code=${l.CodigoExterno}`,
+        tipo: '', _needsHeader: false, _esFichaFallback: true,
       }));
     }
     const raw = l.Adjuntos?.Archivos?.Archivo;
@@ -104,9 +128,29 @@ export default function LicitacionDetail({ licitacion, onClose }) {
       nombre: a.Nombre || a.NombreArchivo || 'archivo',
       url: a.URL || a.Url || '',
       tipo: a.TipoDocumento || a.Descripcion || '',
-      _esFichaFallback: false,
+      _needsHeader: false, _esFichaFallback: false,
     })).filter(a => a.url);
-  }, [l]);
+  }, [l, caAdjuntos]);
+
+  const descargarAdjunto = async (adj) => {
+    if (!adj.url) return;
+    try {
+      const fetchOpts = adj._needsHeader ? { headers: { 'user_key': CA_USER_KEY } } : {};
+      const res = await fetch(adj.url, fetchOpts);
+      if (!res.ok) return;
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = adj.nombre;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+    } catch (err) {
+      console.error('Error al descargar adjunto:', err);
+    }
+  };
 
   const descargarZip = async () => {
     if (!adjuntos.length || zipping) return;
@@ -134,7 +178,10 @@ export default function LicitacionDetail({ licitacion, onClose }) {
 
       const results = await Promise.allSettled(
         adjuntos.map(async (adj) => {
-          const res = await fetch(adj.url, { mode: 'cors' });
+          const fetchOpts = adj._needsHeader
+            ? { headers: { 'user_key': CA_USER_KEY } }
+            : { mode: 'cors' };
+          const res = await fetch(adj.url, fetchOpts);
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const buf = await res.arrayBuffer();
           return { nombre: adj.nombre, data: new Uint8Array(buf) };
@@ -443,13 +490,16 @@ export default function LicitacionDetail({ licitacion, onClose }) {
           )}
 
           {/* Adjuntos */}
-          {adjuntos.length > 0 && (() => {
-            const esFallback = adjuntos[0]?._esFichaFallback;
+          {(loadingCaAdjuntos || adjuntos.length > 0) && (() => {
+            const esFallback = !loadingCaAdjuntos && adjuntos[0]?._esFichaFallback;
+            const tieneDescargaReal = !loadingCaAdjuntos && !esFallback && adjuntos.length > 0;
             return (
               <div className="detail-section">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                  <div className="detail-section-title" style={{ marginBottom: 0 }}>📎 Adjuntos ({adjuntos.length})</div>
-                  {!esFallback && (
+                  <div className="detail-section-title" style={{ marginBottom: 0 }}>
+                    📎 Adjuntos {!loadingCaAdjuntos && `(${adjuntos.length})`}
+                  </div>
+                  {tieneDescargaReal && (
                     <button
                       onClick={descargarZip}
                       disabled={zipping}
@@ -468,7 +518,7 @@ export default function LicitacionDetail({ licitacion, onClose }) {
                   )}
                   {esFallback && (
                     <a
-                      href={adjuntos[0].url}
+                      href={`https://buscador.mercadopublico.cl/ficha?code=${l.CodigoExterno}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
@@ -477,51 +527,68 @@ export default function LicitacionDetail({ licitacion, onClose }) {
                         background: 'var(--bg-tertiary)', textDecoration: 'none', whiteSpace: 'nowrap',
                       }}
                     >
-                      ↗ Abrir todos en MercadoPúblico
+                      ↗ Abrir en MercadoPúblico
                     </a>
                   )}
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  {adjuntos.map((adj, i) => {
-                    const isPDF = /\.pdf$/i.test(adj.nombre);
-                    const isImg = /\.(jpe?g|png|gif|webp|bmp)$/i.test(adj.nombre);
-                    const icon = isPDF ? '📄' : isImg ? '🖼️' : '📎';
-                    return (
-                      <div key={i} style={{
-                        display: 'flex', alignItems: 'center', gap: 10, padding: '7px 12px',
-                        background: 'var(--bg-tertiary)', borderRadius: 8,
-                        border: '1px solid var(--border-color)', fontSize: '0.83rem',
-                      }}>
-                        <span style={{ fontSize: '1rem', flexShrink: 0 }}>{icon}</span>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {adj.nombre}
+                {loadingCaAdjuntos ? (
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', padding: '8px 0' }}>
+                    ⏳ Cargando adjuntos...
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {adjuntos.map((adj, i) => {
+                      const isPDF = /\.pdf$/i.test(adj.nombre);
+                      const isImg = /\.(jpe?g|png|gif|webp|bmp)$/i.test(adj.nombre);
+                      const icon = isPDF ? '📄' : isImg ? '🖼️' : '📎';
+                      return (
+                        <div key={i} style={{
+                          display: 'flex', alignItems: 'center', gap: 10, padding: '7px 12px',
+                          background: 'var(--bg-tertiary)', borderRadius: 8,
+                          border: '1px solid var(--border-color)', fontSize: '0.83rem',
+                        }}>
+                          <span style={{ fontSize: '1rem', flexShrink: 0 }}>{icon}</span>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {adj.nombre}
+                            </div>
+                            {adj.tipo && (
+                              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 1 }}>{adj.tipo}</div>
+                            )}
                           </div>
-                          {adj.tipo && (
-                            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 1 }}>{adj.tipo}</div>
-                          )}
+                          {adj._needsHeader ? (
+                            <button
+                              onClick={() => descargarAdjunto(adj)}
+                              style={{
+                                fontSize: '0.75rem', padding: '3px 10px', borderRadius: 6, flexShrink: 0,
+                                border: '1px solid var(--border-color)', color: 'var(--accent-primary)',
+                                background: 'var(--bg-secondary)', cursor: 'pointer', whiteSpace: 'nowrap',
+                              }}
+                            >
+                              ↓ Descargar
+                            </button>
+                          ) : !esFallback ? (
+                            <a
+                              href={adj.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{
+                                fontSize: '0.75rem', padding: '3px 10px', borderRadius: 6, flexShrink: 0,
+                                border: '1px solid var(--border-color)', color: 'var(--accent-primary)',
+                                background: 'var(--bg-secondary)', textDecoration: 'none', whiteSpace: 'nowrap',
+                              }}
+                            >
+                              ↗ Abrir
+                            </a>
+                          ) : null}
                         </div>
-                        {!esFallback && (
-                          <a
-                            href={adj.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{
-                              fontSize: '0.75rem', padding: '3px 10px', borderRadius: 6, flexShrink: 0,
-                              border: '1px solid var(--border-color)', color: 'var(--accent-primary)',
-                              background: 'var(--bg-secondary)', textDecoration: 'none', whiteSpace: 'nowrap',
-                            }}
-                          >
-                            ↗ Abrir
-                          </a>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
+                      );
+                    })}
+                  </div>
+                )}
                 {esFallback && (
                   <div style={{ fontSize: '0.73rem', color: 'var(--text-muted)', marginTop: 8 }}>
-                    La API no entrega URLs de descarga directa — usa el botón de arriba para abrirlos en MercadoPúblico.
+                    No se pudo obtener la URL de descarga directa — usa el botón de arriba para verlos en MercadoPúblico.
                   </div>
                 )}
               </div>

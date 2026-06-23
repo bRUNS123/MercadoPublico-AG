@@ -234,7 +234,7 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                 Pts.{getSortIndicator('_rating')}
               </th>
               <th style={{ textAlign: 'center', width: 110 }} title="Estado de seguimiento">Seguimiento</th>
-              <th style={{ textAlign: 'center', width: 70 }} title="Acciones rápidas"></th>
+              <th style={{ textAlign: 'center', width: 90 }} title="Acciones rápidas"></th>
             </tr>
           </thead>
           <tbody>
@@ -341,25 +341,6 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                           </span>
                         );
                       })()}
-
-                      {/* Badge de adjuntos (Compra Ágil) */}
-                      {l._esCompraAgil && (l._raw?.documentos?.length > 0) && (
-                        <a
-                          href={`https://buscador.mercadopublico.cl/ficha?code=${l.CodigoExterno}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          title={`${l._raw.documentos.length} adjunto${l._raw.documentos.length !== 1 ? 's' : ''} — abrir en MercadoPúblico`}
-                          style={{
-                            display: 'inline-flex', alignItems: 'center', gap: 3,
-                            fontSize: '0.63rem', padding: '1px 6px', borderRadius: 10,
-                            background: 'rgba(59,130,246,0.12)', color: '#60a5fa',
-                            border: '1px solid rgba(59,130,246,0.35)', textDecoration: 'none',
-                          }}
-                        >
-                          📎 {l._raw.documentos.length}
-                        </a>
-                      )}
 
                       {/* Botón para expandir/colapsar panel de votación completo */}
                       <button
@@ -474,6 +455,21 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                   </td>
                   <td onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                      {l._esCompraAgil && (l._raw?.documentos?.length > 0) && (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); onSelect?.(l); }}
+                          title={`${l._raw.documentos.length} adjunto${l._raw.documentos.length !== 1 ? 's' : ''} — abrir para descargar`}
+                          style={{
+                            width: 26, height: 26, borderRadius: '50%', cursor: 'pointer',
+                            border: '1px solid rgba(59,130,246,0.4)',
+                            background: 'rgba(59,130,246,0.1)', color: '#60a5fa',
+                            fontSize: '0.75rem', lineHeight: 1,
+                            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                          }}
+                        >
+                          📎
+                        </button>
+                      )}
                       <a
                         href={l._esCompraAgil
                           ? `https://buscador.mercadopublico.cl/ficha?code=${l.CodigoExterno}`
