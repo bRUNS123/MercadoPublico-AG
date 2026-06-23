@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { CATEGORIAS_INTERES, SEGUIMIENTO_ESTADOS } from '../../utils/constants';
 import StatusBadge from '../Common/StatusBadge';
 import { getMontoInteligente, formatFechaCorta, diasRestantes, truncate, getCategoryMatches } from '../../utils/formatters';
@@ -56,6 +56,172 @@ const CATEGORIA_COLORS = {
   suministros:  { color: '#94a3b8', bg: 'rgba(148,163,184,0.15)' },
 };
 const _CAT_FALLBACK = { color: '#64748b', bg: 'rgba(100,116,139,0.15)' };
+
+const CA_PROXY = import.meta.env.VITE_ADJUNTO_PROXY_URL || null;
+const CA_ADJUNTO_BASE = CA_PROXY || 'https://adjunto.mercadopublico.cl/adjunto-compra-agil';
+const CA_USER_KEY = '41186b85826e80d1a0d445a6ce67d1a3';
+
+function AdjuntosDropdown({ l }) {
+  const [open, setOpen] = useState(false);
+  const [files, setFiles] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [zipping, setZipping] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const fetchFiles = async () => {
+    if (files !== null) return;
+    setLoading(true);
+    try {
+      const headers = CA_PROXY ? {} : { 'user_key': CA_USER_KEY };
+      const r = await fetch(`${CA_ADJUNTO_BASE}/v1/adjuntos-compra-agil/listar/${l.CodigoExterno}`, { headers });
+      const data = r.ok ? await r.json() : null;
+      const apiFiles = data?.payload?.files || [];
+      if (apiFiles.length > 0) {
+        setFiles(apiFiles.map(f => ({
+          nombre: f.nombreArchivo || 'Documento',
+          url: `${CA_ADJUNTO_BASE}/v1/adjuntos-compra-agil/descargar/${f.id}`,
+        })));
+      } else {
+        setFiles((l._raw?.documentos || []).map(d => ({ nombre: d.nombre || `Documento ${d.id}`, url: null })));
+      }
+    } catch {
+      setFiles((l._raw?.documentos || []).map(d => ({ nombre: d.nombre || `Documento ${d.id}`, url: null })));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggle = (e) => {
+    e.stopPropagation();
+    if (!open) fetchFiles();
+    setOpen(o => !o);
+  };
+
+  const downloadFile = async (e, file) => {
+    e.stopPropagation();
+    if (!file.url) return;
+    const opts = CA_PROXY ? {} : { headers: { 'user_key': CA_USER_KEY } };
+    const res = await fetch(file.url, opts);
+    if (!res.ok) return;
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl; a.download = file.nombre;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+  };
+
+  const downloadAll = async (e) => {
+    e.stopPropagation();
+    if (!files?.length || zipping) return;
+    setZipping(true);
+    try {
+      const { zip } = await import('fflate');
+      const results = await Promise.allSettled(files.map(async f => {
+        if (!f.url) throw new Error('no url');
+        const opts = CA_PROXY ? {} : { headers: { 'user_key': CA_USER_KEY } };
+        const res = await fetch(f.url, opts);
+        if (!res.ok) throw new Error('fetch failed');
+        return { nombre: f.nombre, data: new Uint8Array(await res.arrayBuffer()) };
+      }));
+      const entries = {};
+      results.forEach(r => { if (r.status === 'fulfilled') entries[r.value.nombre] = [r.value.data, { level: 0 }]; });
+      const zipped = await new Promise((resolve, reject) => zip(entries, (err, d) => err ? reject(err) : resolve(d)));
+      const blobUrl = URL.createObjectURL(new Blob([zipped], { type: 'application/zip' }));
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = `${l.CodigoExterno} - ${(l.Nombre || '').replace(/[<>:"/\\|?*]/g, '_').slice(0, 60)}.zip`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
+    } finally {
+      setZipping(false);
+    }
+  };
+
+  const docCount = l._raw?.documentos?.length || 0;
+  if (!docCount) return null;
+
+  const fileIcon = (nombre) => /\.pdf$/i.test(nombre) ? '📄' : /\.docx?$/i.test(nombre) ? '📝' : /\.xlsx?$/i.test(nombre) ? '📊' : '📎';
+
+  return (
+    <div ref={ref} style={{ position: 'relative' }} onClick={e => e.stopPropagation()}>
+      <button
+        onClick={handleToggle}
+        title={`${docCount} adjunto${docCount !== 1 ? 's' : ''} — descargar`}
+        style={{
+          width: 26, height: 26, borderRadius: '50%', cursor: 'pointer',
+          border: `1px solid rgba(59,130,246,${open ? '0.8' : '0.4'})`,
+          background: open ? 'rgba(59,130,246,0.25)' : 'rgba(59,130,246,0.1)',
+          color: '#60a5fa', fontSize: '0.75rem', lineHeight: 1,
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        }}
+      >📎</button>
+
+      {open && (
+        <div style={{
+          position: 'absolute', right: 0, top: 30, zIndex: 200,
+          background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+          borderRadius: 8, boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
+          minWidth: 230, maxWidth: 320,
+        }}>
+          <button
+            onClick={downloadAll}
+            disabled={zipping || loading || !files?.length}
+            style={{
+              width: '100%', padding: '9px 12px', textAlign: 'left',
+              border: 'none', borderBottom: '1px solid var(--border-color)',
+              background: 'transparent',
+              color: (zipping || loading || !files?.length) ? 'var(--text-muted)' : 'var(--text-primary)',
+              cursor: (zipping || loading || !files?.length) ? 'default' : 'pointer',
+              fontSize: '0.82rem', fontWeight: 600, borderRadius: '8px 8px 0 0',
+            }}
+          >
+            {zipping ? '⏳ Preparando ZIP...' : '📦 Descargar todo (.zip)'}
+          </button>
+
+          {loading && (
+            <div style={{ padding: '10px 12px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+              ⏳ Cargando archivos...
+            </div>
+          )}
+
+          {!loading && (files || []).map((f, i) => (
+            <button
+              key={i}
+              onClick={e => downloadFile(e, f)}
+              disabled={!f.url}
+              style={{
+                width: '100%', padding: '7px 12px', textAlign: 'left',
+                border: 'none',
+                borderBottom: i < (files.length - 1) ? '1px solid var(--border-color)' : 'none',
+                background: 'transparent',
+                cursor: f.url ? 'pointer' : 'default',
+                color: f.url ? 'var(--text-secondary)' : 'var(--text-muted)',
+                fontSize: '0.78rem',
+                borderRadius: i === files.length - 1 ? '0 0 8px 8px' : 0,
+                display: 'flex', alignItems: 'center', gap: 6,
+              }}
+            >
+              <span style={{ flexShrink: 0 }}>{fileIcon(f.nombre)}</span>
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                {f.nombre}
+              </span>
+              {f.url && <span style={{ color: '#60a5fa', fontSize: '0.7rem', flexShrink: 0 }}>↓</span>}
+              {!f.url && <span style={{ color: 'var(--text-muted)', fontSize: '0.68rem', flexShrink: 0 }}>sin URL</span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const PAGE_SIZE = 15;
 
@@ -455,21 +621,7 @@ export default function LicitacionesTable({ licitaciones = [], onSelect, title =
                   </td>
                   <td onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                      {l._esCompraAgil && (l._raw?.documentos?.length > 0) && (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); onSelect?.(l); }}
-                          title={`${l._raw.documentos.length} adjunto${l._raw.documentos.length !== 1 ? 's' : ''} — abrir para descargar`}
-                          style={{
-                            width: 26, height: 26, borderRadius: '50%', cursor: 'pointer',
-                            border: '1px solid rgba(59,130,246,0.4)',
-                            background: 'rgba(59,130,246,0.1)', color: '#60a5fa',
-                            fontSize: '0.75rem', lineHeight: 1,
-                            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                          }}
-                        >
-                          📎
-                        </button>
-                      )}
+                      {l._esCompraAgil && <AdjuntosDropdown l={l} />}
                       <a
                         href={l._esCompraAgil
                           ? `https://buscador.mercadopublico.cl/ficha?code=${l.CodigoExterno}`
