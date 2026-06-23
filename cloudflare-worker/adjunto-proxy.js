@@ -46,7 +46,7 @@ export default {
     }
 
     const url = new URL(request.url);
-    const targetUrl = TARGET + '/v1/adjuntos-compra-agil' + url.pathname + url.search;
+    const targetUrl = TARGET + url.pathname + url.search;
 
     const upstream = await fetch(targetUrl, {
       headers: { 'user_key': USER_KEY },
