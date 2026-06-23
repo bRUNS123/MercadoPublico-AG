@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { CATEGORIAS_INTERES, SEGUIMIENTO_ESTADOS } from '../../utils/constants';
 import StatusBadge from '../Common/StatusBadge';
 import { getMontoInteligente, formatFechaCorta, diasRestantes, truncate, getCategoryMatches } from '../../utils/formatters';
@@ -175,7 +176,7 @@ function AdjuntosDropdown({ l }) {
         }}
       >📎</button>
 
-      {open && (
+      {open && createPortal(
         <div
           ref={panelRef}
           onClick={e => e.stopPropagation()}
@@ -239,7 +240,7 @@ function AdjuntosDropdown({ l }) {
             </button>
           ))}
         </div>
-      )}
+      , document.body)}
     </>
   );
 }
