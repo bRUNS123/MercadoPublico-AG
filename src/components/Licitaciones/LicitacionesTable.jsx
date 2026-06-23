@@ -63,14 +63,20 @@ const CA_USER_KEY = '41186b85826e80d1a0d445a6ce67d1a3';
 
 function AdjuntosDropdown({ l }) {
   const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
   const [files, setFiles] = useState(null);
   const [loading, setLoading] = useState(false);
   const [zipping, setZipping] = useState(false);
-  const ref = useRef(null);
+  const btnRef = useRef(null);
+  const panelRef = useRef(null);
 
   useEffect(() => {
     if (!open) return;
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    const handler = (e) => {
+      if (btnRef.current?.contains(e.target)) return;
+      if (panelRef.current?.contains(e.target)) return;
+      setOpen(false);
+    };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [open]);
@@ -100,7 +106,11 @@ function AdjuntosDropdown({ l }) {
 
   const handleToggle = (e) => {
     e.stopPropagation();
-    if (!open) fetchFiles();
+    if (!open) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setPos({ top: rect.bottom + 4, left: rect.right });
+      fetchFiles();
+    }
     setOpen(o => !o);
   };
 
@@ -151,8 +161,9 @@ function AdjuntosDropdown({ l }) {
   const fileIcon = (nombre) => /\.pdf$/i.test(nombre) ? '📄' : /\.docx?$/i.test(nombre) ? '📝' : /\.xlsx?$/i.test(nombre) ? '📊' : '📎';
 
   return (
-    <div ref={ref} style={{ position: 'relative' }} onClick={e => e.stopPropagation()}>
+    <>
       <button
+        ref={btnRef}
         onClick={handleToggle}
         title={`${docCount} adjunto${docCount !== 1 ? 's' : ''} — descargar`}
         style={{
@@ -165,12 +176,22 @@ function AdjuntosDropdown({ l }) {
       >📎</button>
 
       {open && (
-        <div style={{
-          position: 'absolute', right: 0, top: 30, zIndex: 200,
-          background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
-          borderRadius: 8, boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-          minWidth: 230, maxWidth: 320,
-        }}>
+        <div
+          ref={panelRef}
+          onClick={e => e.stopPropagation()}
+          style={{
+            position: 'fixed',
+            top: pos.top,
+            left: pos.left,
+            transform: 'translateX(-100%)',
+            zIndex: 9999,
+            background: 'var(--bg-secondary)',
+            border: '1px solid var(--border-color)',
+            borderRadius: 8,
+            boxShadow: '0 4px 24px rgba(0,0,0,0.6)',
+            minWidth: 240, maxWidth: 320,
+          }}
+        >
           <button
             onClick={downloadAll}
             disabled={zipping || loading || !files?.length}
@@ -219,7 +240,7 @@ function AdjuntosDropdown({ l }) {
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 }
 
