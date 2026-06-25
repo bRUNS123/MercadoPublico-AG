@@ -1,0 +1,13 @@
+# Configuración para desplegar el proxy del Escritorio de Proveedor.
+#
+# Despliegue:
+#   cd cloudflare-worker
+#   npx --yes wrangler@latest deploy oportunidades-proxy.js --name mp-oportunidades-proxy
+#
+# La primera vez wrangler pide login (abre el navegador con tu cuenta Cloudflare).
+# Al terminar imprime la URL pública (https://mp-oportunidades-proxy.<tu>.workers.dev);
+# ponla en .env.local como VITE_OPORTUNIDADES_PROXY_URL.
+
+name = "mp-oportunidades-proxy"
+main = "oportunidades-proxy.js"
+compatibility_date = "2026-01-01"

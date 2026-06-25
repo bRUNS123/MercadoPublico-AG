@@ -63,6 +63,13 @@ export default function MiMercadoPublicoPage() {
     return g;
   }, [procesos]);
 
+  const kpis = useMemo(() => [
+    { label: 'Total procesos', value: procesos.length, icon: '📊', bg: 'rgba(14,165,233,0.15)' },
+    { label: 'En juego', value: porColumna.pendiente.length + porColumna.abiertos.length, icon: '🔄', bg: 'rgba(34,197,94,0.15)', detail: 'pendientes + abiertos' },
+    { label: 'Esperando resultados', value: porColumna.cerrados.length, icon: '⏳', bg: 'rgba(234,179,8,0.15)' },
+    { label: 'Con resultados', value: porColumna.resultados.length, icon: '🏆', bg: 'rgba(59,130,246,0.15)' },
+  ], [procesos, porColumna]);
+
   function handleImport() {
     const res = parseMisProcesos(pegado);
     if (!res.ok) { setImportError(res.error); return; }
@@ -190,6 +197,17 @@ export default function MiMercadoPublicoPage() {
             </div>
           </div>
         ) : (
+          <>
+          <div className="kpi-grid" style={{ padding: '0 24px', marginBottom: 16 }}>
+            {kpis.map((k, i) => (
+              <div className="kpi-card" key={i}>
+                <div className="kpi-icon" style={{ background: k.bg }}>{k.icon}</div>
+                <div className="kpi-label">{k.label}</div>
+                <div className="kpi-value">{k.value}</div>
+                {k.detail && <div className="kpi-detail">{k.detail}</div>}
+              </div>
+            ))}
+          </div>
           <div style={{ padding: '0 24px 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
             {COLUMNAS_ORDEN.map(col => {
               const cfg = PROCESO_COLUMNAS[col];
@@ -212,6 +230,7 @@ export default function MiMercadoPublicoPage() {
               );
             })}
           </div>
+          </>
         )}
 
         {/* ─── Modal de importación ─── */}
