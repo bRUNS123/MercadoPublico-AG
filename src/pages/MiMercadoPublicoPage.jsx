@@ -13,13 +13,13 @@ function ProcesoCard({ p }) {
         {url ? <a href={url} target="_blank" rel="noreferrer" style={{ color: 'inherit' }}>{p.codigo}</a> : p.codigo}
       </div>
       <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)', lineHeight: 1.35 }}>{p.nombre}</div>
-      {(p.organismo !== '—' || p.fechaCierre || p.monto) && (
-        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 6, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          {p.organismo !== '—' && <span>🏢 {p.organismo}</span>}
-          {p.fechaCierre && <span>📅 {formatFechaCorta(p.fechaCierre)}</span>}
-          {p.monto ? <span>💰 {formatMonto(p.monto, p.moneda)}</span> : null}
-        </div>
-      )}
+      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 6, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+        {p.estadoLabel && <span>🏷️ {p.estadoLabel}</span>}
+        {p.organismo !== '—' && <span>🏢 {p.organismo}</span>}
+        {p.fechaCierre && <span>📅 Cierre {formatFechaCorta(p.fechaCierre)}</span>}
+        {p.monto ? <span>💰 {formatMonto(p.monto, p.moneda)}</span> : null}
+        {p.mecanismo && <span style={{ opacity: 0.7 }}>{p.mecanismo}</span>}
+      </div>
     </div>
   );
 }
