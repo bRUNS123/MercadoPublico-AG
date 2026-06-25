@@ -23,6 +23,14 @@ const RESULTADO_CFG = {
   no_adjudicada: { label: '❌ No adjudicada', color: '#ef4444', bg: 'rgba(239,68,68,0.15)' },
 };
 
+// Preferencias de UI (semáforo de columnas, orden y filtros) persistidas localmente.
+const PREFS_KEY = 'mp_mis_prefs';
+const DEF_ORDEN = { pendiente: 'cierre_desc', abiertos: 'cierre_desc', cerrados: 'cierre_desc', resultados: 'resultado_desc' };
+const DEF_VIS = { pendiente: true, abiertos: true, cerrados: true, resultados: true };
+function loadPrefs() {
+  try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; } catch { return {}; }
+}
+
 function ProcesoCard({ p, esResultado, anotacion, onAnotar, autoResultado }) {
   const url = urlProceso(p.codigo, p.mecanismo === 'Compra Ágil' || p.raw?.tipo === 'compra_agil');
   const [hover, setHover] = useState(false);
@@ -134,12 +142,17 @@ function ProcesoCard({ p, esResultado, anotacion, onAnotar, autoResultado }) {
 
 export default function MiMercadoPublicoPage() {
   const { procesos, meta, anotaciones, setAnotacion, importarProcesos, fusionarProcesos, limpiar, setEmpresa } = useMisOfertas();
-  const [fResultado, setFResultado] = useState('todas'); // todas|adjudicada|no_adjudicada|sin
-  const [fFecha, setFFecha] = useState('todas');         // todas|hoy|7|30
-  // Orden independiente por columna
-  const [ordenCol, setOrdenCol] = useState({ pendiente: 'cierre_desc', abiertos: 'cierre_desc', cerrados: 'cierre_desc', resultados: 'resultado_desc' });
-  // Visibilidad de columnas (semáforo)
-  const [colsVisibles, setColsVisibles] = useState({ pendiente: true, abiertos: true, cerrados: true, resultados: true });
+  const [fResultado, setFResultado] = useState(() => loadPrefs().fResultado || 'todas'); // todas|adjudicada|no_adjudicada|sin
+  const [fFecha, setFFecha] = useState(() => loadPrefs().fFecha || 'todas');             // todas|hoy|7|30
+  // Orden independiente por columna (persistido)
+  const [ordenCol, setOrdenCol] = useState(() => ({ ...DEF_ORDEN, ...(loadPrefs().ordenCol || {}) }));
+  // Visibilidad de columnas — semáforo (persistido)
+  const [colsVisibles, setColsVisibles] = useState(() => ({ ...DEF_VIS, ...(loadPrefs().colsVisibles || {}) }));
+
+  // Guarda las preferencias de UI cada vez que cambian.
+  useEffect(() => {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ ordenCol, colsVisibles, fResultado, fFecha }));
+  }, [ordenCol, colsVisibles, fResultado, fFecha]);
   const [autoAdj, setAutoAdj] = useState({});            // adjudicaciones detectadas por el script (notebook)
   const [showImport, setShowImport] = useState(false);
   const [showGuia, setShowGuia] = useState(false);
