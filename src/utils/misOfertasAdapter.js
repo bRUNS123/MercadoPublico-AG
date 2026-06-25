@@ -104,11 +104,14 @@ export function normalizeProceso(raw, columnaForzada) {
   };
 }
 
-// URL pública de detalle. Las cotizaciones de Compra Ágil (COT) no tienen
-// ficha pública estable por código, así que no se enlazan.
-export function urlProceso(codigo) {
-  if (!codigo || codigo === '—' || codigo.includes('COT')) return null;
-  return `https://www.mercadopublico.cl/Procurement/Modules/RFB/DetailsAcquisition.aspx?qs=${encodeURIComponent(codigo)}`;
+// URL pública de detalle. Usa los mismos patrones que el resto de la app:
+// Compra Ágil → ficha del buscador; licitaciones → DetailsAcquisition.
+export function urlProceso(codigo, esCompraAgil) {
+  if (!codigo || codigo === '—') return null;
+  if (esCompraAgil || codigo.includes('COT')) {
+    return `https://buscador.mercadopublico.cl/ficha?code=${encodeURIComponent(codigo)}`;
+  }
+  return `https://www.mercadopublico.cl/Procurement/Modules/RFB/DetailsAcquisition.aspx?idlicitacion=${encodeURIComponent(codigo)}`;
 }
 
 /**

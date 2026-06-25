@@ -6,11 +6,14 @@ import { formatFecha, formatFechaCorta, formatMonto } from '../utils/formatters'
 import { getToken, setToken as saveToken, tokenInfo, fetchOportunidades } from '../api/miEscritorio';
 
 function ProcesoCard({ p }) {
-  const url = urlProceso(p.codigo);
-  return (
-    <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 10, padding: '10px 12px', marginBottom: 8 }}>
-      <div style={{ fontWeight: 700, fontSize: '0.78rem', color: 'var(--accent-primary)', marginBottom: 4 }}>
-        {url ? <a href={url} target="_blank" rel="noreferrer" style={{ color: 'inherit' }}>{p.codigo}</a> : p.codigo}
+  const url = urlProceso(p.codigo, p.mecanismo === 'Compra Ágil' || p.raw?.tipo === 'compra_agil');
+  const [hover, setHover] = useState(false);
+
+  const inner = (
+    <>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: '0.78rem', color: 'var(--accent-primary)', marginBottom: 4 }}>
+        {p.codigo}
+        {url && <span style={{ fontSize: '0.72rem', opacity: hover ? 1 : 0.45 }}>↗</span>}
       </div>
       <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)', lineHeight: 1.35 }}>{p.nombre}</div>
       <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 6, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
@@ -20,7 +23,37 @@ function ProcesoCard({ p }) {
         {p.monto ? <span>💰 {formatMonto(p.monto, p.moneda)}</span> : null}
         {p.mecanismo && <span style={{ opacity: 0.7 }}>{p.mecanismo}</span>}
       </div>
-    </div>
+    </>
+  );
+
+  const baseStyle = {
+    display: 'block',
+    background: 'var(--bg-secondary)',
+    border: `1px solid ${hover && url ? 'var(--accent-primary)' : 'var(--border-color)'}`,
+    borderRadius: 10,
+    padding: '10px 12px',
+    marginBottom: 8,
+    textDecoration: 'none',
+    color: 'inherit',
+    transition: 'border-color .15s, transform .15s',
+    transform: hover && url ? 'translateY(-1px)' : 'none',
+  };
+
+  if (!url) {
+    return <div style={{ ...baseStyle, cursor: 'default' }}>{inner}</div>;
+  }
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      title="Abrir en MercadoPúblico"
+      style={{ ...baseStyle, cursor: 'pointer' }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {inner}
+    </a>
   );
 }
 

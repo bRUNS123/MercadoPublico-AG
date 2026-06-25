@@ -1,1 +1,16 @@
-{}
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"live data/compra-agil HTTP %{http_code}\\\\n\" \"https://bruns123.github.io/MercadoPublico-AG/data/compra-agil-snapshot.json\")",
+      "Bash(curl -s -m 20 \"https://api2.mercadopublico.cl/v2/compra-agil?estado=publicada&tamano_pagina=2&numero_pagina=1\" -H \"ticket: 25D6C503-FA30-48BD-86FA-0A1D74D54254\" -w \"\\\\n[HTTP %{http_code}]\\\\n\")",
+      "Bash(curl -s -m 30 \"https://api2.mercadopublico.cl/v2/compra-agil?estado=publicada&tamano_pagina=10&numero_pagina=1\" -H \"ticket: 25D6C503-FA30-48BD-86FA-0A1D74D54254\" -w \"\\\\n[HTTP %{http_code}]\\\\n\")",
+      "Bash(ls -la public/data/)",
+      "Bash(ls -la public/data/compra-agil-publicada.json)",
+      "Bash(wc -c)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" \"https://bruns123.github.io/MercadoPublico-AG/data/compra-agil-publicada.json\")",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} · tamaño %{size_download} bytes\\\\n\" \"https://bruns123.github.io/MercadoPublico-AG/data/compra-agil-publicada.json\")",
+      "Bash(cd \"C:\\\\Users\\\\bRUNS\\\\.claude\\\\projects\\\\c--Users-bRUNS-Desktop-Programacion-MercadoPublico-AG--API-\\\\memory\")",
+      "Bash(cat MEMORY.md)"
+    ]
+  }
+}
