@@ -19,7 +19,7 @@ function load(key, fallback) {
 
 export default function useMisOfertas() {
   const [procesos, setProcesos] = useState(() => load(STORAGE_KEY, []));
-  const [meta, setMeta] = useState(() => load(META_KEY, { actualizado: null, empresa: 'GEOPRO' }));
+  const [meta, setMeta] = useState(() => load(META_KEY, { actualizado: null, empresa: 'GEOPRO', rut: '77.710.202-8' }));
   const [anotaciones, setAnotaciones] = useState(() => load(ANOT_KEY, {}));
 
   useEffect(() => {
@@ -64,5 +64,9 @@ export default function useMisOfertas() {
     setMeta(m => ({ ...m, empresa }));
   }, []);
 
-  return { procesos, meta, anotaciones, setAnotacion, importarProcesos, fusionarProcesos, limpiar, setEmpresa };
+  const setRut = useCallback((rut) => {
+    setMeta(m => ({ ...m, rut }));
+  }, []);
+
+  return { procesos, meta, anotaciones, setAnotacion, importarProcesos, fusionarProcesos, limpiar, setEmpresa, setRut };
 }

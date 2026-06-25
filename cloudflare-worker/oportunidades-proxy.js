@@ -34,6 +34,11 @@ const ALLOWED_ORIGIN = 'https://bruns123.github.io';
 // Solo se permite proxiar rutas del escritorio (evita usarlo como proxy abierto)
 const PATH_PREFIX = '/escritorio/';
 
+// Detalle de Compra Ágil (api2): para detectar quién ganó. Ruta: /ca/{codigo}
+const CA_ORIGIN = 'https://api2.mercadopublico.cl';
+const CA_TICKET = '25D6C503-FA30-48BD-86FA-0A1D74D54254';
+const CA_PREFIX = '/ca/';
+
 export default {
   async fetch(request) {
     const origin = request.headers.get('Origin') || '';
@@ -55,6 +60,33 @@ export default {
     }
 
     const url = new URL(request.url);
+
+    // ─── Ruta /ca/{codigo} → detalle de Compra Ágil (api2) para detectar el ganador ───
+    if (url.pathname.startsWith(CA_PREFIX)) {
+      const codigo = decodeURIComponent(url.pathname.slice(CA_PREFIX.length));
+      if (!codigo) {
+        return new Response(JSON.stringify({ error: 'Falta el código.' }), {
+          status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      try {
+        const up = await fetch(`${CA_ORIGIN}/v2/compra-agil/${encodeURIComponent(codigo)}`, {
+          headers: { 'ticket': CA_TICKET, 'Accept': 'application/json' },
+        });
+        const body = await up.text();
+        const r = new Response(body, {
+          status: up.status,
+          headers: { 'Content-Type': up.headers.get('Content-Type') || 'application/json' },
+        });
+        Object.entries(corsHeaders).forEach(([k, v]) => r.headers.set(k, v));
+        return r;
+      } catch (err) {
+        return new Response(JSON.stringify({ error: 'Fallo al contactar api2', detail: String(err) }), {
+          status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
     if (!url.pathname.startsWith(PATH_PREFIX)) {
       return new Response('Not Found', { status: 404, headers: corsHeaders });
     }

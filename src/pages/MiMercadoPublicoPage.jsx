@@ -4,6 +4,7 @@ import useMisOfertas from '../hooks/useMisOfertas';
 import { PROCESO_COLUMNAS, COLUMNAS_ORDEN, parseMisProcesos, urlProceso } from '../utils/misOfertasAdapter';
 import { formatFecha, formatFechaCorta, formatMonto } from '../utils/formatters';
 import { getToken, setToken as saveToken, tokenInfo, fetchOportunidades } from '../api/miEscritorio';
+import { fetchDetalleCA, analizarResultado } from '../api/caDetalle';
 
 // Código del bookmarklet "Sincronizar GEOPRO": se ejecuta en la pestaña de
 // MercadoPúblico, toma el token y abre el dashboard con ?mp_token=… para
@@ -98,9 +99,11 @@ function ProcesoCard({ p, esResultado, anotacion, onAnotar }) {
 }
 
 export default function MiMercadoPublicoPage() {
-  const { procesos, meta, anotaciones, setAnotacion, importarProcesos, fusionarProcesos, limpiar, setEmpresa } = useMisOfertas();
+  const { procesos, meta, anotaciones, setAnotacion, importarProcesos, fusionarProcesos, limpiar, setEmpresa, setRut } = useMisOfertas();
   const [fResultado, setFResultado] = useState('todas'); // todas|adjudicada|no_adjudicada|sin
   const [fFecha, setFFecha] = useState('todas');         // todas|hoy|7|30
+  const [orden, setOrden] = useState('cierre_desc');     // cierre_desc|cierre_asc|postula_desc|postula_asc
+  const [detectando, setDetectando] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [showGuia, setShowGuia] = useState(false);
   const [pegado, setPegado] = useState('');
@@ -191,6 +194,48 @@ export default function MiMercadoPublicoPage() {
     { label: 'Con resultados', value: porColumna.resultados.length, icon: '🏆', bg: 'rgba(59,130,246,0.15)', detail: `${adjudicadasCount} adjudicada${adjudicadasCount !== 1 ? 's' : ''} (GEOPRO)` },
   ], [procesos, porColumna, adjudicadasCount]);
 
+  // Ordena por fecha de cierre o de postulación (publicación), asc o desc.
+  function ordenar(items) {
+    const key = orden.startsWith('postula') ? 'fechaPublicacion' : 'fechaCierre';
+    const dir = orden.endsWith('asc') ? 1 : -1;
+    return [...items].sort((a, b) => {
+      const da = a[key] ? new Date(a[key]).getTime() : 0;
+      const db = b[key] ? new Date(b[key]).getTime() : 0;
+      return (da - db) * dir;
+    });
+  }
+
+  // Entra al detalle de cada resultado, ve quién ganó y marca adjudicada/no + comentario.
+  async function detectarAdjudicaciones() {
+    const rut = (meta.rut || '77.710.202-8').trim();
+    setDetectando(true);
+    setSyncMsg(null);
+    let ok = 0, err = 0, sinResultado = 0;
+    for (const p of porColumna.resultados) {
+      try {
+        const det = await fetchDetalleCA(p.codigo);
+        const r = analizarResultado(det, rut);
+        if (r && r.resultado) {
+          const prev = anotaciones[p.codigo] || {};
+          // No pisa un comentario que el usuario ya escribió a mano.
+          setAnotacion(p.codigo, { resultado: r.resultado, comentario: prev.comentario || r.comentario });
+          ok++;
+        } else {
+          sinResultado++;
+        }
+      } catch {
+        err++;
+      }
+    }
+    setDetectando(false);
+    setSyncMsg({
+      tipo: err && !ok ? 'error' : 'ok',
+      texto: err && !ok
+        ? `No se pudo leer el detalle (¿Worker sin actualizar o bloqueo de api2?). Marca manualmente.`
+        : `Adjudicaciones detectadas: ${ok}${sinResultado ? ` · ${sinResultado} sin resultado aún` : ''}${err ? ` · ${err} con error` : ''}.`,
+    });
+  }
+
   // Filtra los procesos de la columna "resultados" por resultado marcado y por fecha de cierre.
   function filtrarResultados(items) {
     return items.filter(p => {
@@ -245,11 +290,33 @@ export default function MiMercadoPublicoPage() {
             style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
             ⚡ Botón 1-click
           </button>
+          {porColumna.resultados.length > 0 && (
+            <button onClick={detectarAdjudicaciones} disabled={detectando}
+              title="Entra al detalle de cada resultado y marca si GEOPRO adjudicó o no"
+              style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: detectando ? 'wait' : 'pointer', border: '1px solid var(--accent-primary)', background: 'rgba(14,165,233,0.12)', color: 'var(--accent-primary)', fontWeight: 600 }}>
+              {detectando ? '🔍 Detectando…' : '🔍 Detectar adjudicaciones'}
+            </button>
+          )}
+          <select value={orden} onChange={e => setOrden(e.target.value)}
+            title="Ordenar las columnas"
+            style={{ fontSize: '0.8rem', padding: '7px 10px', borderRadius: 10, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>
+            <option value="cierre_desc">Cierre ↓ (reciente)</option>
+            <option value="cierre_asc">Cierre ↑ (antiguo)</option>
+            <option value="postula_desc">Postulación ↓ (reciente)</option>
+            <option value="postula_asc">Postulación ↑ (antiguo)</option>
+          </select>
           <input
             value={meta.empresa}
             onChange={e => setEmpresa(e.target.value)}
             title="Nombre de tu empresa / unidad"
-            style={{ fontSize: '0.85rem', padding: '7px 12px', borderRadius: 10, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', maxWidth: 160 }}
+            style={{ fontSize: '0.85rem', padding: '7px 12px', borderRadius: 10, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', maxWidth: 110 }}
+          />
+          <input
+            value={meta.rut || ''}
+            onChange={e => setRut(e.target.value)}
+            title="RUT de tu empresa (para detectar adjudicaciones)"
+            placeholder="RUT"
+            style={{ fontSize: '0.85rem', padding: '7px 12px', borderRadius: 10, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', maxWidth: 130 }}
           />
           {procesos.length > 0 && (
             <button onClick={() => { if (confirm('¿Borrar todos los procesos guardados en este navegador?')) limpiar(); }}
@@ -358,7 +425,7 @@ export default function MiMercadoPublicoPage() {
               const cfg = PROCESO_COLUMNAS[col];
               const esRes = col === 'resultados';
               const all = porColumna[col];
-              const items = esRes ? filtrarResultados(all) : all;
+              const items = ordenar(esRes ? filtrarResultados(all) : all);
               const selStyle = { fontSize: '0.7rem', padding: '4px 6px', borderRadius: 8, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', flex: 1, minWidth: 0 };
               return (
                 <div key={col} style={{ background: 'var(--bg-tertiary)', borderRadius: 14, border: '1px solid var(--border-color)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
