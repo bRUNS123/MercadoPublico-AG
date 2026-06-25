@@ -4,7 +4,6 @@ import useMisOfertas from '../hooks/useMisOfertas';
 import { PROCESO_COLUMNAS, COLUMNAS_ORDEN, parseMisProcesos, urlProceso } from '../utils/misOfertasAdapter';
 import { formatFecha, formatFechaCorta, formatMonto } from '../utils/formatters';
 import { getToken, setToken as saveToken, tokenInfo, fetchOportunidades } from '../api/miEscritorio';
-import { fetchDetalleCA, analizarResultado } from '../api/caDetalle';
 
 // Código del bookmarklet "Sincronizar GEOPRO": se ejecuta en la pestaña de
 // MercadoPúblico, toma el token y abre el dashboard con ?mp_token=… para
@@ -99,11 +98,11 @@ function ProcesoCard({ p, esResultado, anotacion, onAnotar }) {
 }
 
 export default function MiMercadoPublicoPage() {
-  const { procesos, meta, anotaciones, setAnotacion, importarProcesos, fusionarProcesos, limpiar, setEmpresa, setRut } = useMisOfertas();
+  const { procesos, meta, anotaciones, setAnotacion, importarProcesos, fusionarProcesos, limpiar, setEmpresa } = useMisOfertas();
   const [fResultado, setFResultado] = useState('todas'); // todas|adjudicada|no_adjudicada|sin
   const [fFecha, setFFecha] = useState('todas');         // todas|hoy|7|30
   const [orden, setOrden] = useState('cierre_desc');     // cierre_desc|cierre_asc|postula_desc|postula_asc
-  const [detectando, setDetectando] = useState(false);
+  const [autoAdj, setAutoAdj] = useState({});            // adjudicaciones detectadas por el script (notebook)
   const [showImport, setShowImport] = useState(false);
   const [showGuia, setShowGuia] = useState(false);
   const [pegado, setPegado] = useState('');
@@ -182,10 +181,15 @@ export default function MiMercadoPublicoPage() {
     return g;
   }, [procesos]);
 
-  const adjudicadasCount = useMemo(
-    () => Object.values(anotaciones).filter(a => a?.resultado === 'adjudicada').length,
-    [anotaciones]
-  );
+  const adjudicadasCount = useMemo(() => {
+    const codes = new Set([...Object.keys(autoAdj), ...Object.keys(anotaciones)]);
+    let n = 0;
+    codes.forEach(c => {
+      const r = anotaciones[c]?.resultado || autoAdj[c]?.resultado || '';
+      if (r === 'adjudicada') n++;
+    });
+    return n;
+  }, [autoAdj, anotaciones]);
 
   const kpis = useMemo(() => [
     { label: 'Total procesos', value: procesos.length, icon: '📊', bg: 'rgba(14,165,233,0.15)' },
@@ -205,41 +209,22 @@ export default function MiMercadoPublicoPage() {
     });
   }
 
-  // Entra al detalle de cada resultado, ve quién ganó y marca adjudicada/no + comentario.
-  async function detectarAdjudicaciones() {
-    const rut = (meta.rut || '77.710.202-8').trim();
-    setDetectando(true);
-    setSyncMsg(null);
-    let ok = 0, err = 0, sinResultado = 0;
-    for (const p of porColumna.resultados) {
-      try {
-        const det = await fetchDetalleCA(p.codigo);
-        const r = analizarResultado(det, rut);
-        if (r && r.resultado) {
-          const prev = anotaciones[p.codigo] || {};
-          // No pisa un comentario que el usuario ya escribió a mano.
-          setAnotacion(p.codigo, { resultado: r.resultado, comentario: prev.comentario || r.comentario });
-          ok++;
-        } else {
-          sinResultado++;
-        }
-      } catch {
-        err++;
-      }
-    }
-    setDetectando(false);
-    setSyncMsg({
-      tipo: err && !ok ? 'error' : 'ok',
-      texto: err && !ok
-        ? `No se pudo leer el detalle (¿Worker sin actualizar o bloqueo de api2?). Marca manualmente.`
-        : `Adjudicaciones detectadas: ${ok}${sinResultado ? ` · ${sinResultado} sin resultado aún` : ''}${err ? ` · ${err} con error` : ''}.`,
-    });
-  }
+  // Carga las adjudicaciones detectadas por el script del notebook (si existe el archivo).
+  useEffect(() => {
+    fetch(`${import.meta.env.BASE_URL}data/mis-adjudicaciones.json`, { cache: 'no-store' })
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => { if (d?.items) setAutoAdj(d.items); })
+      .catch(() => {});
+  }, []);
+
+  // Resuelve la anotación efectiva: lo detectado por el script + lo que el usuario
+  // editó a mano por encima (la edición manual siempre gana).
+  const anot = (codigo) => ({ ...(autoAdj[codigo] || {}), ...(anotaciones[codigo] || {}) });
 
   // Filtra los procesos de la columna "resultados" por resultado marcado y por fecha de cierre.
   function filtrarResultados(items) {
     return items.filter(p => {
-      const r = anotaciones[p.codigo]?.resultado || '';
+      const r = anot(p.codigo).resultado || '';
       if (fResultado === 'adjudicada' && r !== 'adjudicada') return false;
       if (fResultado === 'no_adjudicada' && r !== 'no_adjudicada') return false;
       if (fResultado === 'sin' && r) return false;
@@ -290,13 +275,6 @@ export default function MiMercadoPublicoPage() {
             style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
             ⚡ Botón 1-click
           </button>
-          {porColumna.resultados.length > 0 && (
-            <button onClick={detectarAdjudicaciones} disabled={detectando}
-              title="Entra al detalle de cada resultado y marca si GEOPRO adjudicó o no"
-              style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: detectando ? 'wait' : 'pointer', border: '1px solid var(--accent-primary)', background: 'rgba(14,165,233,0.12)', color: 'var(--accent-primary)', fontWeight: 600 }}>
-              {detectando ? '🔍 Detectando…' : '🔍 Detectar adjudicaciones'}
-            </button>
-          )}
           <select value={orden} onChange={e => setOrden(e.target.value)}
             title="Ordenar las columnas"
             style={{ fontSize: '0.8rem', padding: '7px 10px', borderRadius: 10, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>
@@ -309,13 +287,6 @@ export default function MiMercadoPublicoPage() {
             value={meta.empresa}
             onChange={e => setEmpresa(e.target.value)}
             title="Nombre de tu empresa / unidad"
-            style={{ fontSize: '0.85rem', padding: '7px 12px', borderRadius: 10, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', maxWidth: 110 }}
-          />
-          <input
-            value={meta.rut || ''}
-            onChange={e => setRut(e.target.value)}
-            title="RUT de tu empresa (para detectar adjudicaciones)"
-            placeholder="RUT"
             style={{ fontSize: '0.85rem', padding: '7px 12px', borderRadius: 10, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', maxWidth: 130 }}
           />
           {procesos.length > 0 && (
@@ -457,7 +428,7 @@ export default function MiMercadoPublicoPage() {
                   <div style={{ padding: 12, flex: 1, maxHeight: 560, overflowY: 'auto' }}>
                     {items.length === 0
                       ? <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textAlign: 'center', padding: '24px 0' }}>Sin procesos</div>
-                      : items.map(p => <ProcesoCard key={p._id} p={p} esResultado={esRes} anotacion={anotaciones[p.codigo]} onAnotar={setAnotacion} />)}
+                      : items.map(p => <ProcesoCard key={p._id} p={p} esResultado={esRes} anotacion={anot(p.codigo)} onAnotar={setAnotacion} />)}
                   </div>
                 </div>
               );

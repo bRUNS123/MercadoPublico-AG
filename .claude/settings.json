@@ -19,7 +19,12 @@
       "Bash(node -e \"const d=require\\('./det.json'\\);const p=d.payload||d;console.log\\(Object.keys\\(p\\)\\);console.log\\('--- estado:',JSON.stringify\\(p.estado\\)\\);\")",
       "Bash(node -e ' *)",
       "Bash(node -e \"const d=require\\('./det.json'\\);const p=d.payload||d;const s=\\(p.proveedores_cotizando||[]\\).find\\(x=>x.proveedor_seleccionado\\);console.log\\(Object.keys\\(s||{}\\)\\);\")",
-      "Bash(curl -s -m 20 -D - -o /dev/null \"https://api2.mercadopublico.cl/v2/compra-agil/5300-4-COT26\" -H \"ticket: 25D6C503-FA30-48BD-86FA-0A1D74D54254\" -H \"Origin: https://bruns123.github.io\")"
+      "Bash(curl -s -m 20 -D - -o /dev/null \"https://api2.mercadopublico.cl/v2/compra-agil/5300-4-COT26\" -H \"ticket: 25D6C503-FA30-48BD-86FA-0A1D74D54254\" -H \"Origin: https://bruns123.github.io\")",
+      "Bash(npx --yes wrangler@latest whoami)",
+      "Bash(npx --yes wrangler@latest login)",
+      "Bash(npx --yes wrangler@latest deploy oportunidades-proxy.js --name mp-oportunidades-proxy)",
+      "Bash(curl -s -m 30 \"https://mp-oportunidades-proxy.bfrancosentis.workers.dev/ca/5300-4-COT26\" -H \"Origin: https://bruns123.github.io\" -o ca.json -w \"[HTTP %{http_code}]\\\\n\")",
+      "Bash(curl -s -m 20 -D - -o /dev/null \"https://api2.mercadopublico.cl/v2/compra-agil/5300-4-COT26\" -H \"ticket: 25D6C503-FA30-48BD-86FA-0A1D74D54254\" -H \"Origin: https://buscador.mercadopublico.cl\")"
     ]
   }
 }
