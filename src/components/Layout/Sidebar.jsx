@@ -55,6 +55,15 @@ export default function Sidebar() {
           Seguimiento
         </NavLink>
 
+        <NavLink to="/mi-mercadopublico" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 21h18"/>
+            <path d="M5 21V8l7-5 7 5v13"/>
+            <path d="M10 21v-6h4v6"/>
+          </svg>
+          Mi MercadoPúblico
+        </NavLink>
+
         <div className="sidebar-section">Sistema</div>
 
         <NavLink to="/configuracion" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}>

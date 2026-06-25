@@ -4,6 +4,7 @@ import DashboardPage from './pages/DashboardPage';
 import LicitacionesPage from './pages/LicitacionesPage';
 import ComprasAgilesPage from './pages/ComprasAgilesPage';
 import SeguimientoPage from './pages/SeguimientoPage';
+import MiMercadoPublicoPage from './pages/MiMercadoPublicoPage';
 import SettingsPage from './pages/SettingsPage';
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
           <Route path="/licitaciones" element={<LicitacionesPage />} />
           <Route path="/compras-agiles" element={<ComprasAgilesPage />} />
           <Route path="/seguimiento" element={<SeguimientoPage />} />
+          <Route path="/mi-mercadopublico" element={<MiMercadoPublicoPage />} />
           <Route path="/configuracion" element={<SettingsPage />} />
         </Route>
       </Routes>
