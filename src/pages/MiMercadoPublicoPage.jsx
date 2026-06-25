@@ -2,7 +2,8 @@ import { useState, useMemo } from 'react';
 import Header from '../components/Layout/Header';
 import useMisOfertas from '../hooks/useMisOfertas';
 import { PROCESO_COLUMNAS, COLUMNAS_ORDEN, parseMisProcesos, urlProceso } from '../utils/misOfertasAdapter';
-import { formatFechaCorta, formatMonto } from '../utils/formatters';
+import { formatFecha, formatFechaCorta, formatMonto } from '../utils/formatters';
+import { getToken, setToken as saveToken, tokenInfo, fetchOportunidades } from '../api/miEscritorio';
 
 function ProcesoCard({ p }) {
   const url = urlProceso(p.codigo);
@@ -31,6 +32,31 @@ export default function MiMercadoPublicoPage() {
   const [importError, setImportError] = useState('');
   const [modoFusion, setModoFusion] = useState(false);
 
+  // ─── Sincronización vía Worker ───
+  const [showSync, setShowSync] = useState(false);
+  const [tokenInput, setTokenInput] = useState(getToken());
+  const [syncing, setSyncing] = useState(false);
+  const [syncMsg, setSyncMsg] = useState(null); // { tipo: 'ok'|'error', texto }
+  const info = useMemo(() => tokenInfo(tokenInput.trim().replace(/^Bearer\s+/i, '')), [tokenInput]);
+
+  async function handleSync() {
+    saveToken(tokenInput);
+    setSyncing(true);
+    setSyncMsg(null);
+    try {
+      const data = await fetchOportunidades();
+      const res = parseMisProcesos(JSON.stringify(data));
+      if (!res.ok) throw new Error(res.error);
+      importarProcesos(res.procesos);
+      setSyncMsg({ tipo: 'ok', texto: `${res.procesos.length} procesos sincronizados.` });
+      setShowSync(false);
+    } catch (err) {
+      setSyncMsg({ tipo: 'error', texto: err.message });
+    } finally {
+      setSyncing(false);
+    }
+  }
+
   const porColumna = useMemo(() => {
     const g = { pendiente: [], abiertos: [], cerrados: [], resultados: [] };
     procesos.forEach(p => { (g[p.columna] || g.pendiente).push(p); });
@@ -57,9 +83,17 @@ export default function MiMercadoPublicoPage() {
       <div className="app-content page-enter">
         {/* ─── Barra de acciones ─── */}
         <div style={{ padding: '0 24px', marginBottom: 16, display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <button onClick={handleSync} disabled={syncing}
+            style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: syncing ? 'wait' : 'pointer', border: 'none', background: 'var(--accent-primary)', color: '#fff', fontWeight: 600, opacity: syncing ? 0.6 : 1 }}>
+            {syncing ? '⏳ Sincronizando…' : '🔄 Sincronizar'}
+          </button>
+          <button onClick={() => setShowSync(s => !s)}
+            style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
+            🔑 Token
+          </button>
           <button onClick={() => setShowImport(true)}
-            style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: 'pointer', border: 'none', background: 'var(--accent-primary)', color: '#fff', fontWeight: 600 }}>
-            ⬆️ Importar / Actualizar datos
+            style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
+            ⬆️ Pegar JSON
           </button>
           <button onClick={() => setShowGuia(g => !g)}
             style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
@@ -78,6 +112,48 @@ export default function MiMercadoPublicoPage() {
             </button>
           )}
         </div>
+
+        {/* ─── Mensaje de sincronización ─── */}
+        {syncMsg && (
+          <div style={{ padding: '0 24px', marginBottom: 12 }}>
+            <div style={{ padding: '10px 14px', borderRadius: 10, fontSize: '0.85rem',
+              background: syncMsg.tipo === 'ok' ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
+              color: syncMsg.tipo === 'ok' ? '#22c55e' : '#ef4444',
+              border: `1px solid ${syncMsg.tipo === 'ok' ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
+              {syncMsg.tipo === 'ok' ? '✅ ' : '⚠️ '}{syncMsg.texto}
+            </div>
+          </div>
+        )}
+
+        {/* ─── Panel de token ─── */}
+        {showSync && (
+          <div style={{ padding: '0 24px', marginBottom: 16 }}>
+            <div className="table-container" style={{ padding: 20 }}>
+              <strong style={{ fontSize: '0.92rem' }}>Token del Escritorio de Proveedor</strong>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '8px 0 12px', lineHeight: 1.5 }}>
+                Pega tu token Bearer actual (DevTools → Network → cualquier petición a <code>servicios-escritorio</code> →
+                header <code>authorization</code>, sin el prefijo "Bearer"). Se guarda solo en este navegador y caduca ~8h.
+              </p>
+              <textarea
+                value={tokenInput}
+                onChange={e => setTokenInput(e.target.value)}
+                placeholder="eyJhbGciOiJSUzI1NiIs…"
+                style={{ width: '100%', minHeight: 70, fontFamily: 'monospace', fontSize: '0.72rem', padding: 10, borderRadius: 10, border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)', resize: 'vertical' }}
+              />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8, marginTop: 10 }}>
+                <span style={{ fontSize: '0.8rem', color: info ? (info.expirado ? '#ef4444' : 'var(--text-muted)') : 'var(--text-muted)' }}>
+                  {!tokenInput.trim() ? 'Sin token' : !info ? '⚠️ Token no reconocido' :
+                    info.expirado ? '⛔ Expirado — pega uno nuevo' :
+                    `✓ Válido hasta ${formatFecha(info.exp)}${info.usuario ? ` · usuario ${info.usuario}` : ''}`}
+                </span>
+                <button onClick={handleSync} disabled={syncing}
+                  style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: 'pointer', border: 'none', background: 'var(--accent-primary)', color: '#fff', fontWeight: 600 }}>
+                  Guardar y sincronizar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ─── Guía de captura ─── */}
         {showGuia && (
@@ -105,10 +181,11 @@ export default function MiMercadoPublicoPage() {
           <div className="table-container">
             <div className="empty-state">
               <div className="empty-icon">🏛️</div>
-              <div className="empty-title">Aún no has importado tus procesos</div>
+              <div className="empty-title">Aún no has cargado tus procesos</div>
               <div className="empty-desc">
-                Pulsa <strong>Importar / Actualizar datos</strong> y pega la respuesta del bloque
-                "Procesos en los que participaste". Usa <strong>¿Cómo obtengo mis datos?</strong> para el paso a paso.
+                Pulsa <strong>🔑 Token</strong>, pega tu token del escritorio y dale <strong>Sincronizar</strong> —
+                o usa <strong>⬆️ Pegar JSON</strong> si prefieres manual. El paso a paso está en
+                <strong>¿Cómo obtengo mis datos?</strong>
               </div>
             </div>
           </div>
