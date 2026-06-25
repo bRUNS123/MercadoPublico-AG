@@ -136,8 +136,10 @@ export default function MiMercadoPublicoPage() {
   const { procesos, meta, anotaciones, setAnotacion, importarProcesos, fusionarProcesos, limpiar, setEmpresa } = useMisOfertas();
   const [fResultado, setFResultado] = useState('todas'); // todas|adjudicada|no_adjudicada|sin
   const [fFecha, setFFecha] = useState('todas');         // todas|hoy|7|30
-  const [orden, setOrden] = useState('cierre_desc');     // cierre_desc|cierre_asc|postula_desc|postula_asc
-  const [ordenRes, setOrdenRes] = useState('resultado_desc'); // orden propio de la columna Resultados
+  // Orden independiente por columna
+  const [ordenCol, setOrdenCol] = useState({ pendiente: 'cierre_desc', abiertos: 'cierre_desc', cerrados: 'cierre_desc', resultados: 'resultado_desc' });
+  // Visibilidad de columnas (semáforo)
+  const [colsVisibles, setColsVisibles] = useState({ pendiente: true, abiertos: true, cerrados: true, resultados: true });
   const [autoAdj, setAutoAdj] = useState({});            // adjudicaciones detectadas por el script (notebook)
   const [showImport, setShowImport] = useState(false);
   const [showGuia, setShowGuia] = useState(false);
@@ -319,18 +321,25 @@ export default function MiMercadoPublicoPage() {
             style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
             ⚡ Botón 1-click
           </button>
-          <select value={orden} onChange={e => setOrden(e.target.value)}
-            title="Ordenar las columnas"
-            style={{ fontSize: '0.8rem', padding: '7px 10px', borderRadius: 10, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>
-            <optgroup label="Por fecha de cierre">
-              <option value="cierre_asc">Cierre: más antiguo primero</option>
-              <option value="cierre_desc">Cierre: más reciente primero</option>
-            </optgroup>
-            <optgroup label="Por fecha de publicación">
-              <option value="postula_asc">Publicación: más antigua primero</option>
-              <option value="postula_desc">Publicación: más reciente primero</option>
-            </optgroup>
-          </select>
+          {procesos.length > 0 && (
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center' }} title="Mostrar / ocultar columnas">
+              {COLUMNAS_ORDEN.map(col => {
+                const cfg = PROCESO_COLUMNAS[col];
+                const on = colsVisibles[col];
+                return (
+                  <button key={col} onClick={() => setColsVisibles(v => ({ ...v, [col]: !v[col] }))}
+                    title={`${on ? 'Ocultar' : 'Mostrar'} ${cfg.label}`}
+                    style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: '0.78rem', padding: '5px 10px', borderRadius: 999, cursor: 'pointer',
+                      border: `1px solid ${on ? cfg.color : 'var(--border-color)'}`,
+                      background: on ? cfg.bg : 'transparent',
+                      color: on ? cfg.color : 'var(--text-muted)', fontWeight: 600, opacity: on ? 1 : 0.6 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: on ? cfg.color : 'var(--text-muted)' }} />
+                    {cfg.icon} {porColumna[col].length}
+                  </button>
+                );
+              })}
+            </div>
+          )}
           <input
             value={meta.empresa}
             onChange={e => setEmpresa(e.target.value)}
@@ -443,12 +452,14 @@ export default function MiMercadoPublicoPage() {
               ))}
             </div>
           </div>
-          <div style={{ padding: '0 24px 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
-            {COLUMNAS_ORDEN.map(col => {
+          {COLUMNAS_ORDEN.some(c => colsVisibles[c]) ? (
+          <div style={{ padding: '0 24px 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
+            {COLUMNAS_ORDEN.filter(c => colsVisibles[c]).map(col => {
               const cfg = PROCESO_COLUMNAS[col];
               const esRes = col === 'resultados';
               const all = porColumna[col];
-              const items = ordenarPor(esRes ? filtrarResultados(all) : all, esRes ? ordenRes : orden);
+              const ord = ordenCol[col];
+              const items = ordenarPor(esRes ? filtrarResultados(all) : all, ord);
               const selStyle = { fontSize: '0.7rem', padding: '4px 6px', borderRadius: 8, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', flex: 1, minWidth: 0 };
               return (
                 <div key={col} style={{ background: 'var(--bg-tertiary)', borderRadius: 14, border: '1px solid var(--border-color)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
@@ -460,13 +471,15 @@ export default function MiMercadoPublicoPage() {
                       </span>
                     </div>
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>{cfg.sub}</div>
-                    {esRes && all.length > 0 && (
+                    {all.length > 0 && (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
-                        <select value={ordenRes} onChange={e => setOrdenRes(e.target.value)} style={{ ...selStyle, flex: 'unset' }} title="Ordenar resultados">
-                          <optgroup label="Por fecha de resultados">
-                            <option value="resultado_desc">Resultados: más recientes</option>
-                            <option value="resultado_asc">Resultados: más antiguos</option>
-                          </optgroup>
+                        <select value={ord} onChange={e => setOrdenCol(o => ({ ...o, [col]: e.target.value }))} style={{ ...selStyle, flex: 'unset' }} title="Ordenar esta columna">
+                          {esRes && (
+                            <optgroup label="Por fecha de resultados">
+                              <option value="resultado_desc">Resultados: más recientes</option>
+                              <option value="resultado_asc">Resultados: más antiguos</option>
+                            </optgroup>
+                          )}
                           <optgroup label="Por fecha de cierre">
                             <option value="cierre_desc">Cierre: más reciente</option>
                             <option value="cierre_asc">Cierre: más antiguo</option>
@@ -476,20 +489,22 @@ export default function MiMercadoPublicoPage() {
                             <option value="postula_asc">Publicación: más antigua</option>
                           </optgroup>
                         </select>
-                        <div style={{ display: 'flex', gap: 6 }}>
-                          <select value={fResultado} onChange={e => setFResultado(e.target.value)} style={selStyle} title="Filtrar por resultado">
-                            <option value="todas">Todas</option>
-                            <option value="adjudicada">🏆 Adjudicadas</option>
-                            <option value="no_adjudicada">❌ No adjudicadas</option>
-                            <option value="sin">Sin marcar</option>
-                          </select>
-                          <select value={fFecha} onChange={e => setFFecha(e.target.value)} style={selStyle} title="Filtrar por fecha de cierre/resultado">
-                            <option value="todas">Cualquier fecha</option>
-                            <option value="hoy">Cierre hoy</option>
-                            <option value="7">Últimos 7 días</option>
-                            <option value="30">Últimos 30 días</option>
-                          </select>
-                        </div>
+                        {esRes && (
+                          <div style={{ display: 'flex', gap: 6 }}>
+                            <select value={fResultado} onChange={e => setFResultado(e.target.value)} style={selStyle} title="Filtrar por resultado">
+                              <option value="todas">Todas</option>
+                              <option value="adjudicada">🏆 Adjudicadas</option>
+                              <option value="no_adjudicada">❌ No adjudicadas</option>
+                              <option value="sin">Sin marcar</option>
+                            </select>
+                            <select value={fFecha} onChange={e => setFFecha(e.target.value)} style={selStyle} title="Filtrar por fecha de cierre/resultado">
+                              <option value="todas">Cualquier fecha</option>
+                              <option value="hoy">Cierre hoy</option>
+                              <option value="7">Últimos 7 días</option>
+                              <option value="30">Últimos 30 días</option>
+                            </select>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -502,6 +517,15 @@ export default function MiMercadoPublicoPage() {
               );
             })}
           </div>
+          ) : (
+            <div className="table-container">
+              <div className="empty-state">
+                <div className="empty-icon">🙈</div>
+                <div className="empty-title">Todas las columnas ocultas</div>
+                <div className="empty-desc">Usa los botones de color (arriba) para mostrar las columnas que quieras ver.</div>
+              </div>
+            </div>
+          )}
           </>
         )}
 
