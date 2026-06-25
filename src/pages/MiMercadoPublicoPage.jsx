@@ -226,10 +226,10 @@ export default function MiMercadoPublicoPage() {
   }, [autoAdj, anotaciones]);
 
   const kpis = useMemo(() => [
-    { label: 'Total procesos', value: procesos.length, icon: '📊', bg: 'rgba(14,165,233,0.15)' },
-    { label: 'En juego', value: porColumna.pendiente.length + porColumna.abiertos.length, icon: '🔄', bg: 'rgba(34,197,94,0.15)', detail: 'pendientes + abiertos' },
-    { label: 'Esperando resultados', value: porColumna.cerrados.length, icon: '⏳', bg: 'rgba(234,179,8,0.15)' },
-    { label: 'Con resultados', value: porColumna.resultados.length, icon: '🏆', bg: 'rgba(59,130,246,0.15)', detail: `${adjudicadasCount} adjudicada${adjudicadasCount !== 1 ? 's' : ''} (GEOPRO)` },
+    { label: 'Total procesos', value: procesos.length, color: '#0ea5e9' },
+    { label: 'En juego', value: porColumna.pendiente.length + porColumna.abiertos.length, color: '#22c55e', detail: 'pendientes + abiertos' },
+    { label: 'Esperando resultados', value: porColumna.cerrados.length, color: '#eab308' },
+    { label: 'Con resultados', value: porColumna.resultados.length, color: '#3b82f6', detail: `${adjudicadasCount} adjudicada${adjudicadasCount !== 1 ? 's' : ''} (GEOPRO)` },
   ], [procesos, porColumna, adjudicadasCount]);
 
   // Ordena por fecha de cierre o de postulación (publicación), asc o desc.
@@ -312,10 +312,14 @@ export default function MiMercadoPublicoPage() {
           <select value={orden} onChange={e => setOrden(e.target.value)}
             title="Ordenar las columnas"
             style={{ fontSize: '0.8rem', padding: '7px 10px', borderRadius: 10, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}>
-            <option value="cierre_desc">Cierre ↓ (reciente)</option>
-            <option value="cierre_asc">Cierre ↑ (antiguo)</option>
-            <option value="postula_desc">Postulación ↓ (reciente)</option>
-            <option value="postula_asc">Postulación ↑ (antiguo)</option>
+            <optgroup label="Por fecha de cierre">
+              <option value="cierre_asc">Cierre: más antiguo primero</option>
+              <option value="cierre_desc">Cierre: más reciente primero</option>
+            </optgroup>
+            <optgroup label="Por fecha de publicación">
+              <option value="postula_asc">Publicación: más antigua primero</option>
+              <option value="postula_desc">Publicación: más reciente primero</option>
+            </optgroup>
           </select>
           <input
             value={meta.empresa}
@@ -415,15 +419,19 @@ export default function MiMercadoPublicoPage() {
           </div>
         ) : (
           <>
-          <div className="kpi-grid" style={{ padding: '0 24px', marginBottom: 16 }}>
-            {kpis.map((k, i) => (
-              <div className="kpi-card" key={i}>
-                <div className="kpi-icon" style={{ background: k.bg }}>{k.icon}</div>
-                <div className="kpi-label">{k.label}</div>
-                <div className="kpi-value">{k.value}</div>
-                {k.detail && <div className="kpi-detail">{k.detail}</div>}
-              </div>
-            ))}
+          <div style={{ padding: '0 24px', marginBottom: 16 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 12, overflow: 'hidden' }}>
+              {kpis.map((k, i) => (
+                <div key={i} style={{ flex: '1 1 150px', padding: '12px 18px', borderLeft: i ? '1px solid var(--border-color)' : 'none' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ width: 7, height: 7, borderRadius: '50%', background: k.color, flexShrink: 0 }} />
+                    <span style={{ fontSize: '0.64rem', textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', fontWeight: 600 }}>{k.label}</span>
+                  </div>
+                  <div style={{ fontSize: '1.6rem', fontWeight: 700, lineHeight: 1.15, marginTop: 4, color: 'var(--text-primary)' }}>{k.value}</div>
+                  {k.detail && <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: 1 }}>{k.detail}</div>}
+                </div>
+              ))}
+            </div>
           </div>
           <div style={{ padding: '0 24px 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
             {COLUMNAS_ORDEN.map(col => {
