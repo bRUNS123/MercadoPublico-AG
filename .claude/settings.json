@@ -10,7 +10,9 @@
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" \"https://bruns123.github.io/MercadoPublico-AG/data/compra-agil-publicada.json\")",
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} · tamaño %{size_download} bytes\\\\n\" \"https://bruns123.github.io/MercadoPublico-AG/data/compra-agil-publicada.json\")",
       "Bash(cd \"C:\\\\Users\\\\bRUNS\\\\.claude\\\\projects\\\\c--Users-bRUNS-Desktop-Programacion-MercadoPublico-AG--API-\\\\memory\")",
-      "Bash(cat MEMORY.md)"
+      "Bash(cat MEMORY.md)",
+      "Bash(rm -f chrome-extension/manifest.json)",
+      "Bash(rmdir chrome-extension *)"
     ]
   }
 }

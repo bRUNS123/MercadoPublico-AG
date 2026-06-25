@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import Header from '../components/Layout/Header';
 import useMisOfertas from '../hooks/useMisOfertas';
 import { PROCESO_COLUMNAS, COLUMNAS_ORDEN, parseMisProcesos, urlProceso } from '../utils/misOfertasAdapter';
@@ -71,9 +71,12 @@ export default function MiMercadoPublicoPage() {
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState(null); // { tipo: 'ok'|'error', texto }
   const info = useMemo(() => tokenInfo(tokenInput.trim().replace(/^Bearer\s+/i, '')), [tokenInput]);
+  const autoSyncedRef = useRef(null);
 
-  async function handleSync() {
-    saveToken(tokenInput);
+  // Sincroniza usando un token concreto (o el del input si no se pasa uno).
+  async function runSync(tok) {
+    const token = tok != null ? tok : tokenInput;
+    saveToken(token);
     setSyncing(true);
     setSyncMsg(null);
     try {
@@ -89,6 +92,38 @@ export default function MiMercadoPublicoPage() {
       setSyncing(false);
     }
   }
+
+  const handleSync = () => runSync();
+
+  // Pega el token desde el portapapeles y sincroniza.
+  async function pegarDesdePortapapeles() {
+    try {
+      const txt = (await navigator.clipboard.readText()).trim().replace(/^Bearer\s+/i, '');
+      if (!txt) { setSyncMsg({ tipo: 'error', texto: 'El portapapeles está vacío.' }); return; }
+      setTokenInput(txt);
+      runSync(txt);
+    } catch {
+      setSyncMsg({ tipo: 'error', texto: 'No se pudo leer el portapapeles. Pega el token manualmente.' });
+    }
+  }
+
+  // El bookmarklet abre el dashboard con ?mp_token=… en el hash → auto-sincroniza.
+  useEffect(() => {
+    const hash = window.location.hash || '';
+    const qi = hash.indexOf('?');
+    if (qi === -1) return;
+    const params = new URLSearchParams(hash.slice(qi + 1));
+    const t = params.get('mp_token');
+    if (t && autoSyncedRef.current !== t) {
+      autoSyncedRef.current = t;
+      setTokenInput(t);
+      runSync(t);
+      // Limpia el token de la URL (no dejarlo visible ni en el historial)
+      const clean = hash.slice(0, qi);
+      window.history.replaceState(null, '', window.location.pathname + window.location.search + clean);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const porColumna = useMemo(() => {
     const g = { pendiente: [], abiertos: [], cerrados: [], resultados: [] };
@@ -171,9 +206,13 @@ export default function MiMercadoPublicoPage() {
             <div className="table-container" style={{ padding: 20 }}>
               <strong style={{ fontSize: '0.92rem' }}>Token del Escritorio de Proveedor</strong>
               <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '8px 0 12px', lineHeight: 1.5 }}>
-                Pega tu token Bearer actual (DevTools → Network → cualquier petición a <code>servicios-escritorio</code> →
-                header <code>authorization</code>, sin el prefijo "Bearer"). Se guarda solo en este navegador y caduca ~8h.
+                Lo más fácil: usa el <strong>bookmarklet</strong> "Sincronizar GEOPRO" desde la pestaña de MercadoPúblico y
+                esto se llena solo. O pega aquí tu token Bearer manualmente. Se guarda solo en este navegador y caduca ~8h.
               </p>
+              <button onClick={pegarDesdePortapapeles} disabled={syncing}
+                style={{ fontSize: '0.82rem', padding: '6px 14px', borderRadius: 10, cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)', marginBottom: 10 }}>
+                📋 Pegar del portapapeles y sincronizar
+              </button>
               <textarea
                 value={tokenInput}
                 onChange={e => setTokenInput(e.target.value)}
@@ -199,7 +238,13 @@ export default function MiMercadoPublicoPage() {
         {showGuia && (
           <div style={{ padding: '0 24px', marginBottom: 16 }}>
             <div className="table-container" style={{ padding: 20, fontSize: '0.9rem', lineHeight: 1.6 }}>
-              <strong>Cómo traer "Procesos en los que participaste" (sin compartir tu clave):</strong>
+              <div style={{ marginBottom: 12, padding: '10px 14px', borderRadius: 10, background: 'rgba(14,165,233,0.1)', border: '1px solid rgba(14,165,233,0.3)' }}>
+                ⚡ <strong>Lo más fácil:</strong> instala el botón <strong>"Sincronizar GEOPRO"</strong> (un marcador, no instala nada) desde{' '}
+                <a href={`${import.meta.env.BASE_URL}bookmarklet.html`} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>
+                  esta página
+                </a>. Luego, estando en MercadoPúblico, un click y tu dashboard se sincroniza solo.
+              </div>
+              <strong>O manualmente — cómo traer "Procesos en los que participaste" (sin compartir tu clave):</strong>
               <ol style={{ margin: '12px 0 0', paddingLeft: 20, color: 'var(--text-muted)' }}>
                 <li>Inicia sesión normal en <code>mercadopublico.cl</code> con tu Clave Única.</li>
                 <li>En tu escritorio, ubica el bloque <strong>"Procesos en los que participaste"</strong>.</li>
