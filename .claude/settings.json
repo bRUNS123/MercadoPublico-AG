@@ -12,7 +12,9 @@
       "Bash(cd \"C:\\\\Users\\\\bRUNS\\\\.claude\\\\projects\\\\c--Users-bRUNS-Desktop-Programacion-MercadoPublico-AG--API-\\\\memory\")",
       "Bash(cat MEMORY.md)",
       "Bash(rm -f chrome-extension/manifest.json)",
-      "Bash(rmdir chrome-extension *)"
+      "Bash(rmdir chrome-extension *)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" \"https://bruns123.github.io/MercadoPublico-AG/bookmarklet.html\")",
+      "Bash(curl -s \"https://bruns123.github.io/MercadoPublico-AG/bookmarklet.html\")"
     ]
   }
 }

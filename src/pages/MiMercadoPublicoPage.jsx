@@ -5,6 +5,11 @@ import { PROCESO_COLUMNAS, COLUMNAS_ORDEN, parseMisProcesos, urlProceso } from '
 import { formatFecha, formatFechaCorta, formatMonto } from '../utils/formatters';
 import { getToken, setToken as saveToken, tokenInfo, fetchOportunidades } from '../api/miEscritorio';
 
+// Código del bookmarklet "Sincronizar GEOPRO": se ejecuta en la pestaña de
+// MercadoPúblico, toma el token y abre el dashboard con ?mp_token=… para
+// auto-sincronizar. Se asigna vía ref (React bloquea href="javascript:").
+const BOOKMARKLET = `javascript:(function(){function v(s){if(typeof s!=='string'||s.indexOf('eyJ')!==0)return false;try{var p=JSON.parse(atob(s.split('.')[1]));return p&&/chilecomprarealm/.test(p.iss||'')&&!!p.tipoUsuario;}catch(e){return false;}}var t=null;document.cookie.split(';').forEach(function(c){var i=c.indexOf('=');if(i<0)return;var k=c.slice(0,i).trim(),val=decodeURIComponent(c.slice(i+1).trim());if(k==='access_token_ccr'&&v(val))t=val;});function scan(s){try{for(var i=0;i<s.length;i++){var val=s.getItem(s.key(i));if(v(val)){t=val;return;}try{var o=JSON.parse(val);for(var k in o){if(v(o[k])){t=o[k];return;}}}catch(e){}}}catch(e){}}if(!t)scan(localStorage);if(!t)scan(sessionStorage);if(!t){alert('No encontre el token. Inicia sesion en MercadoPublico y abre el Escritorio de Proveedor, luego vuelve a hacer click.');return;}window.open('https://bruns123.github.io/MercadoPublico-AG/#/mi-mercadopublico?mp_token='+encodeURIComponent(t),'_blank');})();`;
+
 function ProcesoCard({ p }) {
   const url = urlProceso(p.codigo, p.mecanismo === 'Compra Ágil' || p.raw?.tipo === 'compra_agil');
   const [hover, setHover] = useState(false);
@@ -72,6 +77,12 @@ export default function MiMercadoPublicoPage() {
   const [syncMsg, setSyncMsg] = useState(null); // { tipo: 'ok'|'error', texto }
   const info = useMemo(() => tokenInfo(tokenInput.trim().replace(/^Bearer\s+/i, '')), [tokenInput]);
   const autoSyncedRef = useRef(null);
+  const bmRef = useRef(null);
+
+  // React no deja poner href="javascript:…"; lo asignamos por DOM al abrir la guía.
+  useEffect(() => {
+    if (bmRef.current) bmRef.current.setAttribute('href', BOOKMARKLET);
+  }, [showGuia]);
 
   // Sincroniza usando un token concreto (o el del input si no se pasa uno).
   async function runSync(tok) {
@@ -172,7 +183,7 @@ export default function MiMercadoPublicoPage() {
           </button>
           <button onClick={() => setShowGuia(g => !g)}
             style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
-            ❓ ¿Cómo obtengo mis datos?
+            ⚡ Botón 1-click
           </button>
           <input
             value={meta.empresa}
@@ -234,28 +245,25 @@ export default function MiMercadoPublicoPage() {
           </div>
         )}
 
-        {/* ─── Guía de captura ─── */}
+        {/* ─── Guía: botón arrastrable ─── */}
         {showGuia && (
           <div style={{ padding: '0 24px', marginBottom: 16 }}>
-            <div className="table-container" style={{ padding: 20, fontSize: '0.9rem', lineHeight: 1.6 }}>
-              <div style={{ marginBottom: 12, padding: '10px 14px', borderRadius: 10, background: 'rgba(14,165,233,0.1)', border: '1px solid rgba(14,165,233,0.3)' }}>
-                ⚡ <strong>Lo más fácil:</strong> instala el botón <strong>"Sincronizar GEOPRO"</strong> (un marcador, no instala nada) desde{' '}
-                <a href={`${import.meta.env.BASE_URL}bookmarklet.html`} target="_blank" rel="noreferrer" style={{ color: 'var(--accent-primary)', fontWeight: 600 }}>
-                  esta página
-                </a>. Luego, estando en MercadoPúblico, un click y tu dashboard se sincroniza solo.
+            <div className="table-container" style={{ padding: 20, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 12 }}>
+              <div style={{ fontSize: '0.9rem' }}>
+                Arrastra este botón a tu barra de marcadores (<code>Ctrl+Shift+B</code> para mostrarla). Luego, desde MercadoPúblico, haz click en él:
               </div>
-              <strong>O manualmente — cómo traer "Procesos en los que participaste" (sin compartir tu clave):</strong>
-              <ol style={{ margin: '12px 0 0', paddingLeft: 20, color: 'var(--text-muted)' }}>
-                <li>Inicia sesión normal en <code>mercadopublico.cl</code> con tu Clave Única.</li>
-                <li>En tu escritorio, ubica el bloque <strong>"Procesos en los que participaste"</strong>.</li>
-                <li>Abre DevTools (<code>F12</code>) → pestaña <strong>Network</strong> → filtro <strong>Fetch/XHR</strong>.</li>
-                <li>Recarga la página. Busca la petición que devuelve esos 4 grupos en JSON (suele llamarse algo como <code>procesos</code>, <code>participacion</code> o similar).</li>
-                <li>Click derecho → <strong>Copy → Copy Response</strong> (y aparte <strong>Copy as cURL</strong> para enviármelo).</li>
-                <li>Vuelve aquí → <strong>Importar</strong> → pega el JSON. Se guarda solo en este navegador.</li>
-              </ol>
-              <div style={{ marginTop: 12, fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                🔒 Privado: se guarda en el almacenamiento local de tu navegador, no se sube a Firebase ni se comparte.
-                Con el cURL (cookie tachada) automatizo esta actualización vía el Worker.
+              <a
+                ref={bmRef}
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                draggable
+                title="Arrástrame a tu barra de marcadores"
+                style={{ display: 'inline-block', padding: '12px 24px', borderRadius: 12, background: 'linear-gradient(135deg,#0ea5e9,#6366f1)', color: '#fff', fontWeight: 700, fontSize: '1rem', textDecoration: 'none', cursor: 'grab', boxShadow: '0 6px 18px rgba(14,165,233,.35)' }}
+              >
+                🔄 Sincronizar GEOPRO
+              </a>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                ¿No funciona? Usa <strong>🔑 Token → 📋 Pegar del portapapeles</strong>. 🔒 El token se guarda solo en tu navegador.
               </div>
             </div>
           </div>
@@ -268,9 +276,8 @@ export default function MiMercadoPublicoPage() {
               <div className="empty-icon">🏛️</div>
               <div className="empty-title">Aún no has cargado tus procesos</div>
               <div className="empty-desc">
-                Pulsa <strong>🔑 Token</strong>, pega tu token del escritorio y dale <strong>Sincronizar</strong> —
-                o usa <strong>⬆️ Pegar JSON</strong> si prefieres manual. El paso a paso está en
-                <strong>¿Cómo obtengo mis datos?</strong>
+                Pulsa <strong>⚡ Botón 1-click</strong> y arrastra el botón a tus marcadores — luego, desde
+                MercadoPúblico, un click y se sincroniza solo.
               </div>
             </div>
           </div>
