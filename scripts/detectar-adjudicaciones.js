@@ -3,8 +3,11 @@
 // contra el nuestro. Debe correr desde el notebook (IP chilena): api2 bloquea
 // por WAF a IPs no chilenas y no manda CORS, igual que el snapshot.
 //
-// Uso:
-//   node scripts/detectar-adjudicaciones.js <TOKEN_BEARER> [RUT]
+// Uso (dos modos):
+//   A) Con token (obtiene la lista del escritorio y luego los detalles):
+//      node scripts/detectar-adjudicaciones.js <TOKEN_BEARER> [RUT]
+//   B) Con un JSON de procesos ya pegado (Response del escritorio), sin token:
+//      node scripts/detectar-adjudicaciones.js --procesos <ruta.json> [RUT]
 //   (o define ESCRITORIO_TOKEN y GEOPRO_RUT en .env.local)
 //
 // Genera public/data/mis-adjudicaciones.json, que el dashboard lee y fusiona.
@@ -21,7 +24,8 @@ const ESCRITORIO_APIKEY = 'e7d3a8f2-5b4d-4b8a-9e8d-3f4e5b8d7a8e';
 const MP_ORIGIN = 'https://proveedor.mercadopublico.cl';
 const CA_BASE = 'https://api2.mercadopublico.cl/v2/compra-agil';
 const CA_TICKET = '25D6C503-FA30-48BD-86FA-0A1D74D54254';
-const DELAY_MS = 300;
+const DELAY_MS = 700;
+const MAX_RETRIES = 4;
 
 function loadEnvLocal() {
   const env = {};
@@ -39,8 +43,12 @@ function loadEnvLocal() {
 }
 
 const env = loadEnvLocal();
-const TOKEN = (process.argv[2] || env.ESCRITORIO_TOKEN || env.VITE_ESCRITORIO_TOKEN || '').replace(/^Bearer\s+/i, '').trim();
-const RUT = (process.argv[3] || env.GEOPRO_RUT || '77.710.202-8').trim();
+const args = process.argv.slice(2);
+let PROCESOS_FILE = null;
+const pIdx = args.indexOf('--procesos');
+if (pIdx !== -1) { PROCESOS_FILE = args[pIdx + 1]; args.splice(pIdx, 2); }
+const TOKEN = PROCESOS_FILE ? '' : (args[0] || env.ESCRITORIO_TOKEN || env.VITE_ESCRITORIO_TOKEN || '').replace(/^Bearer\s+/i, '').trim();
+const RUT = ((PROCESOS_FILE ? args[0] : args[1]) || env.GEOPRO_RUT || '77.710.202-8').trim();
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const normRut = r => String(r || '').replace(/[.\-\s]/g, '').toUpperCase();
@@ -61,12 +69,21 @@ async function getProcesos() {
 }
 
 async function getDetalle(codigo) {
-  const res = await fetch(`${CA_BASE}/${encodeURIComponent(codigo)}`, {
-    headers: { ticket: CA_TICKET, Accept: 'application/json' },
-  });
-  if (!res.ok) throw new Error(`Detalle ${codigo}: HTTP ${res.status}`);
-  const j = await res.json();
-  return j.payload || j;
+  for (let intento = 1; intento <= MAX_RETRIES; intento++) {
+    const res = await fetch(`${CA_BASE}/${encodeURIComponent(codigo)}`, {
+      headers: { ticket: CA_TICKET, Accept: 'application/json' },
+    });
+    if (res.ok) {
+      const j = await res.json();
+      return j.payload || j;
+    }
+    // 429 (rate limit) o 5xx → reintenta con backoff
+    if ((res.status === 429 || res.status >= 500) && intento < MAX_RETRIES) {
+      await sleep(DELAY_MS * (intento + 1));
+      continue;
+    }
+    throw new Error(`Detalle ${codigo}: HTTP ${res.status}`);
+  }
 }
 
 function analizar(detalle, rutPropio) {
@@ -91,14 +108,21 @@ function analizar(detalle, rutPropio) {
 }
 
 async function main() {
-  if (!TOKEN) {
-    console.error('❌ Falta el token. Uso: node scripts/detectar-adjudicaciones.js <TOKEN> [RUT]');
-    console.error('   (o define ESCRITORIO_TOKEN en .env.local). El token sale del escritorio y caduca ~8h.');
-    process.exit(1);
+  let data;
+  if (PROCESOS_FILE) {
+    data = JSON.parse(readFileSync(resolve(PROCESOS_FILE), 'utf-8'));
+    console.log(`Procesos leídos de ${PROCESOS_FILE}`);
+  } else {
+    if (!TOKEN) {
+      console.error('❌ Falta el token o --procesos. Uso:');
+      console.error('   node scripts/detectar-adjudicaciones.js <TOKEN> [RUT]');
+      console.error('   node scripts/detectar-adjudicaciones.js --procesos <ruta.json> [RUT]');
+      process.exit(1);
+    }
+    console.log('Obteniendo procesos del escritorio…');
+    data = await getProcesos();
   }
   console.log(`RUT propio: ${RUT}`);
-  console.log('Obteniendo procesos del escritorio…');
-  const data = await getProcesos();
   const resultados = data.with_results || [];
   console.log(`Procesos con resultados: ${resultados.length}`);
 
