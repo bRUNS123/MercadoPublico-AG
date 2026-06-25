@@ -1,13 +1,13 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import api from '../../api/mercadopublico';
 
-export default function Sidebar() {
+export default function Sidebar({ open = false, onNavigate }) {
   const location = useLocation();
   const requestsToday = api.getRequestsToday();
   const remaining = api.getRequestsRemaining();
 
   return (
-    <aside className="app-sidebar">
+    <aside className={`app-sidebar ${open ? 'open' : ''}`}>
       <div className="sidebar-brand">
         <div className="sidebar-brand-icon">LB</div>
         <div>
@@ -16,7 +16,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <nav className="sidebar-nav">
+      <nav className="sidebar-nav" onClick={onNavigate}>
         <div className="sidebar-section">Principal</div>
 
         <NavLink to="/" className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`} end>
