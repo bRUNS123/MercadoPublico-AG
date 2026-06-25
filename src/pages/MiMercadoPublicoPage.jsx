@@ -10,60 +10,97 @@ import { getToken, setToken as saveToken, tokenInfo, fetchOportunidades } from '
 // auto-sincronizar. Se asigna vía ref (React bloquea href="javascript:").
 const BOOKMARKLET = `javascript:(function(){function v(s){if(typeof s!=='string'||s.indexOf('eyJ')!==0)return false;try{var p=JSON.parse(atob(s.split('.')[1]));return p&&/chilecomprarealm/.test(p.iss||'')&&!!p.tipoUsuario;}catch(e){return false;}}var t=null;document.cookie.split(';').forEach(function(c){var i=c.indexOf('=');if(i<0)return;var k=c.slice(0,i).trim(),val=decodeURIComponent(c.slice(i+1).trim());if(k==='access_token_ccr'&&v(val))t=val;});function scan(s){try{for(var i=0;i<s.length;i++){var val=s.getItem(s.key(i));if(v(val)){t=val;return;}try{var o=JSON.parse(val);for(var k in o){if(v(o[k])){t=o[k];return;}}}catch(e){}}}catch(e){}}if(!t)scan(localStorage);if(!t)scan(sessionStorage);if(!t){alert('No encontre el token. Inicia sesion en MercadoPublico y abre el Escritorio de Proveedor, luego vuelve a hacer click.');return;}window.open('https://bruns123.github.io/MercadoPublico-AG/#/mi-mercadopublico?mp_token='+encodeURIComponent(t),'_blank');})();`;
 
-function ProcesoCard({ p }) {
+function esHoy(dateStr) {
+  if (!dateStr) return false;
+  const d = new Date(dateStr);
+  if (isNaN(d)) return false;
+  const n = new Date();
+  return d.getFullYear() === n.getFullYear() && d.getMonth() === n.getMonth() && d.getDate() === n.getDate();
+}
+
+const RESULTADO_CFG = {
+  adjudicada: { label: '🏆 Adjudicada', color: '#22c55e', bg: 'rgba(34,197,94,0.15)' },
+  no_adjudicada: { label: '❌ No adjudicada', color: '#ef4444', bg: 'rgba(239,68,68,0.15)' },
+};
+
+function ProcesoCard({ p, esResultado, anotacion, onAnotar }) {
   const url = urlProceso(p.codigo, p.mecanismo === 'Compra Ágil' || p.raw?.tipo === 'compra_agil');
   const [hover, setHover] = useState(false);
+  const cerroHoy = esHoy(p.fechaCierre);
+  const resultado = anotacion?.resultado || '';
+  const [comentario, setComentario] = useState(anotacion?.comentario || '');
+  const [showNota, setShowNota] = useState(!!(anotacion?.comentario));
 
-  const inner = (
-    <>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontWeight: 700, fontSize: '0.78rem', color: 'var(--accent-primary)', marginBottom: 4 }}>
-        {p.codigo}
-        {url && <span style={{ fontSize: '0.72rem', opacity: hover ? 1 : 0.45 }}>↗</span>}
+  const borderColor = hover && url ? 'var(--accent-primary)' : 'var(--border-color)';
+
+  return (
+    <div style={{
+      background: 'var(--bg-secondary)',
+      border: `1px solid ${borderColor}`,
+      borderLeft: cerroHoy ? '3px solid #f59e0b' : `1px solid ${borderColor}`,
+      borderRadius: 10, padding: '10px 12px', marginBottom: 8, transition: 'border-color .15s',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
+        {url
+          ? <a href={url} target="_blank" rel="noreferrer" title="Abrir en MercadoPúblico"
+               onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
+               style={{ fontWeight: 700, fontSize: '0.78rem', color: 'var(--accent-primary)', textDecoration: 'none' }}>
+              {p.codigo} <span style={{ fontSize: '0.72rem', opacity: hover ? 1 : 0.5 }}>↗</span>
+            </a>
+          : <span style={{ fontWeight: 700, fontSize: '0.78rem', color: 'var(--accent-primary)' }}>{p.codigo}</span>}
+        {cerroHoy && <span style={{ fontSize: '0.66rem', fontWeight: 700, color: '#f59e0b', background: 'rgba(245,158,11,0.15)', borderRadius: 999, padding: '1px 8px' }}>🔴 Cerró hoy</span>}
+        {resultado && <span style={{ fontSize: '0.66rem', fontWeight: 700, color: RESULTADO_CFG[resultado].color, background: RESULTADO_CFG[resultado].bg, borderRadius: 999, padding: '1px 8px' }}>{RESULTADO_CFG[resultado].label}</span>}
       </div>
+
       <div style={{ fontSize: '0.82rem', color: 'var(--text-primary)', lineHeight: 1.35 }}>{p.nombre}</div>
+
       <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 6, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
         {p.estadoLabel && <span>🏷️ {p.estadoLabel}</span>}
-        {p.organismo !== '—' && <span>🏢 {p.organismo}</span>}
         {p.fechaCierre && <span>📅 Cierre {formatFechaCorta(p.fechaCierre)}</span>}
         {p.monto ? <span>💰 {formatMonto(p.monto, p.moneda)}</span> : null}
         {p.mecanismo && <span style={{ opacity: 0.7 }}>{p.mecanismo}</span>}
       </div>
-    </>
-  );
 
-  const baseStyle = {
-    display: 'block',
-    background: 'var(--bg-secondary)',
-    border: `1px solid ${hover && url ? 'var(--accent-primary)' : 'var(--border-color)'}`,
-    borderRadius: 10,
-    padding: '10px 12px',
-    marginBottom: 8,
-    textDecoration: 'none',
-    color: 'inherit',
-    transition: 'border-color .15s, transform .15s',
-    transform: hover && url ? 'translateY(-1px)' : 'none',
-  };
+      {esResultado && (
+        <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+          {['adjudicada', 'no_adjudicada'].map(val => {
+            const cfg = RESULTADO_CFG[val];
+            const active = resultado === val;
+            return (
+              <button key={val} onClick={() => onAnotar(p.codigo, { resultado: active ? '' : val })}
+                style={{ flex: 1, fontSize: '0.72rem', padding: '4px 6px', borderRadius: 8, cursor: 'pointer',
+                  border: `1px solid ${active ? cfg.color : 'var(--border-color)'}`,
+                  background: active ? cfg.bg : 'var(--bg-tertiary)',
+                  color: active ? cfg.color : 'var(--text-muted)', fontWeight: active ? 700 : 500 }}>
+                {cfg.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
-  if (!url) {
-    return <div style={{ ...baseStyle, cursor: 'default' }}>{inner}</div>;
-  }
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noreferrer"
-      title="Abrir en MercadoPúblico"
-      style={{ ...baseStyle, cursor: 'pointer' }}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
-      {inner}
-    </a>
+      {showNota ? (
+        <textarea
+          value={comentario}
+          onChange={e => setComentario(e.target.value)}
+          onBlur={() => onAnotar(p.codigo, { comentario })}
+          placeholder="¿Por qué adjudicamos / no adjudicamos? Nota interna…"
+          style={{ width: '100%', marginTop: 8, minHeight: 46, fontSize: '0.74rem', padding: 8, borderRadius: 8, border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)', resize: 'vertical', boxSizing: 'border-box' }}
+        />
+      ) : (
+        <button onClick={() => setShowNota(true)}
+          style={{ marginTop: 8, fontSize: '0.7rem', padding: 0, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+          ✎ {comentario ? 'Ver nota' : 'Agregar nota'}
+        </button>
+      )}
+    </div>
   );
 }
 
 export default function MiMercadoPublicoPage() {
-  const { procesos, meta, importarProcesos, fusionarProcesos, limpiar, setEmpresa } = useMisOfertas();
+  const { procesos, meta, anotaciones, setAnotacion, importarProcesos, fusionarProcesos, limpiar, setEmpresa } = useMisOfertas();
+  const [fResultado, setFResultado] = useState('todas'); // todas|adjudicada|no_adjudicada|sin
+  const [fFecha, setFFecha] = useState('todas');         // todas|hoy|7|30
   const [showImport, setShowImport] = useState(false);
   const [showGuia, setShowGuia] = useState(false);
   const [pegado, setPegado] = useState('');
@@ -142,12 +179,35 @@ export default function MiMercadoPublicoPage() {
     return g;
   }, [procesos]);
 
+  const adjudicadasCount = useMemo(
+    () => Object.values(anotaciones).filter(a => a?.resultado === 'adjudicada').length,
+    [anotaciones]
+  );
+
   const kpis = useMemo(() => [
     { label: 'Total procesos', value: procesos.length, icon: '📊', bg: 'rgba(14,165,233,0.15)' },
     { label: 'En juego', value: porColumna.pendiente.length + porColumna.abiertos.length, icon: '🔄', bg: 'rgba(34,197,94,0.15)', detail: 'pendientes + abiertos' },
     { label: 'Esperando resultados', value: porColumna.cerrados.length, icon: '⏳', bg: 'rgba(234,179,8,0.15)' },
-    { label: 'Con resultados', value: porColumna.resultados.length, icon: '🏆', bg: 'rgba(59,130,246,0.15)' },
-  ], [procesos, porColumna]);
+    { label: 'Con resultados', value: porColumna.resultados.length, icon: '🏆', bg: 'rgba(59,130,246,0.15)', detail: `${adjudicadasCount} adjudicada${adjudicadasCount !== 1 ? 's' : ''} (GEOPRO)` },
+  ], [procesos, porColumna, adjudicadasCount]);
+
+  // Filtra los procesos de la columna "resultados" por resultado marcado y por fecha de cierre.
+  function filtrarResultados(items) {
+    return items.filter(p => {
+      const r = anotaciones[p.codigo]?.resultado || '';
+      if (fResultado === 'adjudicada' && r !== 'adjudicada') return false;
+      if (fResultado === 'no_adjudicada' && r !== 'no_adjudicada') return false;
+      if (fResultado === 'sin' && r) return false;
+      if (fFecha !== 'todas') {
+        if (!p.fechaCierre) return false;
+        if (fFecha === 'hoy') return esHoy(p.fechaCierre);
+        const dias = (Date.now() - new Date(p.fechaCierre).getTime()) / 86400000;
+        if (fFecha === '7' && dias > 7) return false;
+        if (fFecha === '30' && dias > 30) return false;
+      }
+      return true;
+    });
+  }
 
   function handleImport() {
     const res = parseMisProcesos(pegado);
@@ -296,20 +356,41 @@ export default function MiMercadoPublicoPage() {
           <div style={{ padding: '0 24px 24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
             {COLUMNAS_ORDEN.map(col => {
               const cfg = PROCESO_COLUMNAS[col];
-              const items = porColumna[col];
+              const esRes = col === 'resultados';
+              const all = porColumna[col];
+              const items = esRes ? filtrarResultados(all) : all;
+              const selStyle = { fontSize: '0.7rem', padding: '4px 6px', borderRadius: 8, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', flex: 1, minWidth: 0 };
               return (
                 <div key={col} style={{ background: 'var(--bg-tertiary)', borderRadius: 14, border: '1px solid var(--border-color)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                   <div style={{ padding: '12px 14px', borderTop: `3px solid ${cfg.color}`, background: cfg.bg }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
                       <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-primary)' }}>{cfg.icon} {cfg.label}</span>
-                      <span style={{ fontWeight: 700, fontSize: '0.85rem', color: cfg.color, background: 'var(--bg-secondary)', borderRadius: 999, padding: '1px 10px', minWidth: 26, textAlign: 'center' }}>{items.length}</span>
+                      <span style={{ fontWeight: 700, fontSize: '0.85rem', color: cfg.color, background: 'var(--bg-secondary)', borderRadius: 999, padding: '1px 10px', minWidth: 26, textAlign: 'center' }}>
+                        {esRes && items.length !== all.length ? `${items.length}/${all.length}` : items.length}
+                      </span>
                     </div>
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>{cfg.sub}</div>
+                    {esRes && all.length > 0 && (
+                      <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+                        <select value={fResultado} onChange={e => setFResultado(e.target.value)} style={selStyle} title="Filtrar por resultado">
+                          <option value="todas">Todas</option>
+                          <option value="adjudicada">🏆 Adjudicadas</option>
+                          <option value="no_adjudicada">❌ No adjudicadas</option>
+                          <option value="sin">Sin marcar</option>
+                        </select>
+                        <select value={fFecha} onChange={e => setFFecha(e.target.value)} style={selStyle} title="Filtrar por fecha de cierre/resultado">
+                          <option value="todas">Cualquier fecha</option>
+                          <option value="hoy">Cierre hoy</option>
+                          <option value="7">Últimos 7 días</option>
+                          <option value="30">Últimos 30 días</option>
+                        </select>
+                      </div>
+                    )}
                   </div>
                   <div style={{ padding: 12, flex: 1, maxHeight: 560, overflowY: 'auto' }}>
                     {items.length === 0
                       ? <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textAlign: 'center', padding: '24px 0' }}>Sin procesos</div>
-                      : items.map(p => <ProcesoCard key={p._id} p={p} />)}
+                      : items.map(p => <ProcesoCard key={p._id} p={p} esResultado={esRes} anotacion={anotaciones[p.codigo]} onAnotar={setAnotacion} />)}
                   </div>
                 </div>
               );

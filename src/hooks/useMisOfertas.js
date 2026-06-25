@@ -4,6 +4,9 @@ import { useState, useEffect, useCallback } from 'react';
 // (localStorage), nunca en Firebase ni en la sala colaborativa.
 const STORAGE_KEY = 'mp_mis_procesos';
 const META_KEY = 'mp_mis_procesos_meta';
+// Anotaciones del usuario por código: { resultado: 'adjudicada'|'no_adjudicada'|'', comentario }
+// Separadas de los procesos para que el re-sync no las borre.
+const ANOT_KEY = 'mp_mis_anotaciones';
 
 function load(key, fallback) {
   try {
@@ -17,6 +20,7 @@ function load(key, fallback) {
 export default function useMisOfertas() {
   const [procesos, setProcesos] = useState(() => load(STORAGE_KEY, []));
   const [meta, setMeta] = useState(() => load(META_KEY, { actualizado: null, empresa: 'GEOPRO' }));
+  const [anotaciones, setAnotaciones] = useState(() => load(ANOT_KEY, {}));
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(procesos));
@@ -25,6 +29,15 @@ export default function useMisOfertas() {
   useEffect(() => {
     localStorage.setItem(META_KEY, JSON.stringify(meta));
   }, [meta]);
+
+  useEffect(() => {
+    localStorage.setItem(ANOT_KEY, JSON.stringify(anotaciones));
+  }, [anotaciones]);
+
+  // Actualiza la anotación de un proceso (merge parcial).
+  const setAnotacion = useCallback((codigo, patch) => {
+    setAnotaciones(prev => ({ ...prev, [codigo]: { ...prev[codigo], ...patch } }));
+  }, []);
 
   // Reemplaza el set completo (importación desde el panel pegado).
   const importarProcesos = useCallback((nuevos) => {
@@ -51,5 +64,5 @@ export default function useMisOfertas() {
     setMeta(m => ({ ...m, empresa }));
   }, []);
 
-  return { procesos, meta, importarProcesos, fusionarProcesos, limpiar, setEmpresa };
+  return { procesos, meta, anotaciones, setAnotacion, importarProcesos, fusionarProcesos, limpiar, setEmpresa };
 }
