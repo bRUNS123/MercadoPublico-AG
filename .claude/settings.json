@@ -31,7 +31,10 @@
       "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\);process.stdin.on\\('end',\\(\\)=>{try{const j=JSON.parse\\(s.split\\('[HTTP'\\)[0]\\);console.log\\('items:',Object.keys\\(j.items\\).length,'| adjudicadas:',Object.values\\(j.items\\).filter\\(x=>x.resultado==='adjudicada'\\).length\\);console.log\\('ej GEOPRO ganó:',Object.entries\\(j.items\\).find\\(\\([k,v]\\)=>v.resultado==='adjudicada'\\)?.[0]\\);}catch\\(e\\){console.log\\('aún no propaga / 404'\\);}}\\);\")",
       "Bash(node -e \"const d=require\\('./public/data/mis-adjudicaciones.json'\\);const e=d.items['5300-4-COT26'];console.log\\('ganador:',e.ganadorNombre\\);console.log\\('com.ganador:',\\(e.comentarioGanador||''\\).slice\\(0,90\\)\\);console.log\\('com.GEOPRO:',\\(e.comentarioPropio||''\\).slice\\(0,90\\)\\);\")",
       "Bash(curl -s -m 20 \"https://bruns123.github.io/MercadoPublico-AG/data/mis-adjudicaciones.json\")",
-      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(s\\);const e=j.items['5300-4-COT26'];console.log\\('✅ en vivo · items:',Object.keys\\(j.items\\).length\\);console.log\\('ganador:',e.ganadorNombre\\);console.log\\('¿comentarioGanador?',!!e.comentarioGanador,'| ¿comentarioPropio?',!!e.comentarioPropio\\);}\\);\")"
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\);process.stdin.on\\('end',\\(\\)=>{const j=JSON.parse\\(s\\);const e=j.items['5300-4-COT26'];console.log\\('✅ en vivo · items:',Object.keys\\(j.items\\).length\\);console.log\\('ganador:',e.ganadorNombre\\);console.log\\('¿comentarioGanador?',!!e.comentarioGanador,'| ¿comentarioPropio?',!!e.comentarioPropio\\);}\\);\")",
+      "Bash(curl -s -m 30 \"https://api2.mercadopublico.cl/v2/compra-agil/5300-4-COT26\" -H \"ticket: 25D6C503-FA30-48BD-86FA-0A1D74D54254\" -o det.json)",
+      "Bash(node -e \"const d=require\\('./det.json'\\);const p=d.payload||d;console.log\\(JSON.stringify\\(p.fechas,null,1\\)\\);\")",
+      "Bash(node -e \"const d=require\\('./det.json'\\);function w\\(o,pre\\){for\\(const k in o\\){const v=o[k];if\\(/fecha|date/i.test\\(k\\)&&typeof v!=='object'\\)console.log\\(pre+k,'=',v\\);else if\\(v&&typeof v==='object'\\)w\\(v,pre+k+'.'\\);}}w\\(d.payload||d,''\\);\")"
     ]
   }
 }

@@ -93,7 +93,9 @@ function analizar(detalle, rutPropio) {
   if (!provs.length) return null;
   const sel = provs.find(x => x.proveedor_seleccionado);
   const propio = provs.find(x => normRut(x.rut_proveedor) === normRut(rutPropio));
-  if (!sel) return { resultado: '', comentario: '' };
+  // Fecha en que aparecieron los resultados (último cambio del proceso adjudicado).
+  const fechaResultados = detalle?.fechas?.fecha_ultimo_cambio || '';
+  if (!sel) return { resultado: '', comentario: '', fechaResultados };
   const gano = normRut(sel.rut_proveedor) === normRut(rutPropio);
   if (gano) {
     return {
@@ -102,6 +104,7 @@ function analizar(detalle, rutPropio) {
       ganadorNombre: 'GEOPRO',
       comentarioGanador: comentarioDe(sel),
       comentarioPropio: '',
+      fechaResultados,
     };
   }
   return {
@@ -112,6 +115,7 @@ function analizar(detalle, rutPropio) {
     ganadorNombre: sel.razon_social,
     comentarioGanador: comentarioDe(sel),
     comentarioPropio: comentarioDe(propio),
+    fechaResultados,
   };
 }
 

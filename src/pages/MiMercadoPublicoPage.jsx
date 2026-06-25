@@ -57,6 +57,7 @@ function ProcesoCard({ p, esResultado, anotacion, onAnotar, autoResultado }) {
       <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 6, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
         {p.estadoLabel && <span>🏷️ {p.estadoLabel}</span>}
         {p.fechaCierre && <span>📅 Cierre {formatFechaCorta(p.fechaCierre)}</span>}
+        {anotacion?.fechaResultados && <span style={{ color: 'var(--accent-primary)' }}>🏁 Resultados {formatFechaCorta(String(anotacion.fechaResultados).replace(' ', 'T'))}</span>}
         {p.monto ? <span>💰 {formatMonto(p.monto, p.moneda)}</span> : null}
         {p.mecanismo && <span style={{ opacity: 0.7 }}>{p.mecanismo}</span>}
       </div>
@@ -136,6 +137,7 @@ export default function MiMercadoPublicoPage() {
   const [fResultado, setFResultado] = useState('todas'); // todas|adjudicada|no_adjudicada|sin
   const [fFecha, setFFecha] = useState('todas');         // todas|hoy|7|30
   const [orden, setOrden] = useState('cierre_desc');     // cierre_desc|cierre_asc|postula_desc|postula_asc
+  const [ordenRes, setOrdenRes] = useState('resultado_desc'); // orden propio de la columna Resultados
   const [autoAdj, setAutoAdj] = useState({});            // adjudicaciones detectadas por el script (notebook)
   const [showImport, setShowImport] = useState(false);
   const [showGuia, setShowGuia] = useState(false);
@@ -232,14 +234,18 @@ export default function MiMercadoPublicoPage() {
     { label: 'Con resultados', value: porColumna.resultados.length, color: '#3b82f6', detail: `${adjudicadasCount} adjudicada${adjudicadasCount !== 1 ? 's' : ''} (GEOPRO)` },
   ], [procesos, porColumna, adjudicadasCount]);
 
-  // Ordena por fecha de cierre o de publicación, asc o desc.
+  // Ordena por fecha de resultados, cierre o publicación, asc o desc.
   // Las tarjetas sin esa fecha quedan SIEMPRE al final (no contaminan el orden).
-  function ordenar(items) {
-    const key = orden.startsWith('postula') ? 'fechaPublicacion' : 'fechaCierre';
-    const dir = orden.endsWith('asc') ? 1 : -1;
+  function ordenarPor(items, ord) {
+    const isRes = ord.startsWith('resultado');
+    const key = ord.startsWith('postula') ? 'fechaPublicacion' : 'fechaCierre';
+    const dir = ord.endsWith('asc') ? 1 : -1;
+    const val = (p) => {
+      const raw = isRes ? anot(p.codigo).fechaResultados : p[key];
+      return raw ? new Date(String(raw).replace(' ', 'T')).getTime() : null;
+    };
     return [...items].sort((a, b) => {
-      const va = a[key] ? new Date(a[key]).getTime() : null;
-      const vb = b[key] ? new Date(b[key]).getTime() : null;
+      const va = val(a), vb = val(b);
       if (va === null && vb === null) return 0;
       if (va === null) return 1;
       if (vb === null) return -1;
@@ -442,7 +448,7 @@ export default function MiMercadoPublicoPage() {
               const cfg = PROCESO_COLUMNAS[col];
               const esRes = col === 'resultados';
               const all = porColumna[col];
-              const items = ordenar(esRes ? filtrarResultados(all) : all);
+              const items = ordenarPor(esRes ? filtrarResultados(all) : all, esRes ? ordenRes : orden);
               const selStyle = { fontSize: '0.7rem', padding: '4px 6px', borderRadius: 8, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', flex: 1, minWidth: 0 };
               return (
                 <div key={col} style={{ background: 'var(--bg-tertiary)', borderRadius: 14, border: '1px solid var(--border-color)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
@@ -455,19 +461,35 @@ export default function MiMercadoPublicoPage() {
                     </div>
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>{cfg.sub}</div>
                     {esRes && all.length > 0 && (
-                      <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-                        <select value={fResultado} onChange={e => setFResultado(e.target.value)} style={selStyle} title="Filtrar por resultado">
-                          <option value="todas">Todas</option>
-                          <option value="adjudicada">🏆 Adjudicadas</option>
-                          <option value="no_adjudicada">❌ No adjudicadas</option>
-                          <option value="sin">Sin marcar</option>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+                        <select value={ordenRes} onChange={e => setOrdenRes(e.target.value)} style={{ ...selStyle, flex: 'unset' }} title="Ordenar resultados">
+                          <optgroup label="Por fecha de resultados">
+                            <option value="resultado_desc">Resultados: más recientes</option>
+                            <option value="resultado_asc">Resultados: más antiguos</option>
+                          </optgroup>
+                          <optgroup label="Por fecha de cierre">
+                            <option value="cierre_desc">Cierre: más reciente</option>
+                            <option value="cierre_asc">Cierre: más antiguo</option>
+                          </optgroup>
+                          <optgroup label="Por fecha de publicación">
+                            <option value="postula_desc">Publicación: más reciente</option>
+                            <option value="postula_asc">Publicación: más antigua</option>
+                          </optgroup>
                         </select>
-                        <select value={fFecha} onChange={e => setFFecha(e.target.value)} style={selStyle} title="Filtrar por fecha de cierre/resultado">
-                          <option value="todas">Cualquier fecha</option>
-                          <option value="hoy">Cierre hoy</option>
-                          <option value="7">Últimos 7 días</option>
-                          <option value="30">Últimos 30 días</option>
-                        </select>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <select value={fResultado} onChange={e => setFResultado(e.target.value)} style={selStyle} title="Filtrar por resultado">
+                            <option value="todas">Todas</option>
+                            <option value="adjudicada">🏆 Adjudicadas</option>
+                            <option value="no_adjudicada">❌ No adjudicadas</option>
+                            <option value="sin">Sin marcar</option>
+                          </select>
+                          <select value={fFecha} onChange={e => setFFecha(e.target.value)} style={selStyle} title="Filtrar por fecha de cierre/resultado">
+                            <option value="todas">Cualquier fecha</option>
+                            <option value="hoy">Cierre hoy</option>
+                            <option value="7">Últimos 7 días</option>
+                            <option value="30">Últimos 30 días</option>
+                          </select>
+                        </div>
                       </div>
                     )}
                   </div>
