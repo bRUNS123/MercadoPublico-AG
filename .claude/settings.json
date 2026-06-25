@@ -26,7 +26,9 @@
       "Bash(curl -s -m 30 \"https://mp-oportunidades-proxy.bfrancosentis.workers.dev/ca/5300-4-COT26\" -H \"Origin: https://bruns123.github.io\" -o ca.json -w \"[HTTP %{http_code}]\\\\n\")",
       "Bash(curl -s -m 20 -D - -o /dev/null \"https://api2.mercadopublico.cl/v2/compra-agil/5300-4-COT26\" -H \"ticket: 25D6C503-FA30-48BD-86FA-0A1D74D54254\" -H \"Origin: https://buscador.mercadopublico.cl\")",
       "Bash(node scripts/detectar-adjudicaciones.js --procesos \"C:\\\\Users\\\\bRUNS\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-bRUNS-Desktop-Programacion-MercadoPublico-AG--API-\\\\b1280546-b373-483c-b74c-813e6b70be09\\\\scratchpad\\\\procesos.json\")",
-      "Bash(node -e \"const d=require\\('./public/data/mis-adjudicaciones.json'\\);console.log\\('generado:',d.generadoEl,'| items:',Object.keys\\(d.items\\).length\\);console.log\\('adjudicadas:',Object.values\\(d.items\\).filter\\(x=>x.resultado==='adjudicada'\\).length\\);\")"
+      "Bash(node -e \"const d=require\\('./public/data/mis-adjudicaciones.json'\\);console.log\\('generado:',d.generadoEl,'| items:',Object.keys\\(d.items\\).length\\);console.log\\('adjudicadas:',Object.values\\(d.items\\).filter\\(x=>x.resultado==='adjudicada'\\).length\\);\")",
+      "Bash(curl -s -m 20 \"https://bruns123.github.io/MercadoPublico-AG/data/mis-adjudicaciones.json\" -w \"\\\\n[HTTP %{http_code}]\\\\n\")",
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\);process.stdin.on\\('end',\\(\\)=>{try{const j=JSON.parse\\(s.split\\('[HTTP'\\)[0]\\);console.log\\('items:',Object.keys\\(j.items\\).length,'| adjudicadas:',Object.values\\(j.items\\).filter\\(x=>x.resultado==='adjudicada'\\).length\\);console.log\\('ej GEOPRO ganó:',Object.entries\\(j.items\\).find\\(\\([k,v]\\)=>v.resultado==='adjudicada'\\)?.[0]\\);}catch\\(e\\){console.log\\('aún no propaga / 404'\\);}}\\);\")"
     ]
   }
 }

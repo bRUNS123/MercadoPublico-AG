@@ -23,7 +23,7 @@ const RESULTADO_CFG = {
   no_adjudicada: { label: '❌ No adjudicada', color: '#ef4444', bg: 'rgba(239,68,68,0.15)' },
 };
 
-function ProcesoCard({ p, esResultado, anotacion, onAnotar }) {
+function ProcesoCard({ p, esResultado, anotacion, onAnotar, autoResultado }) {
   const url = urlProceso(p.codigo, p.mecanismo === 'Compra Ágil' || p.raw?.tipo === 'compra_agil');
   const [hover, setHover] = useState(false);
   const cerroHoy = esHoy(p.fechaCierre);
@@ -62,21 +62,27 @@ function ProcesoCard({ p, esResultado, anotacion, onAnotar }) {
       </div>
 
       {esResultado && (
-        <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-          {['adjudicada', 'no_adjudicada'].map(val => {
-            const cfg = RESULTADO_CFG[val];
-            const active = resultado === val;
-            return (
-              <button key={val} onClick={() => onAnotar(p.codigo, { resultado: active ? '' : val })}
-                style={{ flex: 1, fontSize: '0.72rem', padding: '4px 6px', borderRadius: 8, cursor: 'pointer',
-                  border: `1px solid ${active ? cfg.color : 'var(--border-color)'}`,
-                  background: active ? cfg.bg : 'var(--bg-tertiary)',
-                  color: active ? cfg.color : 'var(--text-muted)', fontWeight: active ? 700 : 500 }}>
-                {cfg.label}
-              </button>
-            );
-          })}
-        </div>
+        autoResultado ? (
+          <div style={{ marginTop: 8, fontSize: '0.7rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 5 }}>
+            🔒 Resultado detectado automáticamente
+          </div>
+        ) : (
+          <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
+            {['adjudicada', 'no_adjudicada'].map(val => {
+              const cfg = RESULTADO_CFG[val];
+              const active = resultado === val;
+              return (
+                <button key={val} onClick={() => onAnotar(p.codigo, { resultado: active ? '' : val })}
+                  style={{ flex: 1, fontSize: '0.72rem', padding: '4px 6px', borderRadius: 8, cursor: 'pointer',
+                    border: `1px solid ${active ? cfg.color : 'var(--border-color)'}`,
+                    background: active ? cfg.bg : 'var(--bg-tertiary)',
+                    color: active ? cfg.color : 'var(--text-muted)', fontWeight: active ? 700 : 500 }}>
+                  {cfg.label}
+                </button>
+              );
+            })}
+          </div>
+        )
       )}
 
       {showNota ? (
@@ -428,7 +434,7 @@ export default function MiMercadoPublicoPage() {
                   <div style={{ padding: 12, flex: 1, maxHeight: 560, overflowY: 'auto' }}>
                     {items.length === 0
                       ? <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textAlign: 'center', padding: '24px 0' }}>Sin procesos</div>
-                      : items.map(p => <ProcesoCard key={p._id} p={p} esResultado={esRes} anotacion={anot(p.codigo)} onAnotar={setAnotacion} />)}
+                      : items.map(p => <ProcesoCard key={p._id} p={p} esResultado={esRes} anotacion={anot(p.codigo)} onAnotar={setAnotacion} autoResultado={autoAdj[p.codigo]?.resultado || ''} />)}
                   </div>
                 </div>
               );
