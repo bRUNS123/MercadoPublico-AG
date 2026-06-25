@@ -232,14 +232,18 @@ export default function MiMercadoPublicoPage() {
     { label: 'Con resultados', value: porColumna.resultados.length, color: '#3b82f6', detail: `${adjudicadasCount} adjudicada${adjudicadasCount !== 1 ? 's' : ''} (GEOPRO)` },
   ], [procesos, porColumna, adjudicadasCount]);
 
-  // Ordena por fecha de cierre o de postulación (publicación), asc o desc.
+  // Ordena por fecha de cierre o de publicación, asc o desc.
+  // Las tarjetas sin esa fecha quedan SIEMPRE al final (no contaminan el orden).
   function ordenar(items) {
     const key = orden.startsWith('postula') ? 'fechaPublicacion' : 'fechaCierre';
     const dir = orden.endsWith('asc') ? 1 : -1;
     return [...items].sort((a, b) => {
-      const da = a[key] ? new Date(a[key]).getTime() : 0;
-      const db = b[key] ? new Date(b[key]).getTime() : 0;
-      return (da - db) * dir;
+      const va = a[key] ? new Date(a[key]).getTime() : null;
+      const vb = b[key] ? new Date(b[key]).getTime() : null;
+      if (va === null && vb === null) return 0;
+      if (va === null) return 1;
+      if (vb === null) return -1;
+      return (va - vb) * dir;
     });
   }
 
