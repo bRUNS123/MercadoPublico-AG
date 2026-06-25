@@ -28,8 +28,8 @@ function ProcesoCard({ p, esResultado, anotacion, onAnotar, autoResultado }) {
   const [hover, setHover] = useState(false);
   const cerroHoy = esHoy(p.fechaCierre);
   const resultado = anotacion?.resultado || '';
-  const [comentario, setComentario] = useState(anotacion?.comentario || '');
-  const [showNota, setShowNota] = useState(!!(anotacion?.comentario));
+  const [nota, setNota] = useState(anotacion?.nota || '');
+  const [showNota, setShowNota] = useState(!!(anotacion?.nota));
 
   const borderColor = hover && url ? 'var(--accent-primary)' : 'var(--border-color)';
 
@@ -85,18 +85,46 @@ function ProcesoCard({ p, esResultado, anotacion, onAnotar, autoResultado }) {
         )
       )}
 
+      {/* Resumen automático (solo lectura) */}
+      {esResultado && anotacion?.comentario && (
+        <div style={{ marginTop: 8, fontSize: '0.74rem', color: 'var(--text-primary)', background: 'var(--bg-tertiary)', borderRadius: 8, padding: '6px 8px' }}>
+          {anotacion.comentario}
+        </div>
+      )}
+
+      {/* Comentario del ganador (cotización) */}
+      {anotacion?.comentarioGanador && (
+        <details style={{ marginTop: 6 }}>
+          <summary style={{ cursor: 'pointer', fontSize: '0.72rem', color: 'var(--accent-primary)' }}>
+            💬 {resultado === 'adjudicada' ? 'Nuestra cotización (ganadora)' : `Cotización del ganador${anotacion.ganadorNombre ? ' · ' + anotacion.ganadorNombre : ''}`}
+          </summary>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4, whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>{anotacion.comentarioGanador}</div>
+        </details>
+      )}
+
+      {/* Nuestra cotización (GEOPRO), cuando no ganamos */}
+      {anotacion?.comentarioPropio && resultado !== 'adjudicada' && (
+        <details style={{ marginTop: 6 }}>
+          <summary style={{ cursor: 'pointer', fontSize: '0.72rem', color: 'var(--accent-primary)' }}>
+            💬 Nuestra cotización (GEOPRO)
+          </summary>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4, whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>{anotacion.comentarioPropio}</div>
+        </details>
+      )}
+
+      {/* Nota interna manual del usuario */}
       {showNota ? (
         <textarea
-          value={comentario}
-          onChange={e => setComentario(e.target.value)}
-          onBlur={() => onAnotar(p.codigo, { comentario })}
-          placeholder="¿Por qué adjudicamos / no adjudicamos? Nota interna…"
+          value={nota}
+          onChange={e => setNota(e.target.value)}
+          onBlur={() => onAnotar(p.codigo, { nota })}
+          placeholder="Tu nota interna…"
           style={{ width: '100%', marginTop: 8, minHeight: 46, fontSize: '0.74rem', padding: 8, borderRadius: 8, border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)', resize: 'vertical', boxSizing: 'border-box' }}
         />
       ) : (
         <button onClick={() => setShowNota(true)}
           style={{ marginTop: 8, fontSize: '0.7rem', padding: 0, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
-          ✎ {comentario ? 'Ver nota' : 'Agregar nota'}
+          ✎ {nota ? 'Ver mi nota' : 'Agregar nota'}
         </button>
       )}
     </div>

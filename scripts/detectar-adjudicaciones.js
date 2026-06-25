@@ -86,6 +86,8 @@ async function getDetalle(codigo) {
   }
 }
 
+const comentarioDe = x => (x?.descripcion_cotizacion || x?.descripcion || '').trim();
+
 function analizar(detalle, rutPropio) {
   const provs = detalle?.proveedores_cotizando || [];
   if (!provs.length) return null;
@@ -97,6 +99,9 @@ function analizar(detalle, rutPropio) {
     return {
       resultado: 'adjudicada',
       comentario: `🏆 Adjudicado a GEOPRO — ${fmt(sel.monto_total)} (de ${provs.length} oferentes)`,
+      ganadorNombre: 'GEOPRO',
+      comentarioGanador: comentarioDe(sel),
+      comentarioPropio: '',
     };
   }
   return {
@@ -104,6 +109,9 @@ function analizar(detalle, rutPropio) {
     comentario: `Ganó ${sel.razon_social} (${sel.rut_proveedor}) — ${fmt(sel.monto_total)}`
       + (propio ? ` · Nuestra oferta ${fmt(propio.monto_total)}` : '')
       + ` · ${provs.length} oferentes`,
+    ganadorNombre: sel.razon_social,
+    comentarioGanador: comentarioDe(sel),
+    comentarioPropio: comentarioDe(propio),
   };
 }
 
