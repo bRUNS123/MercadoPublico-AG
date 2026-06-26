@@ -24,6 +24,9 @@ const ESCRITORIO_APIKEY = 'e7d3a8f2-5b4d-4b8a-9e8d-3f4e5b8d7a8e';
 const MP_ORIGIN = 'https://proveedor.mercadopublico.cl';
 const CA_BASE = 'https://api2.mercadopublico.cl/v2/compra-agil';
 const CA_TICKET = '25D6C503-FA30-48BD-86FA-0A1D74D54254';
+// Ficha del buscador (criterioSeleccion / justificación del comprador). Requiere el token del escritorio.
+const CA_FICHA_BASE = 'https://servicios-compra-agil.mercadopublico.cl/v1/compra-agil/solicitud';
+const CA_FICHA_ORIGIN = 'https://compra-agil.mercadopublico.cl';
 const DELAY_MS = 700;
 const MAX_RETRIES = 4;
 
@@ -44,11 +47,11 @@ function loadEnvLocal() {
 
 const env = loadEnvLocal();
 const args = process.argv.slice(2);
-let PROCESOS_FILE = null;
-const pIdx = args.indexOf('--procesos');
-if (pIdx !== -1) { PROCESOS_FILE = args[pIdx + 1]; args.splice(pIdx, 2); }
-const TOKEN = PROCESOS_FILE ? '' : (args[0] || env.ESCRITORIO_TOKEN || env.VITE_ESCRITORIO_TOKEN || '').replace(/^Bearer\s+/i, '').trim();
-const RUT = ((PROCESOS_FILE ? args[0] : args[1]) || env.GEOPRO_RUT || '77.710.202-8').trim();
+function takeFlag(name) { const i = args.indexOf(name); if (i !== -1) { const v = args[i + 1]; args.splice(i, 2); return v; } return null; }
+const PROCESOS_FILE = takeFlag('--procesos');
+const RUT = (takeFlag('--rut') || env.GEOPRO_RUT || '77.710.202-8').trim();
+// Token del escritorio: obtiene la lista (si no hay --procesos) y la justificación del comprador.
+const TOKEN = (takeFlag('--token') || (!PROCESOS_FILE ? args[0] : '') || env.ESCRITORIO_TOKEN || env.VITE_ESCRITORIO_TOKEN || '').replace(/^Bearer\s+/i, '').trim();
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const normRut = r => String(r || '').replace(/[.\-\s]/g, '').toUpperCase();
@@ -83,6 +86,23 @@ async function getDetalle(codigo) {
       continue;
     }
     throw new Error(`Detalle ${codigo}: HTTP ${res.status}`);
+  }
+}
+
+// Justificación del comprador (criterioSeleccion) desde la ficha del buscador.
+async function getJustificacion(codigo) {
+  for (let intento = 1; intento <= MAX_RETRIES; intento++) {
+    const res = await fetch(`${CA_FICHA_BASE}/${encodeURIComponent(codigo)}?size=20&page=0`, {
+      headers: { 'Authorization': `Bearer ${TOKEN}`, 'Origin': CA_FICHA_ORIGIN, 'Referer': CA_FICHA_ORIGIN + '/', 'Accept': 'application/json' },
+    });
+    if (res.ok) {
+      const j = await res.json();
+      const p = j.payload || {};
+      const sel = (p.ofertasSeleccionadas || [])[0] || (p.ofertas || []).find(x => x.esOfertaSeleccionada);
+      return (sel?.criterioSeleccion || '').trim();
+    }
+    if ((res.status === 429 || res.status >= 500) && intento < MAX_RETRIES) { await sleep(DELAY_MS * (intento + 1)); continue; }
+    throw new Error(`Justif ${codigo}: HTTP ${res.status}`);
   }
 }
 
@@ -145,9 +165,13 @@ async function main() {
       const det = await getDetalle(p.codigo);
       const r = analizar(det, RUT);
       if (r && r.resultado) {
+        if (TOKEN) {
+          try { r.justificacionComprador = await getJustificacion(p.codigo); }
+          catch (e) { /* sin justificación (token vencido u otro) */ }
+        }
         items[p.codigo] = r;
         ok++;
-        console.log(`  ${r.resultado === 'adjudicada' ? '🏆' : '❌'} ${p.codigo} — ${r.comentario}`);
+        console.log(`  ${r.resultado === 'adjudicada' ? '🏆' : '❌'} ${p.codigo} — ${r.comentario}${r.justificacionComprador ? `\n      ⚖️  ${r.justificacionComprador}` : ''}`);
       } else {
         sin++;
       }

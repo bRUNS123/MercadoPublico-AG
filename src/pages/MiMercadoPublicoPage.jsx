@@ -101,6 +101,13 @@ function ProcesoCard({ p, esResultado, anotacion, onAnotar, autoResultado }) {
         </div>
       )}
 
+      {/* Justificación de selección indicada por el comprador */}
+      {anotacion?.justificacionComprador && (
+        <div style={{ marginTop: 6, fontSize: '0.73rem', color: 'var(--text-primary)', background: 'rgba(14,165,233,0.08)', borderLeft: '2px solid var(--accent-primary)', borderRadius: 6, padding: '5px 8px', lineHeight: 1.4 }}>
+          ⚖️ <strong>Justificación del comprador:</strong> {anotacion.justificacionComprador}
+        </div>
+      )}
+
       {/* Comentario del ganador (cotización) */}
       {anotacion?.comentarioGanador && (
         <details style={{ marginTop: 6 }}>
