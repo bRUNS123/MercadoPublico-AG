@@ -18,6 +18,18 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api-ca/, ''),
         secure: false,
       },
+      '/api-oportunidades': {
+        target: 'https://mp-oportunidades-proxy.bfrancosentis.workers.dev',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api-oportunidades/, ''),
+        secure: true,
+      },
+      '/api-adjunto': {
+        target: 'https://mp-adjunto-proxy.bfrancosentis.workers.dev',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api-adjunto/, ''),
+        secure: true,
+      },
     },
   },
 })
