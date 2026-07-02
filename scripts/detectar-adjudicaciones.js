@@ -182,9 +182,22 @@ async function main() {
     await sleep(DELAY_MS);
   }
 
+  const outPath = resolve(ROOT, 'public/data/mis-adjudicaciones.json');
+
+  // Salvaguarda: NUNCA sobrescribir datos buenos con un resultado vacío
+  // (token vencido, fallo de red, etc.). Evita dejar el dashboard sin adjudicaciones.
+  if (ok === 0) {
+    let previos = 0;
+    try { previos = Object.keys(JSON.parse(readFileSync(outPath, 'utf-8')).items || {}).length; } catch { /* no existía */ }
+    if (previos > 0) {
+      console.error(`⚠️  0 adjudicaciones detectadas, pero el archivo ya tiene ${previos}. NO se sobrescribe (se conservan los datos buenos). Revisa el token/red.`);
+      process.exit(1);
+    }
+  }
+
   const out = { generadoEl: new Date().toISOString(), rut: RUT, items };
   mkdirSync(resolve(ROOT, 'public/data'), { recursive: true });
-  writeFileSync(resolve(ROOT, 'public/data/mis-adjudicaciones.json'), JSON.stringify(out, null, 2), 'utf-8');
+  writeFileSync(outPath, JSON.stringify(out, null, 2), 'utf-8');
   console.log(`\nListo: ${ok} adjudicaciones (${sin} sin resultado, ${err} con error) → public/data/mis-adjudicaciones.json`);
 }
 
