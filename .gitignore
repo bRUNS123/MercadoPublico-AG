@@ -10,7 +10,10 @@ node_modules/
 dist/
 
 # Snapshot de Compra Ágil (se genera localmente y se publica solo en gh-pages)
-public/data/
+# Se ignora todo public/data/ EXCEPTO mis-adjudicaciones.json, que se commitea
+# para que sobreviva a los deploys automáticos de hermes (el snapshot sí se regenera).
+public/data/*
+!public/data/mis-adjudicaciones.json
 scripts/update-compra-agil.log
 scripts/sync-status.json
 
