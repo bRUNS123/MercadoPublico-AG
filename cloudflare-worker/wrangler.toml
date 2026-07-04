@@ -24,5 +24,5 @@ compatibility_date = "2026-01-01"
 
 # Pega aquí el id que te dio `wrangler kv namespace create RELAY`:
 kv_namespaces = [
-  { binding = "RELAY", id = "PEGA_AQUI_EL_ID_DEL_KV" }
+  { binding = "RELAY", id = "2bf590cc2e2c4d2fa37d70a973f19d66" }
 ]
