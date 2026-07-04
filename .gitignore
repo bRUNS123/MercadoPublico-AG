@@ -16,6 +16,8 @@ public/data/*
 !public/data/mis-adjudicaciones.json
 scripts/update-compra-agil.log
 scripts/sync-status.json
+scripts/.snapshot-running.lock
+scripts/.escritorio-token
 
 # Environment
 .env

@@ -9,6 +9,7 @@ REM --- Config ---
 set "PROJECT_DIR=C:\Users\Usuario\Desktop\Programación\MercadoPublico-AG (API)"
 set "LOG_FILE=%PROJECT_DIR%\scripts\update-compra-agil.log"
 set "LOCK_FILE=%PROJECT_DIR%\scripts\.snapshot-running.lock"
+set "TOKEN_FILE=%PROJECT_DIR%\scripts\.escritorio-token"
 set "MAX_RUNTIME_MIN=50"
 set "NODE22=C:\Users\Usuario\AppData\Roaming\fnm\node-versions\v22.22.3\installation"
 
@@ -55,9 +56,27 @@ REM --- Paso 2: Instalar dependencias (por si cambiaron) ---
 echo [%date% %time%] npm install (por si hay nuevas dependencias) >> "%LOG_FILE%"
 call npm install --prefer-offline --no-audit --no-fund >> "%LOG_FILE%" 2>&1
 
-REM --- Paso 3: Snapshot + build + deploy ---
-echo [%date% %time%] npm run deploy:snapshot >> "%LOG_FILE%"
-call npm run deploy:snapshot >> "%LOG_FILE%" 2>&1
+REM --- Paso 3a: Snapshot de Compra Agil ---
+echo [%date% %time%] npm run snapshot:compra-agil >> "%LOG_FILE%"
+call npm run snapshot:compra-agil >> "%LOG_FILE%" 2>&1
+
+REM --- Paso 3b: Detectar adjudicaciones si hay token (no aborta si falla) ---
+if exist "%TOKEN_FILE%" (
+    set "ESC_TOKEN="
+    set /p ESC_TOKEN=<"%TOKEN_FILE%"
+    if defined ESC_TOKEN (
+        echo [%date% %time%] npm run adjudicaciones --merge (token del archivo) >> "%LOG_FILE%"
+        call npm run adjudicaciones -- "!ESC_TOKEN!" --merge >> "%LOG_FILE%" 2>&1
+    ) else (
+        echo [%date% %time%] .escritorio-token vacio: se omite deteccion >> "%LOG_FILE%"
+    )
+) else (
+    echo [%date% %time%] Sin .escritorio-token: se omite deteccion de adjudicaciones >> "%LOG_FILE%"
+)
+
+REM --- Paso 3c: Build + deploy a gh-pages ---
+echo [%date% %time%] npm run deploy >> "%LOG_FILE%"
+call npm run deploy >> "%LOG_FILE%" 2>&1
 set RC=!errorlevel!
 
 echo [%date% %time%] Finalizado (codigo !RC!) >> "%LOG_FILE%"
