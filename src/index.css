@@ -715,12 +715,34 @@ tbody tr:last-child td {
 /* ─── Category Chips ─── */
 .category-chips {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   align-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+  -webkit-overflow-scrolling: touch;
+  /* Desvanecido a la derecha para insinuar que hay más */
+  mask-image: linear-gradient(to right, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, #000 92%, transparent);
+}
+
+.category-chips::-webkit-scrollbar {
+  height: 6px;
+}
+.category-chips::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+.category-chips::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .category-chip {
+  flex: 0 0 auto;
+  white-space: nowrap;
   padding: 6px 14px;
   border-radius: 20px;
   border: 1px solid var(--border-color);
