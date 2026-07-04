@@ -3,7 +3,7 @@ import Header from '../components/Layout/Header';
 import useMisOfertas from '../hooks/useMisOfertas';
 import { PROCESO_COLUMNAS, COLUMNAS_ORDEN, parseMisProcesos, urlProceso } from '../utils/misOfertasAdapter';
 import { formatFecha, formatFechaCorta, formatMonto, norm } from '../utils/formatters';
-import { getToken, setToken as saveToken, tokenInfo, fetchOportunidades } from '../api/miEscritorio';
+import { getToken, setToken as saveToken, tokenInfo, fetchOportunidades, relayToken } from '../api/miEscritorio';
 
 // Código del bookmarklet "Sincronizar GEOPRO": se ejecuta en la pestaña de
 // MercadoPúblico, toma el token y abre el dashboard con ?mp_token=… para
@@ -186,6 +186,7 @@ export default function MiMercadoPublicoPage() {
   async function runSync(tok) {
     const token = tok != null ? tok : tokenInput;
     saveToken(token);
+    relayToken(token); // sube el token al relay para que hermes actualice adjudicaciones
     setSyncing(true);
     setSyncMsg(null);
     try {

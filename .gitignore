@@ -18,6 +18,7 @@ scripts/update-compra-agil.log
 scripts/sync-status.json
 scripts/.snapshot-running.lock
 scripts/.escritorio-token
+scripts/.relay-key
 
 # Environment
 .env

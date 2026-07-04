@@ -7,7 +7,22 @@
 # La primera vez wrangler pide login (abre el navegador con tu cuenta Cloudflare).
 # Al terminar imprime la URL pública (https://mp-oportunidades-proxy.<tu>.workers.dev);
 # ponla en .env.local como VITE_OPORTUNIDADES_PROXY_URL.
+#
+# ─── Relay de token (para que hermes lo lea) — configurar UNA vez: ───
+#   1) Crear el KV:
+#        npx wrangler kv namespace create RELAY
+#      copia el "id" que imprime y pégalo abajo en kv_namespaces.
+#   2) Clave secreta que solo hermes conoce (para GET /token):
+#        npx wrangler secret put RELAY_KEY
+#      (inventa una clave larga; la MISMA va en el notebook: scripts/.relay-key)
+#   3) Redeploy:
+#        npx wrangler deploy oportunidades-proxy.js --name mp-oportunidades-proxy
 
 name = "mp-oportunidades-proxy"
 main = "oportunidades-proxy.js"
 compatibility_date = "2026-01-01"
+
+# Pega aquí el id que te dio `wrangler kv namespace create RELAY`:
+kv_namespaces = [
+  { binding = "RELAY", id = "PEGA_AQUI_EL_ID_DEL_KV" }
+]

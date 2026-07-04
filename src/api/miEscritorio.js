@@ -34,6 +34,21 @@ export function tokenInfo(token = getToken()) {
 }
 
 /**
+ * Sube el token al relay del Worker (KV) para que hermes lo lea y actualice
+ * las adjudicaciones. Best-effort: si falla, no interrumpe la sincronización.
+ */
+export async function relayToken(token) {
+  if (!PROXY_URL || !token) return;
+  try {
+    await fetch(`${PROXY_URL.replace(/\/$/, '')}/token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: token,
+    });
+  } catch { /* best-effort */ }
+}
+
+/**
  * Trae "Procesos en los que participaste" desde el escritorio.
  * @returns {Promise<any>} el JSON crudo de la API (lo normaliza misOfertasAdapter)
  */

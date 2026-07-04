@@ -39,15 +39,23 @@ const CA_ORIGIN = 'https://api2.mercadopublico.cl';
 const CA_TICKET = '25D6C503-FA30-48BD-86FA-0A1D74D54254';
 const CA_PREFIX = '/ca/';
 
+// Valida que el string sea un access token de proveedor de MercadoPúblico.
+function isProviderToken(t) {
+  try {
+    const p = JSON.parse(atob(t.split('.')[1]));
+    return /chilecomprarealm/.test(p.iss || '') && !!p.tipoUsuario;
+  } catch { return false; }
+}
+
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     const origin = request.headers.get('Origin') || '';
     const allowOrigin = origin === ALLOWED_ORIGIN ? origin : ALLOWED_ORIGIN;
 
     const corsHeaders = {
       'Access-Control-Allow-Origin': allowOrigin,
-      'Access-Control-Allow-Methods': 'GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Authorization, Content-Type, x-relay-key',
       'Access-Control-Max-Age': '86400',
       'Vary': 'Origin',
     };
@@ -55,11 +63,38 @@ export default {
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: corsHeaders });
     }
+
+    const url = new URL(request.url);
+    const json = (obj, status = 200) => new Response(JSON.stringify(obj), {
+      status, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+
+    // ─── Relay de token (bookmarklet/dashboard → KV → hermes) ───
+    // POST /token: el dashboard sube el token del escritorio (validado como JWT de proveedor).
+    // GET  /token: hermes lo baja con la clave secreta (x-relay-key). No es público.
+    if (url.pathname === '/token') {
+      if (!env || !env.RELAY) return json({ error: 'KV no configurado (bind RELAY).' }, 500);
+      if (request.method === 'POST') {
+        let body = (await request.text()).trim().replace(/^Bearer\s+/i, '');
+        try { const j = JSON.parse(body); if (j && j.token) body = String(j.token).trim(); } catch { /* texto plano */ }
+        if (!isProviderToken(body)) return json({ error: 'Token inválido (no es de proveedor MP).' }, 400);
+        await env.RELAY.put('escritorio_token', body, { expirationTtl: 30000 }); // ~8.3h
+        return json({ ok: true });
+      }
+      if (request.method === 'GET') {
+        if (!env.RELAY_KEY || request.headers.get('x-relay-key') !== env.RELAY_KEY) {
+          return json({ error: 'No autorizado.' }, 401);
+        }
+        const t = await env.RELAY.get('escritorio_token');
+        return t ? new Response(t, { status: 200, headers: { ...corsHeaders, 'Content-Type': 'text/plain' } })
+                 : json({ error: 'Sin token guardado.' }, 404);
+      }
+      return json({ error: 'Método no permitido.' }, 405);
+    }
+
     if (request.method !== 'GET') {
       return new Response('Method Not Allowed', { status: 405, headers: corsHeaders });
     }
-
-    const url = new URL(request.url);
 
     // ─── Ruta /ca/{codigo} → detalle de Compra Ágil (api2) para detectar el ganador ───
     if (url.pathname.startsWith(CA_PREFIX)) {

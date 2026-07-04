@@ -60,7 +60,11 @@ REM --- Paso 3a: Snapshot de Compra Agil ---
 echo [%date% %time%] npm run snapshot:compra-agil >> "%LOG_FILE%"
 call npm run snapshot:compra-agil >> "%LOG_FILE%" 2>&1
 
-REM --- Paso 3b: Detectar adjudicaciones si hay token (no aborta si falla) ---
+REM --- Paso 3b: Bajar token del relay (si alguien sincronizo desde la web) ---
+echo [%date% %time%] node scripts/pull-token.js >> "%LOG_FILE%"
+call node scripts\pull-token.js >> "%LOG_FILE%" 2>&1
+
+REM --- Paso 3c: Detectar adjudicaciones si hay token (no aborta si falla) ---
 if exist "%TOKEN_FILE%" (
     set "ESC_TOKEN="
     set /p ESC_TOKEN=<"%TOKEN_FILE%"
@@ -74,7 +78,7 @@ if exist "%TOKEN_FILE%" (
     echo [%date% %time%] Sin .escritorio-token: se omite deteccion de adjudicaciones >> "%LOG_FILE%"
 )
 
-REM --- Paso 3c: Build + deploy a gh-pages ---
+REM --- Paso 3d: Build + deploy a gh-pages ---
 echo [%date% %time%] npm run deploy >> "%LOG_FILE%"
 call npm run deploy >> "%LOG_FILE%" 2>&1
 set RC=!errorlevel!
