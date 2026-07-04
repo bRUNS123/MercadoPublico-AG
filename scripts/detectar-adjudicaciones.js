@@ -48,7 +48,9 @@ function loadEnvLocal() {
 const env = loadEnvLocal();
 const args = process.argv.slice(2);
 function takeFlag(name) { const i = args.indexOf(name); if (i !== -1) { const v = args[i + 1]; args.splice(i, 2); return v; } return null; }
+function takeBool(name) { const i = args.indexOf(name); if (i !== -1) { args.splice(i, 1); return true; } return false; }
 const PROCESOS_FILE = takeFlag('--procesos');
+const MERGE = takeBool('--merge'); // fusiona con lo existente en vez de reemplazar
 const RUT = (takeFlag('--rut') || env.GEOPRO_RUT || '77.710.202-8').trim();
 // Token del escritorio: obtiene la lista (si no hay --procesos) y la justificación del comprador.
 const TOKEN = (takeFlag('--token') || (!PROCESOS_FILE ? args[0] : '') || env.ESCRITORIO_TOKEN || env.VITE_ESCRITORIO_TOKEN || '').replace(/^Bearer\s+/i, '').trim();
@@ -158,7 +160,7 @@ async function main() {
   const resultados = data.with_results || [];
   console.log(`Procesos con resultados: ${resultados.length}`);
 
-  const items = {};
+  let items = {};
   let ok = 0, sin = 0, err = 0;
   for (const p of resultados) {
     try {
@@ -184,9 +186,14 @@ async function main() {
 
   const outPath = resolve(ROOT, 'public/data/mis-adjudicaciones.json');
 
-  // Salvaguarda: NUNCA sobrescribir datos buenos con un resultado vacío
-  // (token vencido, fallo de red, etc.). Evita dejar el dashboard sin adjudicaciones.
-  if (ok === 0) {
+  // --merge: fusiona con lo existente (lo nuevo gana por código). No pierde los ya detectados.
+  if (MERGE) {
+    try {
+      const prev = JSON.parse(readFileSync(outPath, 'utf-8')).items || {};
+      items = { ...prev, ...items };
+    } catch { /* no existía */ }
+  } else if (ok === 0) {
+    // Salvaguarda (solo sin --merge): NUNCA sobrescribir datos buenos con un resultado vacío.
     let previos = 0;
     try { previos = Object.keys(JSON.parse(readFileSync(outPath, 'utf-8')).items || {}).length; } catch { /* no existía */ }
     if (previos > 0) {
@@ -198,7 +205,7 @@ async function main() {
   const out = { generadoEl: new Date().toISOString(), rut: RUT, items };
   mkdirSync(resolve(ROOT, 'public/data'), { recursive: true });
   writeFileSync(outPath, JSON.stringify(out, null, 2), 'utf-8');
-  console.log(`\nListo: ${ok} adjudicaciones (${sin} sin resultado, ${err} con error) → public/data/mis-adjudicaciones.json`);
+  console.log(`\nListo: ${ok} nuevas detectadas (${sin} sin resultado, ${err} con error)${MERGE ? ` · total en archivo: ${Object.keys(items).length}` : ''} → public/data/mis-adjudicaciones.json`);
 }
 
 main().catch(e => { console.error('Error:', e.message); process.exit(1); });
