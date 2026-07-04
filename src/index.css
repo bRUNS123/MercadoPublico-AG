@@ -718,26 +718,18 @@ tbody tr:last-child td {
   flex-wrap: nowrap;
   gap: 8px;
   align-items: center;
+  height: 38px;                 /* mismo alto que .filter-input/.filter-select */
   overflow-x: auto;
   overflow-y: hidden;
-  padding-bottom: 4px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-color) transparent;
+  scrollbar-width: none;        /* Firefox: sin scrollbar */
   -webkit-overflow-scrolling: touch;
-  /* Desvanecido a la derecha para insinuar que hay más */
-  mask-image: linear-gradient(to right, #000 92%, transparent);
-  -webkit-mask-image: linear-gradient(to right, #000 92%, transparent);
+  /* Desvanecido a la derecha para insinuar que hay más (scroll con rueda/trackpad) */
+  mask-image: linear-gradient(to right, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, #000 90%, transparent);
 }
 
 .category-chips::-webkit-scrollbar {
-  height: 6px;
-}
-.category-chips::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 3px;
-}
-.category-chips::-webkit-scrollbar-track {
-  background: transparent;
+  display: none;                /* Chrome/Safari: sin scrollbar */
 }
 
 .category-chip {
