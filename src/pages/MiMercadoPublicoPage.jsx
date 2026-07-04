@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import Header from '../components/Layout/Header';
 import useMisOfertas from '../hooks/useMisOfertas';
 import { PROCESO_COLUMNAS, COLUMNAS_ORDEN, parseMisProcesos, urlProceso } from '../utils/misOfertasAdapter';
-import { formatFecha, formatFechaCorta, formatMonto } from '../utils/formatters';
+import { formatFecha, formatFechaCorta, formatMonto, norm } from '../utils/formatters';
 import { getToken, setToken as saveToken, tokenInfo, fetchOportunidades } from '../api/miEscritorio';
 
 // Código del bookmarklet "Sincronizar GEOPRO": se ejecuta en la pestaña de
@@ -151,6 +151,7 @@ export default function MiMercadoPublicoPage() {
   const { procesos, meta, anotaciones, setAnotacion, importarProcesos, fusionarProcesos, limpiar, setEmpresa } = useMisOfertas();
   const [fResultado, setFResultado] = useState(() => loadPrefs().fResultado || 'todas'); // todas|adjudicada|no_adjudicada|sin
   const [fFecha, setFFecha] = useState(() => loadPrefs().fFecha || 'todas');             // todas|hoy|7|30
+  const [busqueda, setBusqueda] = useState('');
   // Orden independiente por columna (persistido)
   const [ordenCol, setOrdenCol] = useState(() => ({ ...DEF_ORDEN, ...(loadPrefs().ordenCol || {}) }));
   // Visibilidad de columnas — semáforo (persistido)
@@ -315,6 +316,32 @@ export default function MiMercadoPublicoPage() {
     setShowImport(false);
   }
 
+  // Filtro de texto: "tasación -valdivia" → incluye 'tasación', excluye 'valdivia'.
+  function filtrarBusqueda(items) {
+    const q = busqueda.trim();
+    if (!q) return items;
+    const terms = q.split(/\s+/).filter(Boolean);
+    const inc = terms.filter(t => !t.startsWith('-')).map(norm);
+    const exc = terms.filter(t => t.startsWith('-') && t.length > 1).map(t => norm(t.slice(1)));
+    return items.filter(p => {
+      const text = norm(`${p.codigo} ${p.nombre} ${p.organismo || ''} ${p.estadoLabel || ''}`);
+      if (inc.length && !inc.every(t => text.includes(t))) return false;
+      if (exc.some(t => text.includes(t))) return false;
+      return true;
+    });
+  }
+
+  // Procesos "con resultados" que aún no tienen detección automática (adjudicada/no).
+  const pendientes = procesos.length ? porColumna.resultados.filter(p => !anot(p.codigo).resultado) : [];
+
+  function copiarPendientes() {
+    const codigos = pendientes.map(p => p.codigo).join('\n');
+    navigator.clipboard.writeText(codigos).then(
+      () => setSyncMsg({ tipo: 'ok', texto: `${pendientes.length} código(s) copiado(s). Regenera con: npm run adjudicaciones -- --procesos <archivo> --merge` }),
+      () => setSyncMsg({ tipo: 'error', texto: 'No se pudo copiar al portapapeles.' })
+    );
+  }
+
   return (
     <>
       <Header
@@ -341,6 +368,19 @@ export default function MiMercadoPublicoPage() {
             style={{ fontSize: '0.85rem', padding: '7px 16px', borderRadius: 10, cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
             ⚡ Botón 1-click
           </button>
+          <input
+            value={busqueda}
+            onChange={e => setBusqueda(e.target.value)}
+            placeholder="Buscar…  (usa -palabra para excluir)"
+            title="Filtra por nombre, código u organismo. Ej: tasación -valdivia (incluye 'tasación', excluye 'valdivia')"
+            style={{ fontSize: '0.85rem', padding: '7px 12px', borderRadius: 10, border: `1px solid ${busqueda ? 'var(--accent-primary)' : 'var(--border-color)'}`, background: 'var(--bg-secondary)', color: 'var(--text-primary)', minWidth: 220, flex: '1 1 220px', maxWidth: 340 }}
+          />
+          {busqueda && (
+            <button onClick={() => setBusqueda('')} title="Limpiar búsqueda"
+              style={{ fontSize: '0.85rem', padding: '7px 10px', borderRadius: 10, cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-muted)' }}>
+              ✕
+            </button>
+          )}
           {procesos.length > 0 && (
             <div style={{ display: 'flex', gap: 6, alignItems: 'center' }} title="Mostrar / ocultar columnas">
               {COLUMNAS_ORDEN.map(col => {
@@ -382,6 +422,19 @@ export default function MiMercadoPublicoPage() {
               color: syncMsg.tipo === 'ok' ? '#22c55e' : '#ef4444',
               border: `1px solid ${syncMsg.tipo === 'ok' ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
               {syncMsg.tipo === 'ok' ? '✅ ' : '⚠️ '}{syncMsg.texto}
+            </div>
+          </div>
+        )}
+
+        {/* ─── Aviso: procesos con resultados sin detección automática ─── */}
+        {pendientes.length > 0 && (
+          <div style={{ padding: '0 24px', marginBottom: 12 }}>
+            <div style={{ padding: '10px 14px', borderRadius: 10, fontSize: '0.85rem', background: 'rgba(234,179,8,0.12)', color: '#eab308', border: '1px solid rgba(234,179,8,0.3)', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+              <span>⚠️ {pendientes.length} proceso{pendientes.length !== 1 ? 's' : ''} con resultados sin detección automática (adjudicada/no). Regenera desde el notebook (IP chilena).</span>
+              <button onClick={copiarPendientes}
+                style={{ fontSize: '0.8rem', padding: '4px 12px', borderRadius: 8, cursor: 'pointer', border: '1px solid #eab308', background: 'transparent', color: '#eab308', fontWeight: 600 }}>
+                📋 Copiar códigos
+              </button>
             </div>
           </div>
         )}
@@ -479,7 +532,7 @@ export default function MiMercadoPublicoPage() {
               const esRes = col === 'resultados';
               const all = porColumna[col];
               const ord = ordenCol[col];
-              const items = ordenarPor(esRes ? filtrarResultados(all) : all, ord);
+              const items = ordenarPor(filtrarBusqueda(esRes ? filtrarResultados(all) : all), ord);
               const selStyle = { fontSize: '0.7rem', padding: '4px 6px', borderRadius: 8, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', flex: 1, minWidth: 0 };
               return (
                 <div key={col} style={{ background: 'var(--bg-tertiary)', borderRadius: 14, border: '1px solid var(--border-color)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
@@ -487,7 +540,7 @@ export default function MiMercadoPublicoPage() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
                       <span style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-primary)' }}>{cfg.icon} {cfg.label}</span>
                       <span style={{ fontWeight: 700, fontSize: '0.85rem', color: cfg.color, background: 'var(--bg-secondary)', borderRadius: 999, padding: '1px 10px', minWidth: 26, textAlign: 'center' }}>
-                        {esRes && items.length !== all.length ? `${items.length}/${all.length}` : items.length}
+                        {items.length !== all.length ? `${items.length}/${all.length}` : items.length}
                       </span>
                     </div>
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 2 }}>{cfg.sub}</div>
