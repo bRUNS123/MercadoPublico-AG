@@ -64,7 +64,8 @@ export default function FilterBar({ filters, onChange, onRefresh, loading }) {
         <input
           type="text"
           className="filter-input"
-          placeholder="Ej: construcción, pavimento..."
+          placeholder="Ej: construcción -pavimento"
+          title="Incluir/excluir palabras: escribe palabras para incluir y -palabra para excluir. Ej: construcción -pavimento"
           value={filters.busqueda || ''}
           onChange={e => handleChange('busqueda', e.target.value)}
         />

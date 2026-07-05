@@ -7,7 +7,7 @@ import Loader from '../components/Common/Loader';
 import useLicitaciones from '../hooks/useLicitaciones';
 import useFavoritos from '../hooks/useFavoritos';
 import useDescartados from '../hooks/useDescartados';
-import { todayInputFormat, subtractDays, norm } from '../utils/formatters';
+import { todayInputFormat, subtractDays, norm, matchesQuery } from '../utils/formatters';
 import { CATEGORIAS_INTERES } from '../utils/constants';
 import api from '../api/mercadopublico';
 
@@ -49,11 +49,7 @@ export default function LicitacionesPage() {
     let result = licitaciones;
 
     if (filters.busqueda) {
-      const q = norm(filters.busqueda);
-      result = result.filter(l =>
-        norm(l.Nombre || '').includes(q) ||
-        norm(l.Descripcion || '').includes(q)
-      );
+      result = result.filter(l => matchesQuery(`${l.Nombre || ''} ${l.Descripcion || ''}`, filters.busqueda));
     }
 
     if (filters.categoria.length > 0) {

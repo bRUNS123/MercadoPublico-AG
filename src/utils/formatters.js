@@ -232,7 +232,25 @@ export function getDatesInRange(desde, hasta) {
   return dates;
 }
 
-export const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+export const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+/**
+ * Filtro de texto con incluir/excluir (estilo Google, insensible a acentos):
+ *   "tasación -valdivia" → incluye 'tasación' y excluye 'valdivia'.
+ * Varias palabras sin guion = deben estar TODAS. Palabras con -guion = ninguna.
+ * @returns {boolean} true si `text` cumple la consulta `query`.
+ */
+export function matchesQuery(text, query) {
+  const q = (query || '').trim();
+  if (!q) return true;
+  const t = norm(text);
+  const terms = q.split(/\s+/).filter(Boolean);
+  const inc = terms.filter(w => !w.startsWith('-')).map(norm);
+  const exc = terms.filter(w => w.startsWith('-') && w.length > 1).map(w => norm(w.slice(1)));
+  if (inc.length && !inc.every(w => t.includes(w))) return false;
+  if (exc.some(w => t.includes(w))) return false;
+  return true;
+}
 
 /**
  * Retorna las categorías que coinciden con una licitación y su score de coincidencia.

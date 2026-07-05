@@ -56,7 +56,8 @@ export default function FilterBarCompraAgil({ filters, onChange, onRefresh, load
         <input
           type="text"
           className="filter-input"
-          placeholder="Ej: pintura, materiales..."
+          placeholder="Ej: pintura -exterior"
+          title="Incluir/excluir palabras: escribe palabras para incluir y -palabra para excluir. Ej: pintura -exterior"
           value={filters.busqueda || ''}
           onChange={e => handleChange('busqueda', e.target.value)}
         />

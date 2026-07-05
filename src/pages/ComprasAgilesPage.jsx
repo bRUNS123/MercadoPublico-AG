@@ -7,7 +7,7 @@ import Loader from '../components/Common/Loader';
 import useComprasAgiles from '../hooks/useComprasAgiles';
 import useFavoritos from '../hooks/useFavoritos';
 import useDescartados from '../hooks/useDescartados';
-import { norm } from '../utils/formatters';
+import { norm, matchesQuery } from '../utils/formatters';
 import { CATEGORIAS_INTERES } from '../utils/constants';
 import compraAgilApi from '../api/compraAgil';
 
@@ -71,11 +71,7 @@ export default function ComprasAgilesPage() {
     }
 
     if (filters.busqueda) {
-      const q = norm(filters.busqueda);
-      result = result.filter(l =>
-        norm(l.Nombre || '').includes(q) ||
-        norm(l.Descripcion || '').includes(q)
-      );
+      result = result.filter(l => matchesQuery(`${l.Nombre || ''} ${l.Descripcion || ''}`, filters.busqueda));
     }
 
     if (filters.categoria.length > 0) {
