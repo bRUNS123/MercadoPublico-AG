@@ -59,16 +59,28 @@ export default function FilterBar({ filters, onChange, onRefresh, loading }) {
         />
       </div>
 
-      <div className="filter-group" style={{ minWidth: 220 }}>
-        <label className="filter-label">Buscar por nombre</label>
-        <input
-          type="text"
-          className="filter-input"
-          placeholder="Ej: construcción -pavimento"
-          title="Incluir/excluir palabras: escribe palabras para incluir y -palabra para excluir. Ej: construcción -pavimento"
-          value={filters.busqueda || ''}
-          onChange={e => handleChange('busqueda', e.target.value)}
-        />
+      <div className="filter-group" style={{ minWidth: 280 }}>
+        <label className="filter-label">Palabras clave (incluir / excluir)</label>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <input
+            type="text"
+            className="filter-input"
+            placeholder="✓ Incluir…"
+            title="Muestra los que contengan ALGUNA de estas palabras (separa con espacio o coma). Ej: construcción pavimento"
+            value={filters.busqueda || ''}
+            onChange={e => handleChange('busqueda', e.target.value)}
+            style={{ flex: 1, minWidth: 0, borderLeft: '3px solid #22c55e' }}
+          />
+          <input
+            type="text"
+            className="filter-input"
+            placeholder="✕ Excluir…"
+            title="Oculta los que contengan ALGUNA de estas palabras (separa con espacio o coma). Ej: mantención aseo"
+            value={filters.excluir || ''}
+            onChange={e => handleChange('excluir', e.target.value)}
+            style={{ flex: 1, minWidth: 0, borderLeft: '3px solid #ef4444' }}
+          />
+        </div>
       </div>
 
       <div className="filter-group" style={{ minWidth: 180 }}>

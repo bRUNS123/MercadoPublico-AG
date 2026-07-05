@@ -7,7 +7,7 @@ import Loader from '../components/Common/Loader';
 import useComprasAgiles from '../hooks/useComprasAgiles';
 import useFavoritos from '../hooks/useFavoritos';
 import useDescartados from '../hooks/useDescartados';
-import { norm, matchesQuery } from '../utils/formatters';
+import { norm, matchesIncludeExclude } from '../utils/formatters';
 import { CATEGORIAS_INTERES } from '../utils/constants';
 import compraAgilApi from '../api/compraAgil';
 
@@ -15,6 +15,7 @@ const FILTERS_DEFAULT = {
   estado: 'publicada',
   region: '',
   busqueda: '',
+  excluir: '',
   codigo: '',
   categoria: [],
   soloFavoritos: false,
@@ -70,8 +71,8 @@ export default function ComprasAgilesPage() {
       }
     }
 
-    if (filters.busqueda) {
-      result = result.filter(l => matchesQuery(`${l.Nombre || ''} ${l.Descripcion || ''}`, filters.busqueda));
+    if (filters.busqueda || filters.excluir) {
+      result = result.filter(l => matchesIncludeExclude(`${l.Nombre || ''} ${l.Descripcion || ''}`, filters.busqueda, filters.excluir));
     }
 
     if (filters.categoria.length > 0) {
@@ -83,7 +84,7 @@ export default function ComprasAgilesPage() {
     }
 
     return result;
-  }, [comprasAgiles, filters.busqueda, filters.categoria, filters.estado, filters.region, filters.codigo]);
+  }, [comprasAgiles, filters.busqueda, filters.excluir, filters.categoria, filters.estado, filters.region, filters.codigo]);
 
   // Refresh manual
   const handleRefresh = useCallback(() => {
@@ -99,7 +100,7 @@ export default function ComprasAgilesPage() {
     });
   }, [filters, fetchComprasAgiles]);
 
-  const hasActiveFilters = filters.categoria.length > 0 || filters.busqueda || filters.region || filters.codigo;
+  const hasActiveFilters = filters.categoria.length > 0 || filters.busqueda || filters.excluir || filters.region || filters.codigo;
   const descartadasList = Object.values(descartados).map(d => d.licitacion).filter(l => l?._esCompraAgil);
 
   const displayList = filters.soloFavoritos
@@ -111,7 +112,7 @@ export default function ComprasAgilesPage() {
     : loading
       ? 'Buscando oportunidades de Compra Ágil...'
       : lastUpdate
-        ? `${comprasFiltradas.length} resultado${comprasFiltradas.length !== 1 ? 's' : ''}${filters.categoria.length > 0 || filters.busqueda ? ` (filtrado de ${comprasAgiles.length})` : ''} · ${lastUpdate.toLocaleTimeString('es-CL')}${fetchedAt ? ` · 📡 Snapshot: ${fetchedAt.toLocaleString('es-CL', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}` : ''}`
+        ? `${comprasFiltradas.length} resultado${comprasFiltradas.length !== 1 ? 's' : ''}${filters.categoria.length > 0 || filters.busqueda || filters.excluir ? ` (filtrado de ${comprasAgiles.length})` : ''} · ${lastUpdate.toLocaleTimeString('es-CL')}${fetchedAt ? ` · 📡 Snapshot: ${fetchedAt.toLocaleString('es-CL', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}` : ''}`
         : 'Sin datos';
 
   return (

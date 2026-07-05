@@ -235,19 +235,17 @@ export function getDatesInRange(desde, hasta) {
 export const norm = s => (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
 /**
- * Filtro de texto con incluir/excluir (estilo Google, insensible a acentos):
- *   "tasación -valdivia" → incluye 'tasación' y excluye 'valdivia'.
- * Varias palabras sin guion = deben estar TODAS. Palabras con -guion = ninguna.
- * @returns {boolean} true si `text` cumple la consulta `query`.
+ * Filtro por palabras a INCLUIR y a EXCLUIR (campos separados, insensible a acentos).
+ * Las palabras se separan por espacios o comas.
+ *   - incluir: pasa si el texto contiene AL MENOS UNA de esas palabras.
+ *   - excluir: se descarta si contiene ALGUNA de esas palabras.
+ * @returns {boolean} true si `text` cumple.
  */
-export function matchesQuery(text, query) {
-  const q = (query || '').trim();
-  if (!q) return true;
+export function matchesIncludeExclude(text, incluir, excluir) {
   const t = norm(text);
-  const terms = q.split(/\s+/).filter(Boolean);
-  const inc = terms.filter(w => !w.startsWith('-')).map(norm);
-  const exc = terms.filter(w => w.startsWith('-') && w.length > 1).map(w => norm(w.slice(1)));
-  if (inc.length && !inc.every(w => t.includes(w))) return false;
+  const inc = (incluir || '').split(/[\s,]+/).filter(Boolean).map(norm);
+  const exc = (excluir || '').split(/[\s,]+/).filter(Boolean).map(norm);
+  if (inc.length && !inc.some(w => t.includes(w))) return false;
   if (exc.some(w => t.includes(w))) return false;
   return true;
 }

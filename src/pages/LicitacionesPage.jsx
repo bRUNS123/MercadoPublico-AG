@@ -7,7 +7,7 @@ import Loader from '../components/Common/Loader';
 import useLicitaciones from '../hooks/useLicitaciones';
 import useFavoritos from '../hooks/useFavoritos';
 import useDescartados from '../hooks/useDescartados';
-import { todayInputFormat, subtractDays, norm, matchesQuery } from '../utils/formatters';
+import { todayInputFormat, subtractDays, norm, matchesIncludeExclude } from '../utils/formatters';
 import { CATEGORIAS_INTERES } from '../utils/constants';
 import api from '../api/mercadopublico';
 
@@ -16,6 +16,7 @@ const FILTERS_DEFAULT = {
   fechaDesde: subtractDays(todayInputFormat(), 7),
   fechaHasta: todayInputFormat(),
   busqueda: '',
+  excluir: '',
   codigo: '',
   categoria: [],
   soloFavoritos: false,
@@ -48,8 +49,8 @@ export default function LicitacionesPage() {
   const licitacionesFiltradas = useMemo(() => {
     let result = licitaciones;
 
-    if (filters.busqueda) {
-      result = result.filter(l => matchesQuery(`${l.Nombre || ''} ${l.Descripcion || ''}`, filters.busqueda));
+    if (filters.busqueda || filters.excluir) {
+      result = result.filter(l => matchesIncludeExclude(`${l.Nombre || ''} ${l.Descripcion || ''}`, filters.busqueda, filters.excluir));
     }
 
     if (filters.categoria.length > 0) {
@@ -61,7 +62,7 @@ export default function LicitacionesPage() {
     }
 
     return result;
-  }, [licitaciones, filters.busqueda, filters.categoria]);
+  }, [licitaciones, filters.busqueda, filters.excluir, filters.categoria]);
 
   // Refresh manual: limpia caché y re-fetcha
   const handleRefresh = useCallback(() => {
@@ -74,7 +75,7 @@ export default function LicitacionesPage() {
     });
   }, [filters, fetchLicitaciones]);
 
-  const hasActiveFilters = filters.categoria.length > 0 || filters.busqueda || filters.estado || filters.codigo;
+  const hasActiveFilters = filters.categoria.length > 0 || filters.busqueda || filters.excluir || filters.estado || filters.codigo;
   const descartadasList = Object.values(descartados).map(d => d.licitacion).filter(Boolean);
 
   const displayList = filters.soloFavoritos
@@ -84,7 +85,7 @@ export default function LicitacionesPage() {
   const subtitle = loading
     ? 'Buscando licitaciones...'
     : lastUpdate
-      ? `${licitacionesFiltradas.length} resultado${licitacionesFiltradas.length !== 1 ? 's' : ''}${filters.categoria.length > 0 || filters.busqueda ? ` (filtrado de ${licitaciones.length})` : ''} · ${lastUpdate.toLocaleTimeString('es-CL')}`
+      ? `${licitacionesFiltradas.length} resultado${licitacionesFiltradas.length !== 1 ? 's' : ''}${filters.categoria.length > 0 || filters.busqueda || filters.excluir ? ` (filtrado de ${licitaciones.length})` : ''} · ${lastUpdate.toLocaleTimeString('es-CL')}`
       : 'Sin datos';
 
   return (
