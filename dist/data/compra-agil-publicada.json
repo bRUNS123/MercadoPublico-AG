@@ -1,7 +1,548 @@
 {
-  "fetchedAt": "2026-07-05T22:05:47.353Z",
-  "totalResultados": 4946,
+  "fetchedAt": "2026-07-06T02:08:38.872Z",
+  "totalResultados": 4907,
   "items": [
+    {
+      "codigo": "4164-294-COT26",
+      "nombre": "Movilización Rancagua",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 1,
+        "descripcion": "Primer llamado"
+      },
+      "documentos": [
+        {
+          "id": 1649463,
+          "nombre": "Requerimiento y Formulario N°1 -.docx"
+        }
+      ],
+      "fechas": {
+        "fecha_publicacion": "2026-07-05 21:26",
+        "fecha_cierre": "2026-07-06 21:30",
+        "fecha_ultimo_cambio": "2026-07-05T21:30:00.650Z",
+        "fecha_cierre_primer_llamado": "2026-07-06T21:30:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-07T21:33:20.650Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 6000000,
+        "monto_disponible_clp": 6000000
+      },
+      "institucion": {
+        "organismo_comprador": "I MUNICIPALIDAD DE DONIHUE",
+        "rut": "69.080.600-2",
+        "unidad_compra": "Municipalidad",
+        "region": 6,
+        "nombre_region": "Región del Libertador General Bernardo O´Higgins"
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 0
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/4164-294-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
+    {
+      "codigo": "4164-293-COT26",
+      "nombre": "Adquisicón de Silla para Seguridad Pública",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 1,
+        "descripcion": "Primer llamado"
+      },
+      "documentos": [
+        {
+          "id": 1649462,
+          "nombre": "Requerimiento y Formulario N°1 -.docx"
+        }
+      ],
+      "fechas": {
+        "fecha_publicacion": "2026-07-05 20:01",
+        "fecha_cierre": "2026-07-07 10:00",
+        "fecha_ultimo_cambio": "2026-07-05T20:05:00.927Z",
+        "fecha_cierre_primer_llamado": "2026-07-07T10:00:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-08T23:58:13.097Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 130000,
+        "monto_disponible_clp": 130000
+      },
+      "institucion": {
+        "organismo_comprador": "I MUNICIPALIDAD DE DONIHUE",
+        "rut": "69.080.600-2",
+        "unidad_compra": "Municipalidad",
+        "region": 6,
+        "nombre_region": "Región del Libertador General Bernardo O´Higgins"
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 0
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/4164-293-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
+    {
+      "codigo": "4164-292-COT26",
+      "nombre": "Adquisición de Arcometa Infable ",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 1,
+        "descripcion": "Primer llamado"
+      },
+      "documentos": [
+        {
+          "id": 1649461,
+          "nombre": "Requerimiento y Formulario N°1 -.docx"
+        }
+      ],
+      "fechas": {
+        "fecha_publicacion": "2026-07-05 19:32",
+        "fecha_cierre": "2026-07-06 19:35",
+        "fecha_ultimo_cambio": "2026-07-05T19:35:00.763Z",
+        "fecha_cierre_primer_llamado": "2026-07-06T19:35:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-07T19:37:03.557Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 1600000,
+        "monto_disponible_clp": 1600000
+      },
+      "institucion": {
+        "organismo_comprador": "I MUNICIPALIDAD DE DONIHUE",
+        "rut": "69.080.600-2",
+        "unidad_compra": "Municipalidad",
+        "region": 6,
+        "nombre_region": "Región del Libertador General Bernardo O´Higgins"
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 0
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/4164-292-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
+    {
+      "codigo": "1057491-1415-COT26",
+      "nombre": "Arriendo de equipo con suministro de videobroncoscopios desechables (18 ud )",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 1,
+        "descripcion": "Primer llamado"
+      },
+      "documentos": [],
+      "fechas": {
+        "fecha_publicacion": "2026-07-05 19:22",
+        "fecha_cierre": "2026-07-06 19:30",
+        "fecha_ultimo_cambio": "2026-07-05T19:25:00.723Z",
+        "fecha_cierre_primer_llamado": "2026-07-06T19:30:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-07T19:37:14.520Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 6500000,
+        "monto_disponible_clp": 6500000
+      },
+      "institucion": {
+        "organismo_comprador": "SERVICIO DE SALUD ORIENTE HOSPITAL LUIS CALVO MACKENNA",
+        "rut": "61.608.408-9",
+        "unidad_compra": "Bienes y Servicios",
+        "region": 13,
+        "nombre_region": "Región Metropolitana de Santiago"
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 0
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/1057491-1415-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
+    {
+      "codigo": "2704-1189-COT26",
+      "nombre": " (SC 3759) SERVICIO DE IMPRESION",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 1,
+        "descripcion": "Primer llamado"
+      },
+      "documentos": [
+        {
+          "id": 1649460,
+          "nombre": "INDICACIONES PARA COMPRA AGILES.pdf"
+        }
+      ],
+      "fechas": {
+        "fecha_publicacion": "2026-07-05 19:19",
+        "fecha_cierre": "2026-07-07 10:00",
+        "fecha_ultimo_cambio": "2026-07-05T19:20:00.373Z",
+        "fecha_cierre_primer_llamado": "2026-07-07T10:00:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-09T00:40:36.627Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 665000,
+        "monto_disponible_clp": 665000
+      },
+      "institucion": {
+        "organismo_comprador": "UNIVERSIDAD DEL BIO BIO",
+        "rut": "60.911.006-6",
+        "unidad_compra": "Universidad del Bío-Bío - Campus Concepción",
+        "region": 8,
+        "nombre_region": "Región del Biobío "
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 0
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/2704-1189-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
+    {
+      "codigo": "1058086-149-COT26",
+      "nombre": "I01-0010 CANULA INTRAVENOSA 22G X 25-30 MM DE LARGO,  MATERIAL POLIMERO O DERIVADOS, ESTERIL DESECHABLE",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 1,
+        "descripcion": "Primer llamado"
+      },
+      "documentos": [],
+      "fechas": {
+        "fecha_publicacion": "2026-07-05 19:18",
+        "fecha_cierre": "2026-07-07 12:00",
+        "fecha_ultimo_cambio": "2026-07-05T19:20:00.373Z",
+        "fecha_cierre_primer_llamado": "2026-07-07T12:00:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-09T04:41:40.570Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 6728000,
+        "monto_disponible_clp": 6728000
+      },
+      "institucion": {
+        "organismo_comprador": "Instituto Nacional de Neurocirugía",
+        "rut": "61.608.407-0",
+        "unidad_compra": "Fármarcos",
+        "region": 13,
+        "nombre_region": "Región Metropolitana de Santiago"
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 0
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/1058086-149-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
+    {
+      "codigo": "1057491-1414-COT26",
+      "nombre": " INSUMOS PARA UNIDAD DE IMAGENOLOGIA(DESPACHO PARCIALIZADO)",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 1,
+        "descripcion": "Primer llamado"
+      },
+      "documentos": [],
+      "fechas": {
+        "fecha_publicacion": "2026-07-05 19:15",
+        "fecha_cierre": "2026-07-06 19:20",
+        "fecha_ultimo_cambio": "2026-07-05T19:20:00.373Z",
+        "fecha_cierre_primer_llamado": "2026-07-06T19:20:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-07T19:24:26.593Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 2500000,
+        "monto_disponible_clp": 2500000
+      },
+      "institucion": {
+        "organismo_comprador": "SERVICIO DE SALUD ORIENTE HOSPITAL LUIS CALVO MACKENNA",
+        "rut": "61.608.408-9",
+        "unidad_compra": "Bienes y Servicios",
+        "region": 13,
+        "nombre_region": "Región Metropolitana de Santiago"
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 0
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/1057491-1414-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
+    {
+      "codigo": "3833-401-COT26",
+      "nombre": "ARTICULOS DE IMPRESION- OF. TURISMO",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 1,
+        "descripcion": "Primer llamado"
+      },
+      "documentos": [
+        {
+          "id": 1649458,
+          "nombre": "EE TT REQ N°33136.pdf"
+        }
+      ],
+      "fechas": {
+        "fecha_publicacion": "2026-07-05 18:57",
+        "fecha_cierre": "2026-07-07 10:00",
+        "fecha_ultimo_cambio": "2026-07-05T19:00:01.073Z",
+        "fecha_cierre_primer_llamado": "2026-07-07T10:00:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-09T01:02:42.210Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 1100000,
+        "monto_disponible_clp": 1100000
+      },
+      "institucion": {
+        "organismo_comprador": "I MUNICIPALIDAD DE RIO BUENO",
+        "rut": "69.201.000-0",
+        "unidad_compra": "I MUNICIPALIDAD DE RIO BUENO",
+        "region": 14,
+        "nombre_region": "Región de Los Ríos"
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 0
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/3833-401-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
+    {
+      "codigo": "2704-1187-COT26",
+      "nombre": "(SC 3927) Servicio de Análisis de 20 muestra de extractos proteicos",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 1,
+        "descripcion": "Primer llamado"
+      },
+      "documentos": [
+        {
+          "id": 1649457,
+          "nombre": "INDICACIONES PARA COMPRA AGILES.pdf"
+        }
+      ],
+      "fechas": {
+        "fecha_publicacion": "2026-07-05 18:44",
+        "fecha_cierre": "2026-07-07 10:00",
+        "fecha_ultimo_cambio": "2026-07-05T18:45:00.890Z",
+        "fecha_cierre_primer_llamado": "2026-07-07T10:00:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-09T01:15:58.880Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 2165000,
+        "monto_disponible_clp": 2165000
+      },
+      "institucion": {
+        "organismo_comprador": "UNIVERSIDAD DEL BIO BIO",
+        "rut": "60.911.006-6",
+        "unidad_compra": "Universidad del Bío-Bío - Campus Concepción",
+        "region": 8,
+        "nombre_region": "Región del Biobío "
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 0
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/2704-1187-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
+    {
+      "codigo": "3833-400-COT26",
+      "nombre": "CAPACITACION DE FORMACION  EMPRENDEDORAS-PPLC",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 1,
+        "descripcion": "Primer llamado"
+      },
+      "documentos": [
+        {
+          "id": 1649456,
+          "nombre": "EE TT REQ N°33173.pdf"
+        }
+      ],
+      "fechas": {
+        "fecha_publicacion": "2026-07-05 18:40",
+        "fecha_cierre": "2026-07-07 10:00",
+        "fecha_ultimo_cambio": "2026-07-05T18:45:00.890Z",
+        "fecha_cierre_primer_llamado": "2026-07-07T10:00:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-09T01:19:41.317Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 2000000,
+        "monto_disponible_clp": 2000000
+      },
+      "institucion": {
+        "organismo_comprador": "I MUNICIPALIDAD DE RIO BUENO",
+        "rut": "69.201.000-0",
+        "unidad_compra": "I MUNICIPALIDAD DE RIO BUENO",
+        "region": 14,
+        "nombre_region": "Región de Los Ríos"
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 0
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/3833-400-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
+    {
+      "codigo": "1058086-148-COT26",
+      "nombre": "EER-0320 SET MANGUERA PARA ASPIRADOR ULTRASONICO (COMPATIBLE SORING)",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 1,
+        "descripcion": "Primer llamado"
+      },
+      "documentos": [],
+      "fechas": {
+        "fecha_publicacion": "2026-07-05 18:23",
+        "fecha_cierre": "2026-07-07 12:00",
+        "fecha_ultimo_cambio": "2026-07-05T18:25:01.030Z",
+        "fecha_cierre_primer_llamado": "2026-07-07T12:00:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-09T05:36:42.687Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 6900000,
+        "monto_disponible_clp": 6900000
+      },
+      "institucion": {
+        "organismo_comprador": "Instituto Nacional de Neurocirugía",
+        "rut": "61.608.407-0",
+        "unidad_compra": "Fármarcos",
+        "region": 13,
+        "nombre_region": "Región Metropolitana de Santiago"
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 0
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/1058086-148-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
     {
       "codigo": "2013-1078-COT26",
       "nombre": "Adquisición de 16 Proyectores ",
@@ -460,16 +1001,16 @@
         "glosa": "Publicada"
       },
       "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
+        "estado_convocatoria": 2,
+        "descripcion": "Segundo llamado"
       },
       "documentos": [],
       "fechas": {
         "fecha_publicacion": "2026-07-04 19:28",
-        "fecha_cierre": "2026-07-05 19:30",
-        "fecha_ultimo_cambio": "2026-07-04T19:30:00.937Z",
+        "fecha_cierre": "2026-07-06 19:42",
+        "fecha_ultimo_cambio": "2026-07-05T19:45:00.443Z",
         "fecha_cierre_primer_llamado": "2026-07-05T19:30:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-06T19:31:22.163Z"
+        "fecha_cierre_segundo_llamado": "2026-07-06T19:42:30.163Z"
       },
       "montos": {
         "moneda": "CLP",
@@ -484,7 +1025,7 @@
         "nombre_region": "Región Metropolitana de Santiago"
       },
       "resumen": {
-        "total_ofertas_recibidas": 0
+        "total_ofertas_recibidas": 2
       },
       "motivos": {
         "motivo_cancelacion": null,
@@ -517,10 +1058,10 @@
       ],
       "fechas": {
         "fecha_publicacion": "2026-07-04 19:20",
-        "fecha_cierre": "2026-07-05 19:25",
-        "fecha_ultimo_cambio": "2026-07-04T19:25:00.350Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T19:25:00Z",
-        "fecha_cierre_segundo_llamado": null
+        "fecha_cierre": "2026-07-06 07:00",
+        "fecha_ultimo_cambio": "2026-07-05T18:10:00.450Z",
+        "fecha_cierre_primer_llamado": "2026-07-06T07:00:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-07T18:39:02.690Z"
       },
       "montos": {
         "moneda": "CLP",
@@ -535,7 +1076,7 @@
         "nombre_region": "Región Metropolitana de Santiago"
       },
       "resumen": {
-        "total_ofertas_recibidas": 0
+        "total_ofertas_recibidas": 3
       },
       "motivos": {
         "motivo_cancelacion": null,
@@ -738,52 +1279,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "1057491-1412-COT26",
-      "nombre": "INSUMOS PARA UNIDAD DE IMAGENOLOGIA(DESPACHO PARCIALIZADO)",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [],
-      "fechas": {
-        "fecha_publicacion": "2026-07-04 18:49",
-        "fecha_cierre": "2026-07-12 19:00",
-        "fecha_ultimo_cambio": "2026-07-04T18:50:00.487Z",
-        "fecha_cierre_primer_llamado": "2026-07-12T19:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-20T19:10:16.243Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 2000000,
-        "monto_disponible_clp": 2000000
-      },
-      "institucion": {
-        "organismo_comprador": "SERVICIO DE SALUD ORIENTE HOSPITAL LUIS CALVO MACKENNA",
-        "rut": "61.608.408-9",
-        "unidad_compra": "Bienes y Servicios",
-        "region": 13,
-        "nombre_region": "Región Metropolitana de Santiago"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1057491-1412-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "1057650-3-COT26",
       "nombre": "PRODUCTOS DE LIMPIEZA",
       "estado": {
@@ -847,16 +1342,16 @@
         "glosa": "Publicada"
       },
       "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
+        "estado_convocatoria": 2,
+        "descripcion": "Segundo llamado"
       },
       "documentos": [],
       "fechas": {
         "fecha_publicacion": "2026-07-04 18:40",
-        "fecha_cierre": "2026-07-05 18:45",
-        "fecha_ultimo_cambio": "2026-07-04T18:45:00.900Z",
+        "fecha_cierre": "2026-07-06 18:59",
+        "fecha_ultimo_cambio": "2026-07-05T19:00:01.073Z",
         "fecha_cierre_primer_llamado": "2026-07-05T18:45:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-06T18:49:00.953Z"
+        "fecha_cierre_segundo_llamado": "2026-07-06T18:59:09.953Z"
       },
       "montos": {
         "moneda": "CLP",
@@ -871,7 +1366,7 @@
         "nombre_region": "Región Metropolitana de Santiago"
       },
       "resumen": {
-        "total_ofertas_recibidas": 0
+        "total_ofertas_recibidas": 6
       },
       "motivos": {
         "motivo_cancelacion": null,
@@ -893,16 +1388,16 @@
         "glosa": "Publicada"
       },
       "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
+        "estado_convocatoria": 2,
+        "descripcion": "Segundo llamado"
       },
       "documentos": [],
       "fechas": {
         "fecha_publicacion": "2026-07-04 18:30",
-        "fecha_cierre": "2026-07-05 18:35",
-        "fecha_ultimo_cambio": "2026-07-04T18:35:00.190Z",
+        "fecha_cierre": "2026-07-06 19:02",
+        "fecha_ultimo_cambio": "2026-07-05T19:00:01.073Z",
         "fecha_cierre_primer_llamado": "2026-07-05T18:35:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-06T18:39:06.390Z"
+        "fecha_cierre_segundo_llamado": "2026-07-06T19:02:20.390Z"
       },
       "montos": {
         "moneda": "CLP",
@@ -917,7 +1412,7 @@
         "nombre_region": "Región Metropolitana de Santiago"
       },
       "resumen": {
-        "total_ofertas_recibidas": 0
+        "total_ofertas_recibidas": 6
       },
       "motivos": {
         "motivo_cancelacion": null,
@@ -994,16 +1489,16 @@
         "glosa": "Publicada"
       },
       "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
+        "estado_convocatoria": 2,
+        "descripcion": "Segundo llamado"
       },
       "documentos": [],
       "fechas": {
         "fecha_publicacion": "2026-07-04 18:05",
-        "fecha_cierre": "2026-07-05 18:15",
-        "fecha_ultimo_cambio": "2026-07-04T18:10:00.087Z",
+        "fecha_cierre": "2026-07-06 19:06",
+        "fecha_ultimo_cambio": "2026-07-05T19:00:01.073Z",
         "fecha_cierre_primer_llamado": "2026-07-05T18:15:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-06T18:24:32.593Z"
+        "fecha_cierre_segundo_llamado": "2026-07-06T19:06:39.593Z"
       },
       "montos": {
         "moneda": "CLP",
@@ -1018,7 +1513,7 @@
         "nombre_region": "Región Metropolitana de Santiago"
       },
       "resumen": {
-        "total_ofertas_recibidas": 0
+        "total_ofertas_recibidas": 7
       },
       "motivos": {
         "motivo_cancelacion": null,
@@ -1027,52 +1522,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1057491-1409-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "1057491-1408-COT26",
-      "nombre": "SONDA FOLEY SILICONADA 6 FR 2 VIAS 5 CC",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [],
-      "fechas": {
-        "fecha_publicacion": "2026-07-04 17:57",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-04T18:00:00.140Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-06T18:02:57.770Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 90000,
-        "monto_disponible_clp": 90000
-      },
-      "institucion": {
-        "organismo_comprador": "SERVICIO DE SALUD ORIENTE HOSPITAL LUIS CALVO MACKENNA",
-        "rut": "61.608.408-9",
-        "unidad_compra": "Bienes y Servicios",
-        "region": 13,
-        "nombre_region": "Región Metropolitana de Santiago"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1057491-1408-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -1170,52 +1619,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/2178-120-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "617807-1630-COT26",
-      "nombre": "HAAV INSUMO PARA KINESIOLOGIA",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [],
-      "fechas": {
-        "fecha_publicacion": "2026-07-04 16:49",
-        "fecha_cierre": "2026-07-05 21:00",
-        "fecha_ultimo_cambio": "2026-07-04T16:50:00.967Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T21:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-07T01:10:34.543Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 450000,
-        "monto_disponible_clp": 450000
-      },
-      "institucion": {
-        "organismo_comprador": "SERV NAC SALUD HOSPITAL DE LOS ANDES",
-        "rut": "61.602.036-6",
-        "unidad_compra": "Hospital San Juan de Dios de Los Andes",
-        "region": 5,
-        "nombre_region": "Región de Valparaíso "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/617807-1630-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -2442,16 +2845,16 @@
       },
       "documentos": [
         {
+          "id": 1649416,
+          "nombre": "PARCHE DEA ZOLL 2.jpeg"
+        },
+        {
           "id": 1649414,
           "nombre": "PARCHES DEA MEDITECH.doc"
         },
         {
           "id": 1649415,
           "nombre": "PARCHE DEA ZOLL 1.jpeg"
-        },
-        {
-          "id": 1649416,
-          "nombre": "PARCHE DEA ZOLL 2.jpeg"
         }
       ],
       "fechas": {
@@ -3455,57 +3858,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/2393-939-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "1704-2285-COT26",
-      "nombre": "Frasco de amoniaco (envase individual) y Frasco tabletas tampon",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1649395,
-          "nombre": "AMONIACO TABLETAS TAMPON.jpg"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-04 11:16",
-        "fecha_cierre": "2026-07-05 19:00",
-        "fecha_ultimo_cambio": "2026-07-04T11:20:00.813Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T19:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-07T02:43:20.343Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 600000,
-        "monto_disponible_clp": 600000
-      },
-      "institucion": {
-        "organismo_comprador": "SERVICIO DE SALUD VINA DEL MAR QUILLOTA",
-        "rut": "61.606.608-0",
-        "unidad_compra": "Hospital San Martín de Quillota",
-        "region": 5,
-        "nombre_region": "Región de Valparaíso "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1704-2285-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -8996,57 +9348,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "1460278-277-COT26",
-      "nombre": "Arriendo grupo electrógeno",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [
-        {
-          "id": 1649267,
-          "nombre": "FORMULARIO_COMPRA__GRUPO_ELECTROGENO_ARRIENDO 8 JULIOACTFIRMADO.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 17:36",
-        "fecha_cierre": "2026-07-05 19:23",
-        "fecha_ultimo_cambio": "2026-07-04T18:35:00.190Z",
-        "fecha_cierre_primer_llamado": "2026-07-04T18:30:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T19:23:42.297Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 600000,
-        "monto_disponible_clp": 600000
-      },
-      "institucion": {
-        "organismo_comprador": "UNIVERSIDAD DE SANTIAGO DE CHILE",
-        "rut": "60.911.000-7",
-        "unidad_compra": "DPTO DE COORDINACION INSTITUCIONAL - PRORRECTORIA",
-        "region": 13,
-        "nombre_region": "Región Metropolitana de Santiago"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1460278-277-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "1994-46-COT26",
       "nombre": "Vitaminas C37 - Orasmi",
       "estado": {
@@ -11884,6 +12185,65 @@
       "rating_count": 0
     },
     {
+      "codigo": "1417-94-COT26",
+      "nombre": "Vehiculo de servicio",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 2,
+        "descripcion": "Segundo llamado"
+      },
+      "documentos": [
+        {
+          "id": 1649188,
+          "nombre": "Criterio Sustentables para Proveedores (Anexo 2).pdf"
+        },
+        {
+          "id": 1649189,
+          "nombre": "Pauta de Evaluación (Anexo 1).pdf"
+        },
+        {
+          "id": 1649187,
+          "nombre": "Requerimientos Técnicos - Administrativos.pdf"
+        }
+      ],
+      "fechas": {
+        "fecha_publicacion": "2026-07-03 17:04",
+        "fecha_cierre": "2026-07-06 20:14",
+        "fecha_ultimo_cambio": "2026-07-05T19:20:00.373Z",
+        "fecha_cierre_primer_llamado": "2026-07-04T18:00:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-06T20:14:09.817Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 1075586,
+        "monto_disponible_clp": 1075586
+      },
+      "institucion": {
+        "organismo_comprador": "DIRECCION GENERAL DE AERONAUTICA CIVIL",
+        "rut": "61.104.000-8",
+        "unidad_compra": "UNIDAD DE COMPRA ANTOFAGASTA",
+        "region": 2,
+        "nombre_region": "Región de Antofagasta "
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 1
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/1417-94-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
+    {
       "codigo": "1577-126-COT26",
       "nombre": "Adquisición de 2 casacas con logo del Gobierno para funcionarias Programa Gobierno en Terreno",
       "estado": {
@@ -14662,6 +15022,57 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1058134-274-COT26"
+      },
+      "rating": null,
+      "rating_count": 0
+    },
+    {
+      "codigo": "1098710-82-COT26",
+      "nombre": "Mantención preventiva vehículo fiscal Ministra CTCI",
+      "estado": {
+        "id_estado": 2,
+        "codigo": "publicada",
+        "glosa": "Publicada"
+      },
+      "convocatoria": {
+        "estado_convocatoria": 2,
+        "descripcion": "Segundo llamado"
+      },
+      "documentos": [
+        {
+          "id": 1649115,
+          "nombre": "Especificación técnica Mantención preventiva 145.000 kms vehículo .pdf"
+        }
+      ],
+      "fechas": {
+        "fecha_publicacion": "2026-07-03 16:38",
+        "fecha_cierre": "2026-07-06 21:35",
+        "fecha_ultimo_cambio": "2026-07-05T20:15:00.180Z",
+        "fecha_cierre_primer_llamado": "2026-07-04T18:00:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-06T21:35:16.653Z"
+      },
+      "montos": {
+        "moneda": "CLP",
+        "monto_disponible": 450000,
+        "monto_disponible_clp": 450000
+      },
+      "institucion": {
+        "organismo_comprador": "SUBSECRETARIA DE CIENCIA, TECNOLOGIA, CONOCIMIENTO E INNOVACION",
+        "rut": "62.000.740-4",
+        "unidad_compra": "SUBSECRETARIA DE CIENCIA, TECNOLOGIA, CONOCIMIENTO E INNOVACION",
+        "region": 13,
+        "nombre_region": "Región Metropolitana de Santiago"
+      },
+      "resumen": {
+        "total_ofertas_recibidas": 1
+      },
+      "motivos": {
+        "motivo_cancelacion": null,
+        "motivo_desierta": null,
+        "motivo_seleccion": null
+      },
+      "links": {
+        "detalle": "/v2/compra-agil/1098710-82-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -19260,57 +19671,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "2078-250-COT26",
-      "nombre": "Servicio de Test de Control de Sustancias estupefacientes (Test de Pelo) SC 243.",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [
-        {
-          "id": 1649007,
-          "nombre": "Especificaciones técnicas.docx"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 16:10",
-        "fecha_cierre": "2026-07-05 19:49",
-        "fecha_ultimo_cambio": "2026-07-04T18:05:00.747Z",
-        "fecha_cierre_primer_llamado": "2026-07-04T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T19:49:06.517Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 880000,
-        "monto_disponible_clp": 880000
-      },
-      "institucion": {
-        "organismo_comprador": "SUBSECRETARIA DE SALUD PUBLICA",
-        "rut": "61.601.000-K",
-        "unidad_compra": "Seremi de Salud VIII región",
-        "region": 8,
-        "nombre_region": "Región del Biobío "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2078-250-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "1057534-331-COT26",
       "nombre": "Paquete de ropa extremidad superior ",
       "estado": {
@@ -21874,16 +22234,16 @@
       },
       "documentos": [
         {
+          "id": 1648929,
+          "nombre": "A N E X O DATOS BANCARIOS.docx"
+        },
+        {
           "id": 1648930,
           "nombre": "contratación de bus.png"
         },
         {
           "id": 1648931,
           "nombre": "contratación vans.png"
-        },
-        {
-          "id": 1648929,
-          "nombre": "A N E X O DATOS BANCARIOS.docx"
         }
       ],
       "fechas": {
@@ -21933,12 +22293,12 @@
       },
       "documentos": [
         {
-          "id": 1648925,
-          "nombre": "EETT COMPARA ÁGIL - Mantención y recarga de extintores.docx"
-        },
-        {
           "id": 1648926,
           "nombre": "ANEXOS.docx"
+        },
+        {
+          "id": 1648925,
+          "nombre": "EETT COMPARA ÁGIL - Mantención y recarga de extintores.docx"
         }
       ],
       "fechas": {
@@ -25747,20 +26107,20 @@
       },
       "documentos": [
         {
-          "id": 1648831,
-          "nombre": "ESPECIFICACIONES TECNICAS - ( 21).pdf"
-        },
-        {
-          "id": 1648832,
-          "nombre": "ANEXO ECONOMICO - (21).pdf"
-        },
-        {
           "id": 1648833,
           "nombre": "DECLARACION JURADA (21).pdf"
         },
         {
           "id": 1648834,
           "nombre": "PROGRAMA DE INTEGRIDAD (21).pdf"
+        },
+        {
+          "id": 1648831,
+          "nombre": "ESPECIFICACIONES TECNICAS - ( 21).pdf"
+        },
+        {
+          "id": 1648832,
+          "nombre": "ANEXO ECONOMICO - (21).pdf"
         }
       ],
       "fechas": {
@@ -27708,16 +28068,16 @@
       },
       "documentos": [
         {
+          "id": 1648777,
+          "nombre": "Anexo N°2 - Declaración Jurada.docx"
+        },
+        {
           "id": 1648775,
           "nombre": "Detalle del Requerimiento.docx"
         },
         {
           "id": 1648776,
           "nombre": "Anexo N°1 - Presentación de la Oferta.-.docx"
-        },
-        {
-          "id": 1648777,
-          "nombre": "Anexo N°2 - Declaración Jurada.docx"
         }
       ],
       "fechas": {
@@ -36500,52 +36860,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "1057480-402-COT26",
-      "nombre": "EQUIPO PARA PAGO ELECTRONICO CON TARJETA DEBITO Y CRÉDITO",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 14:59",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-03T15:00:00.237Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T01:00:36.540Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 200000,
-        "monto_disponible_clp": 200000
-      },
-      "institucion": {
-        "organismo_comprador": "Bienes y Servicios",
-        "rut": "61.602.123-0",
-        "unidad_compra": "Hospital de Melipilla",
-        "region": 13,
-        "nombre_region": "Región Metropolitana de Santiago"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1057480-402-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "1038-77-COT26",
       "nombre": "Servicio, Reparación y recarga de extintores para infruestructura y vehículos del Parque Nacional Torres del Paine",
       "estado": {
@@ -40926,10 +41240,10 @@
       ],
       "fechas": {
         "fecha_publicacion": "2026-07-03 14:29",
-        "fecha_cierre": "2026-07-06 15:00",
-        "fecha_ultimo_cambio": "2026-07-03T14:30:00.470Z",
-        "fecha_cierre_primer_llamado": "2026-07-06T15:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T15:30:02.447Z"
+        "fecha_cierre": "2026-07-06 16:00",
+        "fecha_ultimo_cambio": "2026-07-05T18:55:00.690Z",
+        "fecha_cierre_primer_llamado": "2026-07-06T16:00:00Z",
+        "fecha_cierre_segundo_llamado": "2026-07-09T17:30:02.447Z"
       },
       "montos": {
         "moneda": "CLP",
@@ -40944,7 +41258,7 @@
         "nombre_region": "Región Aysén del General Carlos Ibáñez del Campo"
       },
       "resumen": {
-        "total_ofertas_recibidas": 0
+        "total_ofertas_recibidas": 1
       },
       "motivos": {
         "motivo_cancelacion": null,
@@ -55144,57 +55458,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "3869-481-COT26",
-      "nombre": "UTILES DE ASEO",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647943,
-          "nombre": "UTILES DE ASEO...xlsx"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 12:56",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T13:00:00.313Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-07T23:03:12.173Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 52932,
-        "monto_disponible_clp": 52932
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE GORBEA",
-        "rut": "69.191.200-0",
-        "unidad_compra": "Departamento Adm. Y Finanzas",
-        "region": 9,
-        "nombre_region": "Región de la Araucanía "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/3869-481-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "425-253-COT26",
       "nombre": "COMPRA DE INSUMOS DE CAFETERIA",
       "estado": {
@@ -55420,12 +55683,12 @@
       },
       "documentos": [
         {
-          "id": 1647900,
-          "nombre": "FT N°106 DIDECO-SENDA-ADQ PUBLICIDAD Y DIFUSIÓN .pdf"
-        },
-        {
           "id": 1647899,
           "nombre": "Formulario Identificación del Oferente.docx"
+        },
+        {
+          "id": 1647900,
+          "nombre": "FT N°106 DIDECO-SENDA-ADQ PUBLICIDAD Y DIFUSIÓN .pdf"
         }
       ],
       "fechas": {
@@ -56168,57 +56431,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1075963-915-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "2817-389-COT26",
-      "nombre": "Adquisición set de descorche",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647915,
-          "nombre": "terminos de referencia descorche.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 12:51",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-03T12:55:00.760Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T03:08:52.540Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 450000,
-        "monto_disponible_clp": 450000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE SAN FERNANDO",
-        "rut": "69.090.100-5",
-        "unidad_compra": "I MUNICIPALIDAD DE SAN FERNANDO",
-        "region": 6,
-        "nombre_region": "Región del Libertador General Bernardo O´Higgins"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2817-389-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -61379,12 +61591,12 @@
       },
       "documentos": [
         {
-          "id": 1647751,
-          "nombre": "DECLARACION SIMPLE.docx"
-        },
-        {
           "id": 1647752,
           "nombre": "INSUMOS DE ASEO- PRLAC .pdf"
+        },
+        {
+          "id": 1647751,
+          "nombre": "DECLARACION SIMPLE.docx"
         }
       ],
       "fechas": {
@@ -64426,6 +64638,10 @@
       },
       "documentos": [
         {
+          "id": 1647653,
+          "nombre": "Anexo1 DECLARACIÓN JURADA PROVEEDORES.docx"
+        },
+        {
           "id": 1647649,
           "nombre": "ESPECIFICACIONES TECNICAS AIRE ACONDICIONADO.pdf"
         },
@@ -64440,10 +64656,6 @@
         {
           "id": 1647652,
           "nombre": "Anexo 2 PODER SIMPLE ABONO CTA CTE.doc"
-        },
-        {
-          "id": 1647653,
-          "nombre": "Anexo1 DECLARACIÓN JURADA PROVEEDORES.docx"
         }
       ],
       "fechas": {
@@ -66625,69 +66837,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "1347870-115-COT26",
-      "nombre": "SEGUNDA PUBLICACION EQUIPAMIENTO INFORMÁTICO POR CONVENIO DESARROLLO INFANTOADOLESCENTE CON RES. EX. N° 796 DEL 20.03.2026.SDM MEMO 373",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647583,
-          "nombre": "CDP 5-521 SC 373.pdf"
-        },
-        {
-          "id": 1647584,
-          "nombre": "REQUERIMIENTO ADM. UNIDES AGILES 30 A 100 UTM.docx"
-        },
-        {
-          "id": 1647585,
-          "nombre": "LLENAR ANEXO 1 COTIZACION OBLIGATORIO.docx"
-        },
-        {
-          "id": 1647586,
-          "nombre": "VER ANEXO 2 EETT SOLICITADA POR UNIDAD REQUIRENTE.docx"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 12:14",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-03T12:15:01.010Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T03:45:07.007Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 1594600,
-        "monto_disponible_clp": 1594600
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE ARICA",
-        "rut": "69.010.100-9",
-        "unidad_compra": "Servicio Municipal de Salud - Convenios",
-        "region": 15,
-        "nombre_region": "Región de Arica y Parinacota"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1347870-115-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "4134-386-COT26",
       "nombre": "ADQUISICIÓN DE MEDALLAS PARA PRIMER ANIVERSARIO NEWCOM DE SAGRADA FAMILIA",
       "estado": {
@@ -67550,73 +67699,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/2905-283-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "2926-132-COT26",
-      "nombre": "REPARACION  CARROCERIA VEHICULO FISCAL MARCA NISSAN, CESFAM DR. LUIS HERERRA  ROJAS DE CHAÑARAL",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647539,
-          "nombre": "IMG_20260703_100127.jpg"
-        },
-        {
-          "id": 1647540,
-          "nombre": "IMG_20260703_100114.jpg"
-        },
-        {
-          "id": 1647541,
-          "nombre": "IMG_20260703_100057.jpg"
-        },
-        {
-          "id": 1647542,
-          "nombre": "IMG_20260703_100155.jpg"
-        },
-        {
-          "id": 1647543,
-          "nombre": "IMG_20260703_100144.jpg"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 12:09",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-03T12:10:00.417Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T03:50:04.740Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 2000000,
-        "monto_disponible_clp": 2000000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE CHANARAL",
-        "rut": "69.030.100-8",
-        "unidad_compra": "SALUD",
-        "region": 3,
-        "nombre_region": "Región de Atacama "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2926-132-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -68650,57 +68732,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "3518-184-COT26",
-      "nombre": "INSUMOS COMPUTACIONALES Y ELÉCTRICOS PARA LICEO LUIS DURAND DURAND-SEP",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647558,
-          "nombre": "214.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 12:06",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T12:10:00.417Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-07T23:53:57.100Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 2500000,
-        "monto_disponible_clp": 2500000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE TRAIGUEN",
-        "rut": "69.180.700-2",
-        "unidad_compra": "EDUCACION",
-        "region": 9,
-        "nombre_region": "Región de la Araucanía "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/3518-184-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "1216062-311-COT26",
       "nombre": "SOL 572 BATERIAS",
       "estado": {
@@ -69308,6 +69339,18 @@
       },
       "documentos": [
         {
+          "id": 1647485,
+          "nombre": "AUTORIZACIÓN DEPOSITO Y IDENTIFICACIÓN PROPONENTE.docx"
+        },
+        {
+          "id": 1647486,
+          "nombre": "certificado presupuestario.pdf"
+        },
+        {
+          "id": 1647487,
+          "nombre": "aceptacion de orden de compra.docx"
+        },
+        {
           "id": 1647488,
           "nombre": "CLAUSULAS DE INADMISIBILIDAD COMPRA AGIL 2025.pdf"
         },
@@ -69322,18 +69365,6 @@
         {
           "id": 1647491,
           "nombre": "INDICACIONES PARA PAGO DE FACTURA.pdf"
-        },
-        {
-          "id": 1647485,
-          "nombre": "AUTORIZACIÓN DEPOSITO Y IDENTIFICACIÓN PROPONENTE.docx"
-        },
-        {
-          "id": 1647486,
-          "nombre": "certificado presupuestario.pdf"
-        },
-        {
-          "id": 1647487,
-          "nombre": "aceptacion de orden de compra.docx"
         }
       ],
       "fechas": {
@@ -69531,6 +69562,10 @@
       },
       "documentos": [
         {
+          "id": 1647499,
+          "nombre": "Diseño Chaleco.pdf"
+        },
+        {
           "id": 1647495,
           "nombre": "Diseño Parka América.pdf"
         },
@@ -69545,10 +69580,6 @@
         {
           "id": 1647498,
           "nombre": "Especificaciones Técnicas GET Confección Prendas Exteriores Insti.pdf"
-        },
-        {
-          "id": 1647499,
-          "nombre": "Diseño Chaleco.pdf"
         }
       ],
       "fechas": {
@@ -69737,57 +69768,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/748201-182-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "3518-183-COT26",
-      "nombre": "DISCOS DUROS PARA ESCUELA ISRAEL-SEP",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647520,
-          "nombre": "220.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 12:01",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T12:05:02.113Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-07T23:58:20.487Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 1100000,
-        "monto_disponible_clp": 1100000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE TRAIGUEN",
-        "rut": "69.180.700-2",
-        "unidad_compra": "EDUCACION",
-        "region": 9,
-        "nombre_region": "Región de la Araucanía "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/3518-183-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -70115,6 +70095,18 @@
       },
       "documentos": [
         {
+          "id": 1647453,
+          "nombre": "Anexo 9.Diseño Caja- Juego Ludo.png"
+        },
+        {
+          "id": 1647454,
+          "nombre": "Anexo 10.Diseño Laminas - Juego Explorar y Adivinar.pdf"
+        },
+        {
+          "id": 1647455,
+          "nombre": "INSTRUCTIVO CONDICIONES OBLIGATORIAS PARA COMPRA AGIL AGOSTO 2025.pdf"
+        },
+        {
           "id": 1647441,
           "nombre": "Anexo 6.Diseño Tarjeta 2 Reverso.pdf"
         },
@@ -70161,18 +70153,6 @@
         {
           "id": 1647452,
           "nombre": "Cotización para compra agil 5413-241-COT26.docx"
-        },
-        {
-          "id": 1647453,
-          "nombre": "Anexo 9.Diseño Caja- Juego Ludo.png"
-        },
-        {
-          "id": 1647454,
-          "nombre": "Anexo 10.Diseño Laminas - Juego Explorar y Adivinar.pdf"
-        },
-        {
-          "id": 1647455,
-          "nombre": "INSTRUCTIVO CONDICIONES OBLIGATORIAS PARA COMPRA AGIL AGOSTO 2025.pdf"
         }
       ],
       "fechas": {
@@ -70319,8 +70299,8 @@
         "glosa": "Publicada"
       },
       "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
+        "estado_convocatoria": 2,
+        "descripcion": "Segundo llamado"
       },
       "documentos": [
         {
@@ -70330,8 +70310,8 @@
       ],
       "fechas": {
         "fecha_publicacion": "2026-07-03 11:59",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T12:00:00.580Z",
+        "fecha_cierre": "2026-07-08 00:00",
+        "fecha_ultimo_cambio": "2026-07-05T18:05:01.073Z",
         "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
         "fecha_cierre_segundo_llamado": "2026-07-08T00:00:39.643Z"
       },
@@ -70480,8 +70460,8 @@
         "glosa": "Publicada"
       },
       "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
+        "estado_convocatoria": 2,
+        "descripcion": "Segundo llamado"
       },
       "documentos": [
         {
@@ -70491,8 +70471,8 @@
       ],
       "fechas": {
         "fecha_publicacion": "2026-07-03 11:58",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T12:00:00.580Z",
+        "fecha_cierre": "2026-07-08 00:01",
+        "fecha_ultimo_cambio": "2026-07-05T18:05:01.073Z",
         "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
         "fecha_cierre_segundo_llamado": "2026-07-08T00:01:03.033Z"
       },
@@ -70840,57 +70820,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "3518-181-COT26",
-      "nombre": "MATERIALES LIBRERÍA LICEO LGA-SEP",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647477,
-          "nombre": "215.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 11:56",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T12:00:00.580Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T00:03:22.817Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 100000,
-        "monto_disponible_clp": 100000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE TRAIGUEN",
-        "rut": "69.180.700-2",
-        "unidad_compra": "EDUCACION",
-        "region": 9,
-        "nombre_region": "Región de la Araucanía "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/3518-181-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "2211-761-COT26",
       "nombre": "Sol. 341 Silla y Alza baño WC DESARROLLO  COMUNITARIO PRLAC",
       "estado": {
@@ -70983,77 +70912,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1549-2820-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "889473-1192-COT26",
-      "nombre": "SC 8218 - Implementación Nuevos Puntos Eléctricos",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647460,
-          "nombre": "1782954212671_ITEMIZADO_INSTALACION_ELECTRICA_OFICINAS.xlsx"
-        },
-        {
-          "id": 1647461,
-          "nombre": "002-ELE-EDFICIO B.pdf"
-        },
-        {
-          "id": 1647462,
-          "nombre": "INFORMACION PROVEEDOR COMPRA AGIL.docx"
-        },
-        {
-          "id": 1647463,
-          "nombre": "001-ELE-EDFICIO A.pdf"
-        },
-        {
-          "id": 1647464,
-          "nombre": "Informe Técnico.pdf"
-        },
-        {
-          "id": 1647465,
-          "nombre": "_EETT_INSTALACION_OFICINAS..pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 11:56",
-        "fecha_cierre": "2026-07-05 19:00",
-        "fecha_ultimo_cambio": "2026-07-03T12:00:00.580Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T19:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T02:03:26.933Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 3600000,
-        "monto_disponible_clp": 3600000
-      },
-      "institucion": {
-        "organismo_comprador": "UNIVERSIDAD DE O'HIGGINS",
-        "rut": "61.980.530-5",
-        "unidad_compra": "UNIVERSIDAD DE O'HIGGINS",
-        "region": 6,
-        "nombre_region": "Región del Libertador General Bernardo O´Higgins"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/889473-1192-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -71602,57 +71460,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/836-65-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "3518-180-COT26",
-      "nombre": "INSTRUMENTOS PARA TALLER DE INVESTIGACION CIENTÍFICA LICEO LGA-SEP",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647433,
-          "nombre": "216.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 11:54",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T11:55:00.647Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T00:05:56.027Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 500000,
-        "monto_disponible_clp": 500000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE TRAIGUEN",
-        "rut": "69.180.700-2",
-        "unidad_compra": "EDUCACION",
-        "region": 9,
-        "nombre_region": "Región de la Araucanía "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/3518-180-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -72329,57 +72136,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "3518-179-COT26",
-      "nombre": "JUEGOS DIDÁCTICOS PARA ESCUELA GUACOLDA-SEP",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647429,
-          "nombre": "218.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 11:50",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T11:55:00.647Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T00:09:44.440Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 750000,
-        "monto_disponible_clp": 750000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE TRAIGUEN",
-        "rut": "69.180.700-2",
-        "unidad_compra": "EDUCACION",
-        "region": 9,
-        "nombre_region": "Región de la Araucanía "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/3518-179-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "1058097-674-COT26",
       "nombre": "SUGAMMADEX 200 MG/ 2ML SOL.INYECT FAM",
       "estado": {
@@ -72777,57 +72533,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1340-47-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "3518-178-COT26",
-      "nombre": "CONTRATACIÓN ASESORÍA ATE PARA ESCUELA REPÚBLICA DE ISRAEL-SEP",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647404,
-          "nombre": "221.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 11:47",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T11:50:00.310Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T00:12:32.490Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 2000000,
-        "monto_disponible_clp": 2000000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE TRAIGUEN",
-        "rut": "69.180.700-2",
-        "unidad_compra": "EDUCACION",
-        "region": 9,
-        "nombre_region": "Región de la Araucanía "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/3518-178-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -77959,52 +77664,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "1268335-6-COT26",
-      "nombre": " ADQUISICIÓN DE PRODUCTOS DE OFICINA PARA EL DPTO DE ADQUISICION DE LA CORPORACION DE DESARROLLO SOCIAL DE BUIN SOLICITUD N°1",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 11:29",
-        "fecha_cierre": "2026-07-05 22:00",
-        "fecha_ultimo_cambio": "2026-07-03T11:30:00.817Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T22:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T08:30:21.720Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 4853201,
-        "monto_disponible_clp": 4853201
-      },
-      "institucion": {
-        "organismo_comprador": "CORPORACION DE DESARROLLO SOCIAL DE BUIN",
-        "rut": "70.934.000-7",
-        "unidad_compra": "CORPORACION DE DESARROLLO SOCIAL DE BUIN",
-        "region": 13,
-        "nombre_region": "Región Metropolitana de Santiago"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1268335-6-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "2705-946-COT26",
       "nombre": "SC2667 MODIFICACION DE ESCRITORIOS",
       "estado": {
@@ -81092,57 +80751,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "3869-479-COT26",
-      "nombre": "BALONES DE BASQUETBOL",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647181,
-          "nombre": "Material didáctico..xlsx"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 11:16",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T11:20:01.093Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T00:43:05.907Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 23230,
-        "monto_disponible_clp": 23230
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE GORBEA",
-        "rut": "69.191.200-0",
-        "unidad_compra": "Departamento Adm. Y Finanzas",
-        "region": 9,
-        "nombre_region": "Región de la Araucanía "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/3869-479-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "1013609-57-COT26",
       "nombre": "ADQUISICION DE MAQUINA CORTA SETOS PARA EL CASINO DE OFICIALES",
       "estado": {
@@ -81611,57 +81219,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/2713-793-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "4036-152-COT26",
-      "nombre": "ADQUISICIÓN DE EQUIPAMIENTO DE SEGURIDAD",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647141,
-          "nombre": "ESPECIFICACIONES TECNICA EQUIPAMIENTO DE SEGURIDAD.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 11:14",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T11:15:01.050Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T00:45:00.653Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 1100000,
-        "monto_disponible_clp": 1100000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE ANDACOLLO",
-        "rut": "69.040.400-1",
-        "unidad_compra": "Departamento de Finanzas ",
-        "region": 4,
-        "nombre_region": "Región de Coquimbo "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/4036-152-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -83129,8 +82686,8 @@
         "glosa": "Publicada"
       },
       "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
+        "estado_convocatoria": 2,
+        "descripcion": "Segundo llamado"
       },
       "documentos": [
         {
@@ -83140,8 +82697,8 @@
       ],
       "fechas": {
         "fecha_publicacion": "2026-07-03 11:09",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T11:10:01.010Z",
+        "fecha_cierre": "2026-07-08 00:50",
+        "fecha_ultimo_cambio": "2026-07-05T18:05:01.073Z",
         "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
         "fecha_cierre_segundo_llamado": "2026-07-08T00:50:35.690Z"
       },
@@ -83422,57 +82979,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1180703-20-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "4036-151-COT26",
-      "nombre": "ADQUISICION DE GRABADORA",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1647110,
-          "nombre": "ESPECIFICACIONES TECNICA ADQUISICION DE GRABADORA.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 11:08",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T11:10:01.010Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T00:51:31.943Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 60000,
-        "monto_disponible_clp": 60000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE ANDACOLLO",
-        "rut": "69.040.400-1",
-        "unidad_compra": "Departamento de Finanzas ",
-        "region": 4,
-        "nombre_region": "Región de Coquimbo "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/4036-151-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -91581,52 +91087,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "1058045-413-COT26",
-      "nombre": "MIFEPRISTONA ",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 10:37",
-        "fecha_cierre": "2026-07-05 19:22",
-        "fecha_ultimo_cambio": "2026-07-04T15:05:00.280Z",
-        "fecha_cierre_primer_llamado": "2026-07-04T15:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T19:22:26.957Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 140000,
-        "monto_disponible_clp": 140000
-      },
-      "institucion": {
-        "organismo_comprador": "SERVICIO DE SALUD COQUIMBO HOSPITAL DE O",
-        "rut": "61.606.404-5",
-        "unidad_compra": "Fármarcos",
-        "region": 4,
-        "nombre_region": "Región de Coquimbo "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1058045-413-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "564162-629-COT26",
       "nombre": "Alimento para peces",
       "estado": {
@@ -92970,73 +92430,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/564162-627-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "629373-184-COT26",
-      "nombre": "MANTENCIÓN CORRECTIVA DE RADIADORES DE CALEFACCIÓN EN CESFAM BARROS LUCO",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [
-        {
-          "id": 1646857,
-          "nombre": "CL-05.pdf"
-        },
-        {
-          "id": 1646858,
-          "nombre": "ANEXOS.xlsx"
-        },
-        {
-          "id": 1646859,
-          "nombre": "Especificaciones Técnicas - Mantención radiadores.pdf"
-        },
-        {
-          "id": 1646860,
-          "nombre": "CL-06.pdf"
-        },
-        {
-          "id": 1646861,
-          "nombre": "CL-04.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-03 10:32",
-        "fecha_cierre": "2026-07-05 19:27",
-        "fecha_ultimo_cambio": "2026-07-04T15:05:00.280Z",
-        "fecha_cierre_primer_llamado": "2026-07-04T15:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T19:27:57.790Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 7058800,
-        "monto_disponible_clp": 7058800
-      },
-      "institucion": {
-        "organismo_comprador": "CORP MUNICIPAL DE SAN MIGUEL",
-        "rut": "70.962.500-4",
-        "unidad_compra": "Corporación Municipal de San Miguel",
-        "region": 13,
-        "nombre_region": "Región Metropolitana de Santiago"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/629373-184-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -99417,8 +98810,8 @@
         "glosa": "Publicada"
       },
       "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
+        "estado_convocatoria": 2,
+        "descripcion": "Segundo llamado"
       },
       "documentos": [
         {
@@ -99432,8 +98825,8 @@
       ],
       "fechas": {
         "fecha_publicacion": "2026-07-03 10:04",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-03T11:50:00.310Z",
+        "fecha_cierre": "2026-07-08 01:55",
+        "fecha_ultimo_cambio": "2026-07-05T18:05:01.073Z",
         "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
         "fecha_cierre_segundo_llamado": "2026-07-08T01:55:44.260Z"
       },
@@ -108901,12 +108294,12 @@
       },
       "documentos": [
         {
-          "id": 1646438,
-          "nombre": "compra agil ventanas aluminio.pdf"
-        },
-        {
           "id": 1646437,
           "nombre": "ANEXO N°1  Impacto medio Ambiental (1).docx"
+        },
+        {
+          "id": 1646438,
+          "nombre": "compra agil ventanas aluminio.pdf"
         }
       ],
       "fechas": {
@@ -118707,16 +118100,16 @@
       },
       "documentos": [
         {
+          "id": 1646112,
+          "nombre": "2.- CA TRANSFER 2026-2 [Suma y Sigue].pdf"
+        },
+        {
           "id": 1646113,
           "nombre": "1.- CA TRANSFER 2026-2 [Sumo Primero].pdf"
         },
         {
           "id": 1646111,
           "nombre": "3.-CA TRANSFER 2026-2 [MATCON].pdf"
-        },
-        {
-          "id": 1646112,
-          "nombre": "2.- CA TRANSFER 2026-2 [Suma y Sigue].pdf"
         }
       ],
       "fechas": {
@@ -119979,52 +119372,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/3734-361-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "2926-128-COT26",
-      "nombre": "INSUMOS PROGRAMA ESTRATEGIAS DE  SALUD BUCAL 2026, ENDODONCIA, CESFAM DR.  LUIS HERERRA DE CHAÑARAL",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 17:45",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T17:50:00.773Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T22:14:28.020Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 798000,
-        "monto_disponible_clp": 798000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE CHANARAL",
-        "rut": "69.030.100-8",
-        "unidad_compra": "SALUD",
-        "region": 3,
-        "nombre_region": "Región de Atacama "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2926-128-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -128774,61 +128121,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "889473-1190-COT26",
-      "nombre": "SC 7822 - Insumos de Laboratorio",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1645612,
-          "nombre": "ITEM.pdf"
-        },
-        {
-          "id": 1645613,
-          "nombre": "INFORMACION PROVEEDOR COMPRA AGIL.docx"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 16:42",
-        "fecha_cierre": "2026-07-05 19:00",
-        "fecha_ultimo_cambio": "2026-07-02T16:45:01.073Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T19:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T21:17:10.483Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 952000,
-        "monto_disponible_clp": 952000
-      },
-      "institucion": {
-        "organismo_comprador": "UNIVERSIDAD DE O'HIGGINS",
-        "rut": "61.980.530-5",
-        "unidad_compra": "UNIVERSIDAD DE O'HIGGINS",
-        "region": 6,
-        "nombre_region": "Región del Libertador General Bernardo O´Higgins"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/889473-1190-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "2705-943-COT26",
       "nombre": " “ADQUISICIÓN DE ESTUFAS – SC 2706”",
       "estado": {
@@ -129943,65 +129235,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "2926-127-COT26",
-      "nombre": "CONFECCION  TALONARIOS DE RECETAS  Y EXAMANES CESFAM DR. LUIS HERRERA  ROJAS DE CHAÑARAL",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1645582,
-          "nombre": "TALONARIO (1).pdf"
-        },
-        {
-          "id": 1645583,
-          "nombre": "LOGO_CESFAM.png"
-        },
-        {
-          "id": 1645584,
-          "nombre": "LOGO MUNICIPALIDAD  2026.png"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 16:36",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T16:40:00.823Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T23:23:49.150Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 1500000,
-        "monto_disponible_clp": 1500000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE CHANARAL",
-        "rut": "69.030.100-8",
-        "unidad_compra": "SALUD",
-        "region": 3,
-        "nombre_region": "Región de Atacama "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2926-127-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "5451-17-COT26",
       "nombre": "Insumos Consejo Universitario",
       "estado": {
@@ -130297,77 +129530,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/2701-411-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "1079566-132-COT26",
-      "nombre": "ADQUISICION DE REPUESTOS CON SERV. DE INSTALACION PARA LOS VEHICULOS POLICIALES AP-2303, LM-128 Y Z-6983 DE CARGO DE SIAT TALCA",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1645555,
-          "nombre": "ANEXO REQUERIMIENTO NRO 104 AP-2303 (1).pdf"
-        },
-        {
-          "id": 1645556,
-          "nombre": "ANEXO REQUERIMIENTO NRO. 102 LM-128 (1).pdf"
-        },
-        {
-          "id": 1645557,
-          "nombre": "ANEXO REQUERIMIENTO NRO. 103 Z-6983 (1).pdf"
-        },
-        {
-          "id": 1645558,
-          "nombre": "ANEXO N°1 - CRITERIOS Y METODOLOGÍA DE EVALUACIÓN COMPRAS AGILES .pdf"
-        },
-        {
-          "id": 1645559,
-          "nombre": "multas-sanciones-procedimientos (17).pdf"
-        },
-        {
-          "id": 1645560,
-          "nombre": "ANEXO NRO. 2 OFERTA TÉCNICA Y ECONOMICA COMPRA AGIL - VEHICULOS.xlsx"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 16:34",
-        "fecha_cierre": "2026-07-05 18:00",
-        "fecha_ultimo_cambio": "2026-07-02T16:35:01.153Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-08T19:25:08.100Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 2650000,
-        "monto_disponible_clp": 2650000
-      },
-      "institucion": {
-        "organismo_comprador": "SECCIÓN COMPRAS VII ZONA",
-        "rut": "61.979.370-6",
-        "unidad_compra": "SECCIÓN COMPRAS ZONA DE CARABINEROS MAULE",
-        "region": 7,
-        "nombre_region": "Región del Maule "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1079566-132-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -132452,6 +131614,22 @@
       },
       "documentos": [
         {
+          "id": 1645448,
+          "nombre": "FORMATO DECLARACIÓN DE PROGRAMA DE INTEGRIDAD.docx"
+        },
+        {
+          "id": 1645449,
+          "nombre": "FORMATO DE DECLARACION DE PACTO DE INTEGRIDAD.docx"
+        },
+        {
+          "id": 1645450,
+          "nombre": "FORMATO ANEXO B MODELO “GUÍA DE DESPACHO Y RECEPCIÓN CONFORME TRA.docx"
+        },
+        {
+          "id": 1645451,
+          "nombre": "FORMATO ANEXO D  “FORMULARIO DE OFERTA ECONÓMICA”.docx"
+        },
+        {
           "id": 1645452,
           "nombre": "Pauta de evaluacion.pdf"
         },
@@ -132470,22 +131648,6 @@
         {
           "id": 1645456,
           "nombre": "Bases tecnicas.pdf"
-        },
-        {
-          "id": 1645448,
-          "nombre": "FORMATO DECLARACIÓN DE PROGRAMA DE INTEGRIDAD.docx"
-        },
-        {
-          "id": 1645449,
-          "nombre": "FORMATO DE DECLARACION DE PACTO DE INTEGRIDAD.docx"
-        },
-        {
-          "id": 1645450,
-          "nombre": "FORMATO ANEXO B MODELO “GUÍA DE DESPACHO Y RECEPCIÓN CONFORME TRA.docx"
-        },
-        {
-          "id": 1645451,
-          "nombre": "FORMATO ANEXO D  “FORMULARIO DE OFERTA ECONÓMICA”.docx"
         }
       ],
       "fechas": {
@@ -138808,16 +137970,16 @@
       },
       "documentos": [
         {
-          "id": 1645179,
-          "nombre": "Solicitud de compra GAB 002 Firmado 1.pdf"
-        },
-        {
           "id": 1645177,
           "nombre": "FORMATO EETT DE COMPRA ÁGIL GAB 002.docx"
         },
         {
           "id": 1645178,
           "nombre": "FORMULARIO N1.docx"
+        },
+        {
+          "id": 1645179,
+          "nombre": "Solicitud de compra GAB 002 Firmado 1.pdf"
         }
       ],
       "fechas": {
@@ -143362,57 +142524,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "3636-115-COT26",
-      "nombre": "SERVICIO DE REPARACION DE PISADERA METALICA AMBULANCIA",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1644977,
-          "nombre": "IMG_20260702_0003.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 15:12",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T15:15:00.860Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T00:47:32.870Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 200000,
-        "monto_disponible_clp": 200000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE MALLOA",
-        "rut": "69.081.500-1",
-        "unidad_compra": "I. Municipalidad de Malloa - Departamento de Salud",
-        "region": 6,
-        "nombre_region": "Región del Libertador General Bernardo O´Higgins"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/3636-115-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "2710-228-COT26",
       "nombre": "SILLA ERGONOMICA, BERGER RECLINABLE. SOLICITUD 2023-2026/2026, CECOSF COLONIA LIMARI - CESFAM MMO - DESAM",
       "estado": {
@@ -145371,18 +144482,6 @@
       },
       "documentos": [
         {
-          "id": 1644871,
-          "nombre": "ANEXO N°2 DECLARACION JURADA SIMPLE DEL OFERENTE.docx"
-        },
-        {
-          "id": 1644872,
-          "nombre": "DD_5781576_260701 ESPECIFICACIONES-TECNICA-PROYECTO-HOSCA.pdf"
-        },
-        {
-          "id": 1644873,
-          "nombre": "ANEXO N°1 IDENTIFICACION DEL OFERENTE.docx"
-        },
-        {
           "id": 1644874,
           "nombre": "MULTAS ADMINISTRATIVOS COMPRA AGIL.pdf"
         },
@@ -145393,6 +144492,18 @@
         {
           "id": 1644876,
           "nombre": "SOL DE COMPRA N°18 OFICINA DE PARTES N°361 - BIENESTAR.pdf"
+        },
+        {
+          "id": 1644871,
+          "nombre": "ANEXO N°2 DECLARACION JURADA SIMPLE DEL OFERENTE.docx"
+        },
+        {
+          "id": 1644872,
+          "nombre": "DD_5781576_260701 ESPECIFICACIONES-TECNICA-PROYECTO-HOSCA.pdf"
+        },
+        {
+          "id": 1644873,
+          "nombre": "ANEXO N°1 IDENTIFICACION DEL OFERENTE.docx"
         }
       ],
       "fechas": {
@@ -145784,6 +144895,14 @@
       },
       "documentos": [
         {
+          "id": 1644859,
+          "nombre": "ANEXO B- FORMATO DECLARACIÓN PROGRAMA DE INTEGRIDAD.docx"
+        },
+        {
+          "id": 1644860,
+          "nombre": "ANEXO A - FORMULARIO TECNICO DE OFERTA.docx"
+        },
+        {
           "id": 1644861,
           "nombre": "ESPECIFICACIONES TÉCNICAS ME AVSEC 2026.pdf"
         },
@@ -145794,14 +144913,6 @@
         {
           "id": 1644863,
           "nombre": "ANEXO C - CRITERIO SUSTENTABLE PARA PROVEEDORES.docx"
-        },
-        {
-          "id": 1644859,
-          "nombre": "ANEXO B- FORMATO DECLARACIÓN PROGRAMA DE INTEGRIDAD.docx"
-        },
-        {
-          "id": 1644860,
-          "nombre": "ANEXO A - FORMULARIO TECNICO DE OFERTA.docx"
         }
       ],
       "fechas": {
@@ -146852,57 +145963,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "2926-126-COT26",
-      "nombre": "CUENTOS SENSORIALES  CON  TEXTURASPROGRAMA APOYO AL DESARROLLO BIOPSICOSOCIAL EN LA RED ASISTENCIAL, CESFAM DR. LUIS HERRERA  ROJAS DE CHAÑARAL",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1644830,
-          "nombre": "CUENTOS SENSORIALES.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 14:42",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T14:45:00.320Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T01:17:39.890Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 350000,
-        "monto_disponible_clp": 350000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE CHANARAL",
-        "rut": "69.030.100-8",
-        "unidad_compra": "SALUD",
-        "region": 3,
-        "nombre_region": "Región de Atacama "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2926-126-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "4499-97-COT26",
       "nombre": "Adquisición de Mobiliario para Dependencias de Cesfam San Pedro y Departamento de Salud",
       "estado": {
@@ -147008,16 +146068,16 @@
       },
       "documentos": [
         {
+          "id": 1644816,
+          "nombre": "RT 000682.pdf"
+        },
+        {
           "id": 1644817,
           "nombre": "INSTRUCTIVO PARA OFERTAR EN COMPRAS AGILES DCS CON HORARIO BODEGA.pdf"
         },
         {
           "id": 1644818,
           "nombre": "000682.pdf"
-        },
-        {
-          "id": 1644816,
-          "nombre": "RT 000682.pdf"
         }
       ],
       "fechas": {
@@ -147660,69 +146720,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "1347870-112-COT26",
-      "nombre": "SISTEMA DE INTERCOMINICADOR PARA ATENCION SAR IVH MEMO 361",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1644799,
-          "nombre": "CDP 5-612 SC 361.pdf"
-        },
-        {
-          "id": 1644800,
-          "nombre": "ANEXO 1 COTZ (4).docx"
-        },
-        {
-          "id": 1644801,
-          "nombre": "VER ANEXO 2 EETT SOLICITADO POR UNIDAD REQUIRENTE.docx"
-        },
-        {
-          "id": 1644802,
-          "nombre": "REQUERIMIENTOS ADMINISTRATIVOS.docx"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 14:33",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T14:35:01.330Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T01:26:29.317Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 196350,
-        "monto_disponible_clp": 196350
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE ARICA",
-        "rut": "69.010.100-9",
-        "unidad_compra": "Servicio Municipal de Salud - Convenios",
-        "region": 15,
-        "nombre_region": "Región de Arica y Parinacota"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1347870-112-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "4132-89-COT26",
       "nombre": "ADQUISICIÓN E INSTALACIÓN DE VENTANAS DE PVC Y MEJORAMIENTO DE VÍA DE EVACUACIÓN EN GIMNASIO",
       "estado": {
@@ -147769,154 +146766,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/4132-89-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "2926-125-COT26",
-      "nombre": "TOALLA DE MANOS 30 X 50  Y CREMA DE MANOS PEQUEÑAS PROGRAMA CHILE CRECE CONTIGO CESFAM DR. LUIS  HERRERA DE CHAÑARAL",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1644784,
-          "nombre": "TOALLA DE MANOS  30 X 50 CMS Y CREMA MANOS.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 14:32",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T14:35:01.330Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T01:27:46.183Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 280000,
-        "monto_disponible_clp": 280000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE CHANARAL",
-        "rut": "69.030.100-8",
-        "unidad_compra": "SALUD",
-        "region": 3,
-        "nombre_region": "Región de Atacama "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2926-125-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "494-714-COT26",
-      "nombre": "Servicio de recarga de oxígeno liquido medicinal, composición Oxígeno (O2) > 99.5%. Cotizar por metro cúbico 2408 m3",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 14:31",
-        "fecha_cierre": "2026-07-07 09:30",
-        "fecha_ultimo_cambio": "2026-07-03T16:15:00.640Z",
-        "fecha_cierre_primer_llamado": "2026-07-03T14:45:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-07T09:30:00Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 2380000,
-        "monto_disponible_clp": 2380000
-      },
-      "institucion": {
-        "organismo_comprador": "SERVICIO DE SALUD ATACAMA HOSPITAL COPIA",
-        "rut": "61.606.307-3",
-        "unidad_compra": "Insumos Hospital de Copiapó",
-        "region": 3,
-        "nombre_region": "Región de Atacama "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/494-714-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "594807-45-COT26",
-      "nombre": "KIT SISTEMA DE VACIO BAÑOS",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1644785,
-          "nombre": "TERMINOS REFERENCIA 594807-45-COT26.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 14:30",
-        "fecha_cierre": "2026-07-06 15:00",
-        "fecha_ultimo_cambio": "2026-07-02T14:35:01.330Z",
-        "fecha_cierre_primer_llamado": "2026-07-06T15:00:00Z",
-        "fecha_cierre_segundo_llamado": null
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 7000000,
-        "monto_disponible_clp": 7000000
-      },
-      "institucion": {
-        "organismo_comprador": "MONTT",
-        "rut": "61.979.670-5",
-        "unidad_compra": "AO ALMIRANTE MONTT",
-        "region": 5,
-        "nombre_region": "Región de Valparaíso "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/594807-45-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -148450,61 +147299,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/990973-73-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "2926-124-COT26",
-      "nombre": "CONFECCION DE CHAPAS, AGENDAS Y BOLSAS DE GENERO CESFAM DR. LUIS HERRERA ROJAS CHAÑARAL",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1644750,
-          "nombre": "AGENDA BOLSAS.pdf"
-        },
-        {
-          "id": 1644751,
-          "nombre": "image (13).png"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 14:22",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T14:25:01.190Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T01:37:08.400Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 500000,
-        "monto_disponible_clp": 500000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE CHANARAL",
-        "rut": "69.030.100-8",
-        "unidad_compra": "SALUD",
-        "region": 3,
-        "nombre_region": "Región de Atacama "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2926-124-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -149182,69 +147976,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1691-1074-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "1347870-111-COT26",
-      "nombre": "SILLA ERGONOMICA SAR IVH. MEMO 359",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1644712,
-          "nombre": "REQUERIMIENTOS ADMINISTRATIVOS.docx"
-        },
-        {
-          "id": 1644713,
-          "nombre": "VER ANEXO 2 EETT SOLICITADO POR UNIDAD REQUIRENTE.docx"
-        },
-        {
-          "id": 1644714,
-          "nombre": "SC N°359.pdf"
-        },
-        {
-          "id": 1644715,
-          "nombre": "ANEXO 1 COTZ (4).docx"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 14:01",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T14:05:01.223Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T01:58:49.703Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 1130500,
-        "monto_disponible_clp": 1130500
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE ARICA",
-        "rut": "69.010.100-9",
-        "unidad_compra": "Servicio Municipal de Salud - Convenios",
-        "region": 15,
-        "nombre_region": "Región de Arica y Parinacota"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1347870-111-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -150183,69 +148914,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/324-366-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "1347870-110-COT26",
-      "nombre": "MATERIAL DE DIFUSION CONV. CUIDADOS PESPI RES.. EX N°823.SDM MEMO 448",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1644648,
-          "nombre": "VER ANEXO 2 EETT SOLICITADO POR UNIDAD REQUIRENTE.docx"
-        },
-        {
-          "id": 1644649,
-          "nombre": "ANEXO 1 COTZ (4).docx"
-        },
-        {
-          "id": 1644650,
-          "nombre": "5-615 SC N° 448.pdf"
-        },
-        {
-          "id": 1644651,
-          "nombre": "REQUERIMIENTOS ADMINISTRATIVOS.docx"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 13:41",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T13:45:00.913Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T02:18:36.920Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 3095500,
-        "monto_disponible_clp": 3095500
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE ARICA",
-        "rut": "69.010.100-9",
-        "unidad_compra": "Servicio Municipal de Salud - Convenios",
-        "region": 15,
-        "nombre_region": "Región de Arica y Parinacota"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1347870-110-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -157768,10 +156436,6 @@
       },
       "documentos": [
         {
-          "id": 1644183,
-          "nombre": "EETT.pdf"
-        },
-        {
           "id": 1644180,
           "nombre": "EFECTOS DERIVADOS DE INCUMPLIMIENTOS DEL PROVEEDOR -4.pdf"
         },
@@ -157782,6 +156446,10 @@
         {
           "id": 1644182,
           "nombre": "CRITERIO DE DESEMPATE COMPRA AGIL.pdf"
+        },
+        {
+          "id": 1644183,
+          "nombre": "EETT.pdf"
         }
       ],
       "fechas": {
@@ -158324,52 +156992,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/5865-75-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "2914-194-COT26",
-      "nombre": "TIRAS COLESTEROL EMPA CES Y CES EN DDA, SM-149",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 12:29",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T12:30:00.280Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T03:30:03.850Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 1500000,
-        "monto_disponible_clp": 1500000
-      },
-      "institucion": {
-        "organismo_comprador": "ILUSTRE MUNICIPALIDAD DE DIEGO DE ALMAGRO",
-        "rut": "69.250.500-k",
-        "unidad_compra": "Salud",
-        "region": 3,
-        "nombre_region": "Región de Atacama "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2914-194-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -159580,14 +158202,14 @@
         "glosa": "Publicada"
       },
       "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
+        "estado_convocatoria": 2,
+        "descripcion": "Segundo llamado"
       },
       "documentos": [],
       "fechas": {
         "fecha_publicacion": "2026-07-02 12:24",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T12:25:00.763Z",
+        "fecha_cierre": "2026-07-09 03:35",
+        "fecha_ultimo_cambio": "2026-07-05T20:05:00.927Z",
         "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
         "fecha_cierre_segundo_llamado": "2026-07-09T03:35:42.090Z"
       },
@@ -161096,16 +159718,16 @@
       },
       "documentos": [
         {
+          "id": 1643979,
+          "nombre": "receta verde nancagua actualizado 2026.xlsx"
+        },
+        {
           "id": 1643977,
           "nombre": "RES NORMAS RECETAS VERDES.pdf"
         },
         {
           "id": 1643978,
           "nombre": "recetario verde 2022.pdf"
-        },
-        {
-          "id": 1643979,
-          "nombre": "receta verde nancagua actualizado 2026.xlsx"
         }
       ],
       "fechas": {
@@ -161670,10 +160292,6 @@
       },
       "documentos": [
         {
-          "id": 1643969,
-          "nombre": "ANEXO 1 Oferta Economica.xls"
-        },
-        {
           "id": 1643964,
           "nombre": "ANEXO 1 Oferta Economica.pdf"
         },
@@ -161692,6 +160310,10 @@
         {
           "id": 1643968,
           "nombre": "DFP_Carta_N_12__01-07-2021.pdf"
+        },
+        {
+          "id": 1643969,
+          "nombre": "ANEXO 1 Oferta Economica.xls"
         }
       ],
       "fechas": {
@@ -165618,65 +164240,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1442808-122-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "1347870-109-COT26",
-      "nombre": "TERCERA PUBLICACION  ADQUICIÓN DE PRODUCTOS POR CONVENIO PROGRAMA  EQUIDAD RURAL  EN SALUD RURAL, COMUNA  DE ARICA  RES. EX. N°817 .SDM MEMO 145",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1643725,
-          "nombre": "REQUERIMIENTO ADM. UNIDES AGILES 30 A 100 UTM (4).docx"
-        },
-        {
-          "id": 1643726,
-          "nombre": "ANEXO 1 COTZ (4).docx"
-        },
-        {
-          "id": 1643727,
-          "nombre": "LLENAR FICHA DE POSTULACION POSTULACIÓN.docx"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 11:46",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T11:50:00.423Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T04:13:50.050Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 3598679,
-        "monto_disponible_clp": 3598679
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE ARICA",
-        "rut": "69.010.100-9",
-        "unidad_compra": "Servicio Municipal de Salud - Convenios",
-        "region": 15,
-        "nombre_region": "Región de Arica y Parinacota"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1347870-109-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -170033,57 +168596,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1627-337-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "3636-114-COT26",
-      "nombre": "ADQUISICION DE ANDAMIOS PARA LOS CENTROS DE SALUD",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1643510,
-          "nombre": "IMG_20260702_0002.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 11:17",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T11:20:01.177Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T04:42:35.427Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 500000,
-        "monto_disponible_clp": 500000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE MALLOA",
-        "rut": "69.081.500-1",
-        "unidad_compra": "I. Municipalidad de Malloa - Departamento de Salud",
-        "region": 6,
-        "nombre_region": "Región del Libertador General Bernardo O´Higgins"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/3636-114-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -175005,57 +173517,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "3636-113-COT26",
-      "nombre": "COMPRA INSUMOS DE ESCRITORIO PROGRAMA CHILE CRECE CONTIGO",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1643208,
-          "nombre": "IMG_20260702_0001.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 10:45",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T10:50:00.827Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T05:14:09.977Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 131959,
-        "monto_disponible_clp": 131959
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE MALLOA",
-        "rut": "69.081.500-1",
-        "unidad_compra": "I. Municipalidad de Malloa - Departamento de Salud",
-        "region": 6,
-        "nombre_region": "Región del Libertador General Bernardo O´Higgins"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/3636-113-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "5952-49-COT26",
       "nombre": "CENA PARA 10 PERSONAS CONGRESO YO SI",
       "estado": {
@@ -176002,57 +174463,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/2446-640-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "3636-112-COT26",
-      "nombre": "ADQUISICION DE CHAQUETAS INSTITUCIONALES PARA FUNCIONARIOS SUR MALLOA Y CESFAM PELEQUEN",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1643168,
-          "nombre": "IMG_20260701_0002.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 10:42",
-        "fecha_cierre": "2026-07-05 20:00",
-        "fecha_ultimo_cambio": "2026-07-02T10:45:00.867Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T20:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T05:17:52.947Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 845000,
-        "monto_disponible_clp": 845000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE MALLOA",
-        "rut": "69.081.500-1",
-        "unidad_compra": "I. Municipalidad de Malloa - Departamento de Salud",
-        "region": 6,
-        "nombre_region": "Región del Libertador General Bernardo O´Higgins"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/3636-112-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -179454,61 +177864,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/324-357-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "2371-259-COT26",
-      "nombre": "S/P 262, EXPEDIENTE 7757, CONVENIO SISTEMA NACIONAL DE APOYOS Y CUIDADOS “CENTRO COMUNITARIO DE CUIDADOS – CHILE CUIDA” CERRO NAVIA, ADQUISICIÓN DE MATERIALES COSTURERÍA ",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1642937,
-          "nombre": "A DESCALIFICACIÓN DE OFERTAS Y TABLAS EVALUACION.pdf"
-        },
-        {
-          "id": 1642938,
-          "nombre": "ANEXO Nº 1 COMPRA AGIL.doc"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 10:13",
-        "fecha_cierre": "2026-07-05 21:00",
-        "fecha_ultimo_cambio": "2026-07-02T10:15:01.040Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T21:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T07:46:50.430Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 150000,
-        "monto_disponible_clp": 150000
-      },
-      "institucion": {
-        "organismo_comprador": "ILUSTRE MUNICIPALIDAD DE CERRO NAVIA",
-        "rut": "69.254.200-2",
-        "unidad_compra": "DEPARTAMENTO DE ADQUISICIONES",
-        "region": 13,
-        "nombre_region": "Región Metropolitana de Santiago"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2371-259-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -186559,12 +184914,12 @@
       },
       "documentos": [
         {
-          "id": 1642531,
-          "nombre": "Terminos de Referencia Cuadernos agendas Productivas.pdf"
-        },
-        {
           "id": 1642530,
           "nombre": "CUADERNO-PRODUCTIVO-CEREALES-Y-LEGUMINOSAS.pdf"
+        },
+        {
+          "id": 1642531,
+          "nombre": "Terminos de Referencia Cuadernos agendas Productivas.pdf"
         }
       ],
       "fechas": {
@@ -187365,12 +185720,12 @@
       },
       "documentos": [
         {
-          "id": 1642488,
-          "nombre": "ITEMIZADO.pdf"
-        },
-        {
           "id": 1642489,
           "nombre": "DECLARACION SIMPLE WORD.docx"
+        },
+        {
+          "id": 1642488,
+          "nombre": "ITEMIZADO.pdf"
         }
       ],
       "fechas": {
@@ -187448,65 +185803,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/2792-475-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "2371-258-COT26",
-      "nombre": "S/P 333, EXPEDIENTE 1340, DEPARTAMENTO DE MODERNIZACIÓN Y TIC´S, ADQUISICIÓN KIT TECLADO + MOUSE",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1642482,
-          "nombre": "A DESCALIFICACIÓN DE OFERTAS Y TABLAS EVALUACION.pdf"
-        },
-        {
-          "id": 1642483,
-          "nombre": "MUESTRA DIGITAL.pdf"
-        },
-        {
-          "id": 1642484,
-          "nombre": "ANEXO Nº 1 COMPRA AGIL.doc"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-02 09:05",
-        "fecha_cierre": "2026-07-05 21:00",
-        "fecha_ultimo_cambio": "2026-07-02T09:10:01.080Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T21:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-09T08:54:19.280Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 1000000,
-        "monto_disponible_clp": 1000000
-      },
-      "institucion": {
-        "organismo_comprador": "ILUSTRE MUNICIPALIDAD DE CERRO NAVIA",
-        "rut": "69.254.200-2",
-        "unidad_compra": "DEPARTAMENTO DE ADQUISICIONES",
-        "region": 13,
-        "nombre_region": "Región Metropolitana de Santiago"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2371-258-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -194905,6 +193201,10 @@
       },
       "documentos": [
         {
+          "id": 1641693,
+          "nombre": "Document_260701_181006.pdf"
+        },
+        {
           "id": 1641689,
           "nombre": "Document_260701_182454.pdf"
         },
@@ -194919,10 +193219,6 @@
         {
           "id": 1641692,
           "nombre": "Declaración jurada de interes con Municipalidad (1).pdf"
-        },
-        {
-          "id": 1641693,
-          "nombre": "Document_260701_181006.pdf"
         }
       ],
       "fechas": {
@@ -195060,61 +193356,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1663-506-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "2952-154-COT26",
-      "nombre": "MATERIALES DE FERRETERÍA",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [
-        {
-          "id": 1641696,
-          "nombre": "CONSIDERACIONES COMPRA ÁGIL.pdf"
-        },
-        {
-          "id": 1641697,
-          "nombre": "ANEXO A.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-01 16:51",
-        "fecha_cierre": "2026-07-05 18:28",
-        "fecha_ultimo_cambio": "2026-07-03T18:25:00.643Z",
-        "fecha_cierre_primer_llamado": "2026-07-03T17:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T18:28:58.310Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 2913771,
-        "monto_disponible_clp": 2913771
-      },
-      "institucion": {
-        "organismo_comprador": "Arsenal Naval Talcahuano",
-        "rut": "61.102.074-0",
-        "unidad_compra": "ARSENAL NAVAL TALCAHUANO",
-        "region": 8,
-        "nombre_region": "Región del Biobío "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 2
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2952-154-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -198146,16 +196387,16 @@
       },
       "documentos": [
         {
+          "id": 1641346,
+          "nombre": "FORMATO VISITA EN TERRENO.docx"
+        },
+        {
           "id": 1641347,
           "nombre": "ACUERDO COMPLEMENTARIO COMPRA AGÍL.docx"
         },
         {
           "id": 1641348,
           "nombre": "ANEXO DE BASES TECNICAS.docx"
-        },
-        {
-          "id": 1641346,
-          "nombre": "FORMATO VISITA EN TERRENO.docx"
         }
       ],
       "fechas": {
@@ -201768,69 +200009,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "2371-257-COT26",
-      "nombre": "S/P 336, EXPEDIENTE 10458, DEPARTAMENTO DE PROYECTOS, ADQUISICIÓN DE ROLLO PASTO ALFOMBRA Y ALYSSUM BLANCO",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1640789,
-          "nombre": "Especificaciones-Taecnicas-GCV---366.pdf"
-        },
-        {
-          "id": 1640790,
-          "nombre": "A DESCALIFICACIÓN DE OFERTAS Y TABLAS EVALUACION.pdf"
-        },
-        {
-          "id": 1640791,
-          "nombre": "ANEXO Nº 1 COMPRA AGIL.doc"
-        },
-        {
-          "id": 1640792,
-          "nombre": "Taerminos-de-Referencia-GCV---366.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-01 15:14",
-        "fecha_cierre": "2026-07-05 21:00",
-        "fecha_ultimo_cambio": "2026-07-01T15:15:00.690Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T21:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-10T02:45:42.830Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 1475000,
-        "monto_disponible_clp": 1475000
-      },
-      "institucion": {
-        "organismo_comprador": "ILUSTRE MUNICIPALIDAD DE CERRO NAVIA",
-        "rut": "69.254.200-2",
-        "unidad_compra": "DEPARTAMENTO DE ADQUISICIONES",
-        "region": 13,
-        "nombre_region": "Región Metropolitana de Santiago"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2371-257-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "4880-28-COT26",
       "nombre": "compra de sillas ergonomicas",
       "estado": {
@@ -204717,57 +202895,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/918434-152-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "1465-271-COT26",
-      "nombre": "ALCOHOL -SUERO - AGUA - ACETATO",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [
-        {
-          "id": 1640270,
-          "nombre": "ALCOHOL-SUERO-AGUA-ACETATO.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-01 13:02",
-        "fecha_cierre": "2026-07-05 18:57",
-        "fecha_ultimo_cambio": "2026-07-03T16:05:01.047Z",
-        "fecha_cierre_primer_llamado": "2026-07-03T16:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T18:57:15.137Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 100000,
-        "monto_disponible_clp": 100000
-      },
-      "institucion": {
-        "organismo_comprador": "SERVICIO DE SALUD DEL MAULE HOSPITAL DE TENO",
-        "rut": "61.606.907-1",
-        "unidad_compra": "Hospital Teno",
-        "region": 7,
-        "nombre_region": "Región del Maule "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/1465-271-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -208999,69 +207126,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "2371-256-COT26",
-      "nombre": "S/P 297, EXPEDIENTE 8941, DIRECCIÓN DE MEDIO AMBIENTE ASEO Y ORNATO, DEPARTAMENTO DE PLANIFICACIÓN Y CONTROL DE GESTIÓN, ADQUISICIÓN DE PÓLIZA SEGURO DE RESPONSABILIDAD CIVIL POR 1 AÑO",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
-      },
-      "documentos": [
-        {
-          "id": 1639519,
-          "nombre": "A DESCALIFICACIÓN DE OFERTAS Y TABLAS EVALUACION.pdf"
-        },
-        {
-          "id": 1639520,
-          "nombre": "FICHA TECNICA.pdf"
-        },
-        {
-          "id": 1639521,
-          "nombre": "LISTADO DE AREAS VERDES EN LA COMUNA DE CERRO NAVIA.pdf"
-        },
-        {
-          "id": 1639522,
-          "nombre": "ANEXO Nº 1 COMPRA AGIL.doc"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-07-01 11:39",
-        "fecha_cierre": "2026-07-05 21:00",
-        "fecha_ultimo_cambio": "2026-07-01T11:40:00.803Z",
-        "fecha_cierre_primer_llamado": "2026-07-05T21:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-10T06:20:29.363Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 2600000,
-        "monto_disponible_clp": 2600000
-      },
-      "institucion": {
-        "organismo_comprador": "ILUSTRE MUNICIPALIDAD DE CERRO NAVIA",
-        "rut": "69.254.200-2",
-        "unidad_compra": "DEPARTAMENTO DE ADQUISICIONES",
-        "region": 13,
-        "nombre_region": "Región Metropolitana de Santiago"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2371-256-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "1057417-2808-COT26",
       "nombre": " SSM GAV SERVICIO DE EVALUACION Y DIAGNOSTICO DE MONITOR CLINICO MODELO GENERAL ELECTRIC/PROCARE 300",
       "estado": {
@@ -211423,12 +209487,12 @@
       },
       "documentos": [
         {
-          "id": 1639120,
-          "nombre": "PENDON.pdf"
-        },
-        {
           "id": 1639121,
           "nombre": "SOLICITUD PENDON.pdf"
+        },
+        {
+          "id": 1639120,
+          "nombre": "PENDON.pdf"
         }
       ],
       "fechas": {
@@ -211832,8 +209896,8 @@
         "glosa": "Publicada"
       },
       "convocatoria": {
-        "estado_convocatoria": 1,
-        "descripcion": "Primer llamado"
+        "estado_convocatoria": 2,
+        "descripcion": "Segundo llamado"
       },
       "documentos": [
         {
@@ -211851,8 +209915,8 @@
       ],
       "fechas": {
         "fecha_publicacion": "2026-07-01 10:53",
-        "fecha_cierre": "2026-07-05 21:00",
-        "fecha_ultimo_cambio": "2026-07-01T10:55:00.400Z",
+        "fecha_cierre": "2026-07-10 07:06",
+        "fecha_ultimo_cambio": "2026-07-05T21:05:01.167Z",
         "fecha_cierre_primer_llamado": "2026-07-05T21:00:00Z",
         "fecha_cierre_segundo_llamado": "2026-07-10T07:06:08.333Z"
       },
@@ -225946,16 +224010,16 @@
       },
       "documentos": [
         {
+          "id": 1635335,
+          "nombre": "Reparacion y Mantencion 100.000km.pdf"
+        },
+        {
           "id": 1635333,
           "nombre": "Procedimientos de Multas-Sanciones en compra ágil.pdf"
         },
         {
           "id": 1635334,
           "nombre": "FICHA DEL PROVEEDOR.doc"
-        },
-        {
-          "id": 1635335,
-          "nombre": "Reparacion y Mantencion 100.000km.pdf"
         }
       ],
       "fechas": {
@@ -226042,57 +224106,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1002588-69-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "4777-481-COT26",
-      "nombre": "TUBOS PARA ALCANTARILLAS",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [
-        {
-          "id": 1635281,
-          "nombre": "ESPECIFICACIONES TUBOS PARA ALCANTARILLADO.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-06-30 11:23",
-        "fecha_cierre": "2026-07-05 19:14",
-        "fecha_ultimo_cambio": "2026-07-03T11:40:01.030Z",
-        "fecha_cierre_primer_llamado": "2026-07-02T19:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T19:14:24.217Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 6500000,
-        "monto_disponible_clp": 6500000
-      },
-      "institucion": {
-        "organismo_comprador": "I MUNICIPALIDAD DE LA UNION",
-        "rut": "69.200.800-6",
-        "unidad_compra": "Dirección de Adm. y Finanzas",
-        "region": 14,
-        "nombre_region": "Región de Los Ríos"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 3
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/4777-481-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -226449,10 +224462,6 @@
       },
       "documentos": [
         {
-          "id": 1635158,
-          "nombre": "ANEXO ECONOMICO.pdf"
-        },
-        {
           "id": 1635159,
           "nombre": "ESPECIFICACIONES TECNICAS.pdf"
         },
@@ -226463,6 +224472,10 @@
         {
           "id": 1635161,
           "nombre": "PROGRAMA DE INTEGRIDAD.pdf"
+        },
+        {
+          "id": 1635158,
+          "nombre": "ANEXO ECONOMICO.pdf"
         }
       ],
       "fechas": {
@@ -228345,20 +226358,20 @@
       },
       "documentos": [
         {
-          "id": 1634135,
-          "nombre": "ANEXO SUSTENTABILIDAD.docx"
-        },
-        {
-          "id": 1634136,
-          "nombre": "ANEXO PACTO DE INTEGRIDAD.docx"
-        },
-        {
           "id": 1634137,
           "nombre": "REQUERIMIENTOS ADM. SERVICIO DE DESAYUNO Y CHOCOLATES PARA PREMIO.pdf"
         },
         {
           "id": 1634138,
           "nombre": "ANEXO_IDENTIFICACION_OFERENTE.docx"
+        },
+        {
+          "id": 1634135,
+          "nombre": "ANEXO SUSTENTABILIDAD.docx"
+        },
+        {
+          "id": 1634136,
+          "nombre": "ANEXO PACTO DE INTEGRIDAD.docx"
         }
       ],
       "fechas": {
@@ -228526,12 +226539,12 @@
       },
       "documentos": [
         {
-          "id": 1633976,
-          "nombre": "1247-Terminos referencia compra agil 2025 - nuevo.doc"
-        },
-        {
           "id": 1633975,
           "nombre": "FICHA TÉCNICA DE ARTICULOS DE MENAJE Y COCINA.docx"
+        },
+        {
+          "id": 1633976,
+          "nombre": "1247-Terminos referencia compra agil 2025 - nuevo.doc"
         }
       ],
       "fechas": {
@@ -229974,52 +227987,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "2078-239-COT26",
-      "nombre": "Implementos Programa Tenencia Responsable de Mascotas SEREMI de Salud Región del Biobío SC284",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [],
-      "fechas": {
-        "fecha_publicacion": "2026-06-26 15:41",
-        "fecha_cierre": "2026-07-05 18:41",
-        "fecha_ultimo_cambio": "2026-07-01T17:25:00.510Z",
-        "fecha_cierre_primer_llamado": "2026-06-30T17:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T18:41:42.543Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 2040000,
-        "monto_disponible_clp": 2040000
-      },
-      "institucion": {
-        "organismo_comprador": "SUBSECRETARIA DE SALUD PUBLICA",
-        "rut": "61.601.000-K",
-        "unidad_compra": "Seremi de Salud VIII región",
-        "region": 8,
-        "nombre_region": "Región del Biobío "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 4
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2078-239-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "1339159-56-COT26",
       "nombre": "ADQUISICIÓN ÁGIL DE BIRRETES Y ESTOLAS PARA LICEO POLITECNICO CIENCIA Y TECNOLOGIA",
       "estado": {
@@ -230667,6 +228634,14 @@
       },
       "documentos": [
         {
+          "id": 1632908,
+          "nombre": "Ficha Técnica - Adq. herramientas de precisión -  editable para c.docx"
+        },
+        {
+          "id": 1632909,
+          "nombre": "REX 715 de 25.06.2026.pdf"
+        },
+        {
           "id": 1632910,
           "nombre": "Solicitud de Compras DR - SC n° 60744.pdf"
         },
@@ -230677,14 +228652,6 @@
         {
           "id": 1632912,
           "nombre": "Ficha Técnica - Adq. herramientas de precisión.pdf"
-        },
-        {
-          "id": 1632908,
-          "nombre": "Ficha Técnica - Adq. herramientas de precisión -  editable para c.docx"
-        },
-        {
-          "id": 1632909,
-          "nombre": "REX 715 de 25.06.2026.pdf"
         }
       ],
       "fechas": {
@@ -232780,6 +230747,10 @@
       },
       "documentos": [
         {
+          "id": 1632352,
+          "nombre": "ANEXO A Identificación completa del oferente.docx"
+        },
+        {
           "id": 1632349,
           "nombre": "TÉRMINOS DE REFERENCIA COTIZACIÓN 3171-93-COT26.pdf"
         },
@@ -232790,10 +230761,6 @@
         {
           "id": 1632351,
           "nombre": "ANEXO B Economico.docx"
-        },
-        {
-          "id": 1632352,
-          "nombre": "ANEXO A Identificación completa del oferente.docx"
         }
       ],
       "fechas": {
@@ -235717,52 +233684,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "4291-656-COT26",
-      "nombre": "Adquisición de reactivos y material de laboratorio para investigación",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [],
-      "fechas": {
-        "fecha_publicacion": "2026-06-26 10:37",
-        "fecha_cierre": "2026-07-05 21:03",
-        "fecha_ultimo_cambio": "2026-07-01T16:45:00.687Z",
-        "fecha_cierre_primer_llamado": "2026-06-30T15:01:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T21:03:46.887Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 560000,
-        "monto_disponible_clp": 560000
-      },
-      "institucion": {
-        "organismo_comprador": "UNIVERSIDAD DE ANTOFAGASTA",
-        "rut": "70.791.800-4",
-        "unidad_compra": "Universidad de Antofagasta",
-        "region": 2,
-        "nombre_region": "Región de Antofagasta "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 2
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/4291-656-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "1213002-178-COT26",
       "nombre": "SOLICITUD INSUMOS PARA REHABILITACIÓN 2026 DE ARTE",
       "estado": {
@@ -236935,57 +234856,6 @@
       "rating_count": 0
     },
     {
-      "codigo": "463-33-COT26",
-      "nombre": "Mantención preventiva de 1 plotter EPSON",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [
-        {
-          "id": 1630691,
-          "nombre": "TDR_3687_20260625124651_o2MKd3.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-06-26 09:37",
-        "fecha_cierre": "2026-07-05 19:06",
-        "fecha_ultimo_cambio": "2026-07-01T16:45:00.687Z",
-        "fecha_cierre_primer_llamado": "2026-06-30T12:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T19:06:27.200Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 200000,
-        "monto_disponible_clp": 200000
-      },
-      "institucion": {
-        "organismo_comprador": "CENTRO DE INFORMACION DE RECURSOS NATURALES",
-        "rut": "71.294.800-0",
-        "unidad_compra": "C.I.R.N.",
-        "region": 13,
-        "nombre_region": "Región Metropolitana de Santiago"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 3
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/463-33-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
       "codigo": "2727-367-COT26",
       "nombre": "INSUMOS COMPUTACIONALES CONVENIO AMA CESFAM TERESA BALDECCHI SUAZO",
       "estado": {
@@ -237027,57 +234897,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/2727-367-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "2270-178-COT26",
-      "nombre": "EXP.N°45956/2026 SS CALIBRACION INSTRUMENTOS/LABORATORIO.",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [
-        {
-          "id": 1630658,
-          "nombre": "TDR Calibracion de equipos.doc"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-06-26 09:33",
-        "fecha_cierre": "2026-07-05 21:28",
-        "fecha_ultimo_cambio": "2026-07-01T16:05:01.433Z",
-        "fecha_cierre_primer_llamado": "2026-06-30T15:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T21:28:12.770Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 2233749,
-        "monto_disponible_clp": 2233749
-      },
-      "institucion": {
-        "organismo_comprador": "SUBSECRETARIA DE SALUD PUBLICA",
-        "rut": "61.601.000-K",
-        "unidad_compra": "Seremi de Salud I Región",
-        "region": 1,
-        "nombre_region": "Región de Tarapacá  "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 1
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2270-178-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -238802,65 +236621,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1411-685-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "527481-8-COT26",
-      "nombre": "Contratación de profesional para la formulación de proyecto de inversión  para la Localidad de San Marcos y Centinela",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [
-        {
-          "id": 1629630,
-          "nombre": "REQUERIMIENTOS.pdf"
-        },
-        {
-          "id": 1629631,
-          "nombre": "Anexos.docx"
-        },
-        {
-          "id": 1629632,
-          "nombre": "FSC.pdf"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-06-25 16:29",
-        "fecha_cierre": "2026-07-05 19:30",
-        "fecha_ultimo_cambio": "2026-06-30T18:05:00.633Z",
-        "fecha_cierre_primer_llamado": "2026-06-30T18:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T19:30:39.920Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 5585000,
-        "monto_disponible_clp": 5585000
-      },
-      "institucion": {
-        "organismo_comprador": "ILUSTRE MINICIPALIDAD DE COMBARBALA",
-        "rut": "69.041.100-8",
-        "unidad_compra": "OFICINA SECPLAC",
-        "region": 4,
-        "nombre_region": "Región de Coquimbo "
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 0
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/527481-8-COT26"
       },
       "rating": null,
       "rating_count": 0
@@ -241880,20 +239640,20 @@
       },
       "documentos": [
         {
-          "id": 1627348,
-          "nombre": "FORMULARIO N° 1 SUSTENTABILIDAD.docx"
-        },
-        {
-          "id": 1627349,
-          "nombre": "ENTREGA DE MUESTRA OBLIGATORIA.pdf"
-        },
-        {
           "id": 1627350,
           "nombre": "ESPECIFICACIONES TÉCNICAS INSIGNIAS.pdf"
         },
         {
           "id": 1627351,
           "nombre": "REQUERIMIENTO ADMINISTRATIVO EXP. N° 210 INSIGNIAS.pdf"
+        },
+        {
+          "id": 1627348,
+          "nombre": "FORMULARIO N° 1 SUSTENTABILIDAD.docx"
+        },
+        {
+          "id": 1627349,
+          "nombre": "ENTREGA DE MUESTRA OBLIGATORIA.pdf"
         }
       ],
       "fechas": {
@@ -244149,14 +241909,6 @@
       },
       "documentos": [
         {
-          "id": 1625660,
-          "nombre": "Lámina 10 de 12.pdf"
-        },
-        {
-          "id": 1625661,
-          "nombre": "Lámina 4 de 12.pdf"
-        },
-        {
           "id": 1625662,
           "nombre": "Lámina 6 de 12.pdf"
         },
@@ -244207,6 +241959,14 @@
         {
           "id": 1625674,
           "nombre": "Lámina 7 de 12.pdf"
+        },
+        {
+          "id": 1625660,
+          "nombre": "Lámina 10 de 12.pdf"
+        },
+        {
+          "id": 1625661,
+          "nombre": "Lámina 4 de 12.pdf"
         }
       ],
       "fechas": {
@@ -251714,57 +249474,6 @@
       },
       "links": {
         "detalle": "/v2/compra-agil/1040758-105-COT26"
-      },
-      "rating": null,
-      "rating_count": 0
-    },
-    {
-      "codigo": "2279-366-COT26",
-      "nombre": "SP 488 Materiales de uso ",
-      "estado": {
-        "id_estado": 2,
-        "codigo": "publicada",
-        "glosa": "Publicada"
-      },
-      "convocatoria": {
-        "estado_convocatoria": 2,
-        "descripcion": "Segundo llamado"
-      },
-      "documentos": [
-        {
-          "id": 1605397,
-          "nombre": "SP 488.docx"
-        }
-      ],
-      "fechas": {
-        "fecha_publicacion": "2026-06-18 12:23",
-        "fecha_cierre": "2026-07-05 18:55",
-        "fecha_ultimo_cambio": "2026-07-01T16:20:00.360Z",
-        "fecha_cierre_primer_llamado": "2026-06-22T15:00:00Z",
-        "fecha_cierre_segundo_llamado": "2026-07-05T18:55:02.407Z"
-      },
-      "montos": {
-        "moneda": "CLP",
-        "monto_disponible": 510000,
-        "monto_disponible_clp": 510000
-      },
-      "institucion": {
-        "organismo_comprador": "ILUSTRE MUNICIPALIDAD DE PUDAHUEL",
-        "rut": "69.071.100-1",
-        "unidad_compra": "IMUNI_PUDAHUEL ADQUISICIONES",
-        "region": 13,
-        "nombre_region": "Región Metropolitana de Santiago"
-      },
-      "resumen": {
-        "total_ofertas_recibidas": 1
-      },
-      "motivos": {
-        "motivo_cancelacion": null,
-        "motivo_desierta": null,
-        "motivo_seleccion": null
-      },
-      "links": {
-        "detalle": "/v2/compra-agil/2279-366-COT26"
       },
       "rating": null,
       "rating_count": 0
